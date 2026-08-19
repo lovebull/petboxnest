@@ -12,6 +12,7 @@ type CartTotalsProps = {
     item_subtotal?: number | null
     shipping_subtotal?: number | null
     discount_subtotal?: number | null
+    credit_line_total?: number | null
   }
 }
 
@@ -23,6 +24,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
     item_subtotal,
     shipping_subtotal,
     discount_subtotal,
+    credit_line_total,
   } = totals
 
   return (
@@ -53,6 +55,14 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
                 amount: discount_subtotal ?? 0,
                 currency_code,
               })}
+            </span>
+          </div>
+        )}
+        {!!credit_line_total && (
+          <div className="flex items-center justify-between">
+            <span>Store credit</span>
+            <span className="text-ui-fg-interactive" data-testid="cart-store-credit">
+              - {convertToLocale({ amount: credit_line_total, currency_code })}
             </span>
           </div>
         )}

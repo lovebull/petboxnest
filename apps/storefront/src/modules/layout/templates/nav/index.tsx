@@ -2,12 +2,17 @@ import { Suspense } from "react"
 
 import { getLocale } from "@lib/data/locale-actions"
 import { listRegions } from "@lib/data/regions"
-import { StoreRegion } from "@medusajs/types"
+import { HttpTypes, StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import User from "@modules/common/icons/user"
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
 
-export default async function Nav() {
+type NavProps = {
+  customer: HttpTypes.StoreCustomer | null
+}
+
+export default async function Nav({ customer }: NavProps) {
   const [regions, currentLocale] = await Promise.all([
     listRegions().then((regions: StoreRegion[]) => regions),
     getLocale(),
@@ -42,12 +47,12 @@ export default async function Nav() {
             >
               Store
             </LocalizedClientLink>
-            <LocalizedClientLink
-              href="/account"
+             <LocalizedClientLink
+              href="/about-us"
               className="hover:text-ui-fg-base"
               data-testid="desktop-nav-account-link"
             >
-              Account
+              About
             </LocalizedClientLink>
           </div>
 
@@ -75,6 +80,21 @@ export default async function Nav() {
             >
               <CartButton />
             </Suspense>
+            <LocalizedClientLink
+              href="/account"
+              className="flex min-h-11 min-w-11 items-center justify-center hover:text-ui-fg-base small:min-h-0 small:min-w-0"
+              data-testid="nav-account-link"
+              aria-label={customer ? "Account" : "Sign in to account"}
+            >
+              {customer ? (
+                <span>Account</span>
+              ) : (
+                <>
+                  <User size="18" aria-hidden="true" />
+                  <span className="sr-only">Sign in to account</span>
+                </>
+              )}
+            </LocalizedClientLink>
           </div>
         </nav>
       </header>

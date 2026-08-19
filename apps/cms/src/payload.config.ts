@@ -47,12 +47,11 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const isProduction = process.env.NODE_ENV === "production"
 const publicServerURL =
-  process.env.PAYLOAD_PUBLIC_SERVER_URL || "http://localhost:8020"
+  process.env.PAYLOAD_PUBLIC_SERVER_URL || "http://127.0.0.1:8020"
 const csrfOrigins =
   isProduction
     ? [
         publicServerURL,
-        "http://localhost:8020",
         "http://127.0.0.1:8020",
         "http://203.88.118.104:8020",
       ]
@@ -80,10 +79,9 @@ export default buildConfig({
   collections: [Users, Media, OnlineImages, ProductEnhancements, Articles],
   cookiePrefix: "larumsport-payload",
   cors: [
-    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8010",
-    "http://localhost:8010",
+    process.env.NEXT_PUBLIC_BASE_URL || "http://127.0.0.1:8010",
+    "http://127.0.0.1:8010",
     "http://203.88.118.104:8010",
-    "http://localhost:8020",
     "http://127.0.0.1:8020",
     "http://203.88.118.104:8020",
   ],

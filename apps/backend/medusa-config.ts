@@ -7,9 +7,19 @@ const resendEnabled = Boolean(
 )
 
 module.exports = defineConfig({
-  plugins: [],
+  featureFlags: {
+    view_configurations: true,
+  },
+  plugins: [
+    {
+      resolve: "@medusajs/loyalty-plugin",
+      options: {},
+    },
+  ],
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    redisUrl: process.env.REDIS_URL,
+    redisPrefix: "larumsport:",
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
@@ -17,13 +27,28 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
     },
-      // 临时允许 HTTP 登录
+    sessionOptions: {
+      name: "larumsport.sid",
+      resave: false,
+      rolling: true,
+      saveUninitialized: false,
+      ttl: 10 * 60 * 60 * 1000,
+    },
+    // The current Admin is accessed directly over HTTP by IP address.
     cookieOptions: {
       secure: false,
       sameSite: "lax",
+      httpOnly: true,
+      path: "/",
     },
   },
   modules: [
+    {
+      resolve: "./src/modules/cashback",
+    },
+    {
+      resolve: "./src/modules/referral",
+    },
     {
       resolve: "@medusajs/medusa/event-bus-redis",
       options: {

@@ -25,8 +25,14 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     (cart.shipping_methods?.length ?? 0) < 1
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
+  const paidByStoreCredit =
+    Number(cart.credit_line_total || 0) > 0 && cart.total === 0
 
   switch (true) {
+    case paidByStoreCredit:
+      return (
+        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+      )
     case isStripeLike(paymentSession?.provider_id):
       return (
         <StripePaymentButton

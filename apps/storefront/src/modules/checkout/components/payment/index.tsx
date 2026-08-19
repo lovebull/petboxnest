@@ -57,9 +57,12 @@ const Payment = ({
   const paidByGiftcard = !!(
     (cart as unknown as Record<string, unknown>)?.gift_cards && ((cart as unknown as Record<string, unknown>)?.gift_cards as unknown[])?.length > 0 && cart?.total === 0
   )
+  const paidByStoreCredit =
+    Number(cart.credit_line_total || 0) > 0 && cart.total === 0
+  const paidWithoutProvider = paidByGiftcard || paidByStoreCredit
 
   const paymentReady =
-    (activeSession && (cart?.shipping_methods?.length ?? 0) !== 0) || paidByGiftcard
+    (activeSession && (cart?.shipping_methods?.length ?? 0) !== 0) || paidWithoutProvider
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -80,6 +83,13 @@ const Payment = ({
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
+      if (paidWithoutProvider) {
+        return router.push(
+          pathname + "?" + createQueryString("step", "review"),
+          { scroll: false }
+        )
+      }
+
       const shouldInputCard =
         isStripeLike(selectedPaymentMethod) && !activeSession
 
@@ -141,7 +151,7 @@ const Payment = ({
       </div>
       <div>
         <div className={isOpen ? "block" : "hidden"}>
-          {!paidByGiftcard && availablePaymentMethods?.length && (
+          {!paidWithoutProvider && availablePaymentMethods?.length && (
             <>
               <RadioGroup
                 value={selectedPaymentMethod}
@@ -171,7 +181,7 @@ const Payment = ({
             </>
           )}
 
-          {paidByGiftcard && (
+          {paidWithoutProvider && (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 Payment method
@@ -180,7 +190,7 @@ const Payment = ({
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                {paidByStoreCredit ? "Store credit" : "Gift card"}
               </Text>
             </div>
           )}
@@ -197,7 +207,7 @@ const Payment = ({
             isLoading={isLoading}
             disabled={
               (isStripeLike(selectedPaymentMethod) && !cardComplete) ||
-              (!selectedPaymentMethod && !paidByGiftcard)
+              (!selectedPaymentMethod && !paidWithoutProvider)
             }
             data-testid="submit-payment-button"
           >
@@ -243,7 +253,7 @@ const Payment = ({
                 </div>
               </div>
             </div>
-          ) : paidByGiftcard ? (
+          ) : paidWithoutProvider ? (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 Payment method
@@ -252,7 +262,7 @@ const Payment = ({
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                {paidByStoreCredit ? "Store credit" : "Gift card"}
               </Text>
             </div>
           ) : null}

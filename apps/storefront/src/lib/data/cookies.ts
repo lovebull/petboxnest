@@ -130,3 +130,13 @@ export const removeCartId = async () => {
     maxAge: -1,
   })
 }
+
+export const getReferralCode = async () => {
+  const cookies = await nextCookies()
+  return cookies.get("_larumsport_referral")?.value || null
+}
+
+export const removeReferralCode = async () => {
+  const cookies = await nextCookies()
+  cookies.set("_larumsport_referral", "", { maxAge: -1 })
+}

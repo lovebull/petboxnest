@@ -118,6 +118,27 @@ export async function middleware(request: NextRequest) {
   const urlHasCountry = firstPathSegment === country.toLowerCase()
 
   if (urlHasCountry) {
+    const accountRoot = `/${country}/account`
+    const isProtectedAccountPage = request.nextUrl.pathname.startsWith(
+      `${accountRoot}/`
+    )
+    const hasCustomerSession = Boolean(
+      request.cookies.get("_medusa_jwt")?.value
+    )
+
+    if (isProtectedAccountPage && !hasCustomerSession) {
+      const response = NextResponse.redirect(
+        new URL(accountRoot, request.url),
+        307
+      )
+      if (!cacheIdCookie) {
+        response.cookies.set("_medusa_cache_id", cacheId, {
+          maxAge: 60 * 60 * 24,
+        })
+      }
+      return response
+    }
+
     if (!cacheIdCookie) {
       const response = NextResponse.next()
       response.cookies.set("_medusa_cache_id", cacheId, {

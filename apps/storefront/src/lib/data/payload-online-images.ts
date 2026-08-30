@@ -2,6 +2,8 @@
 
 import "server-only"
 
+import { getPayloadServerUrl } from "@lib/util/public-url"
+
 export type PayloadOnlineImage = {
   id: string | number
   title: string
@@ -16,9 +18,7 @@ type PayloadListResponse<T> = {
   docs: T[]
 }
 
-const PAYLOAD_SERVER_URL =
-  process.env.PAYLOAD_SERVER_URL ||
-  "http://127.0.0.1:8020"
+const PAYLOAD_SERVER_URL = getPayloadServerUrl()
 
 const PAYLOAD_REVALIDATE_SECONDS = 3600
 

@@ -6,6 +6,7 @@ import ContactHero from "@modules/home/components/contact-hero"
 import EarlyAccessSignup from "@modules/home/components/early-access-signup"
 import Hero from "@modules/home/components/hero"
 import JoinTheClub from "@modules/home/components/join-the-club"
+import BadmintonDesc from "@modules/home/components/badminton-desc"
 import LatestProducts from "@modules/home/components/latest-products"
 import { getRegion } from "@lib/data/regions"
 
@@ -32,6 +33,7 @@ export default async function Home(props: {
     <>
       <Hero />
       <LatestProducts countryCode={countryCode} region={region} />
+      <BadmintonDesc countryCode={countryCode} />
       <JoinTheClub countryCode={countryCode} />
       <BrandStory />
       <ClubhouseNotes />

@@ -212,28 +212,44 @@ export interface ProductEnhancement {
   id: number;
   status: 'draft' | 'published';
   /**
-   * Optional Medusa product ID, for example prod_01...
+   * 可选。点击获取已发布产品后选择，或手动填写 prod_01... / Optional. Select a published product or enter prod_01... manually.
    */
   medusa_product_id?: string | null;
   /**
-   * Medusa product handle used by the storefront URL.
+   * Storefront 产品详情页 URL 使用的 handle。选择产品 ID 时会自动同步。 / Product handle used by the storefront URL. It is synced when selecting a product ID.
    */
   medusa_product_handle: string;
   title: string;
   subtitle?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   hero_eyebrow?: string | null;
   highlights?:
     | {
-        label: string;
+        label?: string | null;
         description?: string | null;
         id?: string | null;
       }[]
     | null;
   story_sections?:
     | {
-        heading: string;
-        body: string;
+        heading?: string | null;
+        body?: string | null;
         image?: (number | null) | Media;
+        image_position?: ('left' | 'right') | null;
         id?: string | null;
       }[]
     | null;
@@ -246,6 +262,14 @@ export interface ProductEnhancement {
     | null;
   care_notes?: string | null;
   video_url?: string | null;
+  image_blocks?:
+    | {
+        image?: (number | null) | Media;
+        title?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   seo?: {
     meta_title?: string | null;
     meta_description?: string | null;
@@ -472,6 +496,7 @@ export interface ProductEnhancementsSelect<T extends boolean = true> {
   medusa_product_handle?: T;
   title?: T;
   subtitle?: T;
+  content?: T;
   hero_eyebrow?: T;
   highlights?:
     | T
@@ -486,6 +511,7 @@ export interface ProductEnhancementsSelect<T extends boolean = true> {
         heading?: T;
         body?: T;
         image?: T;
+        image_position?: T;
         id?: T;
       };
   specifications?:
@@ -497,6 +523,14 @@ export interface ProductEnhancementsSelect<T extends boolean = true> {
       };
   care_notes?: T;
   video_url?: T;
+  image_blocks?:
+    | T
+    | {
+        image?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
   seo?:
     | T
     | {

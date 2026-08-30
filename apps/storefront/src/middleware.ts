@@ -1,8 +1,11 @@
 import { HttpTypes } from "@medusajs/types"
+import { expandPublicUrl, getPublicUrl } from "@lib/util/public-url"
 import { NextRequest, NextResponse } from "next/server"
 
-const BACKEND_URL =
-  process.env.MEDUSA_BACKEND_URL || process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
+const BACKEND_URL = expandPublicUrl(
+  process.env.MEDUSA_BACKEND_URL || process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL,
+  getPublicUrl(8030)
+)
 const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "dk"
 

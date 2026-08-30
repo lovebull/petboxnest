@@ -4,6 +4,67 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.0.11",
+    date: "2026-08-30 02:15:11 EDT",
+    title: "S3 media storage and domain deployment templates",
+    items: [
+      "Medusa 文件存储 provider 从本地 dated local file 切换为 S3-compatible 存储，并支持 SeaweedFS endpoint、bucket、prefix 和 forcePathStyle 配置。",
+      "Backend 环境模板新增 S3_FILE_URL、S3_ACCESS_KEY_ID、S3_SECRET_ACCESS_KEY、S3_REGION、S3_BUCKET、S3_ENDPOINT 和 S3_PREFIX 配置项。",
+      "Payload CMS 新增 @payloadcms/storage-s3 依赖和 s3Storage 插件，Media 集合上传改为通过 S3-compatible 存储生成公开文件 URL。",
+      "CMS build 脚本改为先执行 payload generate:importmap，再执行 next build，确保 S3 上传处理器和 Admin 组件 import map 同步。",
+      "新增 Backend、CMS、Storefront 域名部署环境模板，覆盖 larumsport.com、api、cms、media 和内部服务地址配置。",
+      "Storefront Product Enhancements 增强媒体 URL 归一化，兼容 Payload/S3 返回包含内嵌绝对地址的媒体 URL。",
+    ],
+    fixes: [
+      "修复本地媒体归档 hook 与远程 S3 存储同时存在时可能造成文件路径不一致的问题。",
+      "修复 Payload S3/SeaweedFS 公共媒体 URL 需要手动拼接、容易出现重复路径的问题。",
+      "修复商品增强内容读取 Payload 媒体时可能拿到嵌套绝对 URL，导致前台图片地址错误的问题。",
+      "修复 CMS 构建时 importMap 可能未包含 S3ClientUploadHandler 的问题。",
+      "修复生产环境变量文件可能被 Git 识别为未跟踪文件的问题，新增 **/.env.production 忽略规则。",
+    ],
+  },
+  {
+    version: "v1.0.10",
+    date: "2026-08-26 10:09:03 EDT",
+    title: "Public URL configuration and cookie consent",
+    items: [
+      "Backend、CMS 和 Storefront 环境变量模板新增 PUBLIC_PROTOCOL / PUBLIC_HOST，用于统一生成本地或线上公开访问地址。",
+      "Medusa 配置新增公开 URL 展开逻辑，STORE_CORS、ADMIN_CORS、AUTH_CORS 和本地文件 backend_url 可复用 PUBLIC_* 占位符。",
+      "Payload CMS 配置新增公开 URL 展开逻辑，统一 PAYLOAD_PUBLIC_SERVER_URL、CORS、CSRF 和 Next allowedDevOrigins 的主机来源。",
+      "Storefront 新增 public-url 工具，统一生成 Medusa、Payload 和 Base URL，并支持 NEXT_PUBLIC_PUBLIC_* 占位符展开。",
+      "Payload articles、online images、product enhancements 和商品 SEO 图片 URL 读取统一改用 getPayloadServerUrl。",
+      "Storefront 主布局新增 CookieConsentBanner，支持接受全部、拒绝非必要 Cookie，以及按 Analytics / Marketing 管理偏好。",
+    ],
+    fixes: [
+      "修复 localhost、127.0.0.1 和服务器 IP 分散硬编码导致不同运行环境 CORS/CSRF 不一致的问题。",
+      "修复 Storefront 服务端读取 Payload 内容时部分文件只读取 PAYLOAD_SERVER_URL、忽略 NEXT_PUBLIC_PAYLOAD_SERVER_URL 的问题。",
+      "修复商品详情页生成 Payload Open Graph 图片绝对地址时重复写死 Payload 默认地址的问题。",
+      "修复 Medusa 本地文件上传访问地址在不同主机部署时需要手动改多处配置的问题。",
+      "修复首次访问 Storefront 缺少 Cookie 偏好提示和持久化 consent 记录的问题。",
+    ],
+  },
+  {
+    version: "v1.0.9",
+    date: "2026-08-25 15:06:18 EDT",
+    title: "CMS media archive and product storytelling upgrade",
+    items: [
+      "Medusa 后端新增 dated local file provider，本地上传文件会按年份和月份归档到 static 目录。",
+      "Payload Media 集合改为使用本地 media 目录，并在创建后把原图和缩略图移动到按月归档路径。",
+      "Payload Product Enhancements 增加中英双语字段标签、富文本内容、图片上传、故事区块图片位置和图片组配置。",
+      "Payload Admin 新增 MedusaProductPicker，可从已发布 Medusa 商品中选择产品并自动同步 product id 与 handle。",
+      "CMS 新增 /api/medusa/products 接口，用 publishable key 读取 Medusa 已发布商品供 Admin 选择器使用。",
+      "Storefront 商品详情增强区支持 Payload 富文本、上传图片、图片组、左右图文排版、视频链接、规格和护理说明。",
+      "首页新增羽毛球制作说明区块，并替换 Contact Hero 背景图与羽毛球品牌文案。",
+    ],
+    fixes: [
+      "修复 CMS 媒体上传后文件集中堆在根目录的问题，改为按 yyyy/mm 路径保存并同步 url 与尺寸图路径。",
+      "修复 Product Enhancements 只能手动填写 Medusa 产品关联、容易填错 id 或 handle 的问题。",
+      "修复 Storefront 读取 Payload 富文本上传图片时缺少媒体 URL 归一化的问题。",
+      "修复商品增强内容中空亮点、空故事区块、空图片组或空规格可能造成前台冗余布局的问题。",
+      "修复本地上传文件可能被 Git 跟踪的问题，补充忽略 backend static 和 CMS media 目录。",
+    ],
+  },
+  {
     version: "v1.0.8",
     date: "2026-08-17 10:14:34 EDT",
     title: "Bilingual admin settings polish",

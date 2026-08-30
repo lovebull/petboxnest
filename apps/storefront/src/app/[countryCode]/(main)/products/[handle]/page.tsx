@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { getProductEnhancement } from "@lib/data/payload-product-enhancements"
 import { listProducts } from "@lib/data/products"
 import { getRegion, listRegions } from "@lib/data/regions"
+import { getPayloadServerUrl } from "@lib/util/public-url"
 import ProductTemplate from "@modules/products/templates"
 import { HttpTypes } from "@medusajs/types"
 
@@ -79,10 +80,7 @@ function getAbsolutePayloadUrl(url?: string) {
     return url
   }
 
-  const payloadUrl =
-    process.env.PAYLOAD_SERVER_URL ||
-    process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL ||
-    "http://127.0.0.1:8020"
+  const payloadUrl = getPayloadServerUrl()
 
   return `${payloadUrl}${url.startsWith("/") ? "" : "/"}${url}`
 }

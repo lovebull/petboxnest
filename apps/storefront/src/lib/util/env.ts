@@ -1,3 +1,5 @@
+import { expandPublicUrl, getPublicUrl } from "./public-url"
+
 export const getBaseURL = () => {
-  return process.env.NEXT_PUBLIC_BASE_URL || "https://localhost:8010"
+  return expandPublicUrl(process.env.NEXT_PUBLIC_BASE_URL, getPublicUrl(8010))
 }

@@ -6,6 +6,23 @@ const resendEnabled = Boolean(
   process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL
 )
 
+const publicProtocol = process.env.PUBLIC_PROTOCOL || "http"
+const publicHost = process.env.PUBLIC_HOST || "127.0.0.1"
+const publicUrl = (port: number, pathname = "") =>
+  `${publicProtocol}://${publicHost}:${port}${pathname}`
+
+const expandPublicUrl = (value: string | undefined, fallback: string) => {
+  if (!value) {
+    return fallback
+  }
+
+  return value
+    .replaceAll("$PUBLIC_PROTOCOL", publicProtocol)
+    .replaceAll("${PUBLIC_PROTOCOL}", publicProtocol)
+    .replaceAll("$PUBLIC_HOST", publicHost)
+    .replaceAll("${PUBLIC_HOST}", publicHost)
+}
+
 module.exports = defineConfig({
   featureFlags: {
     view_configurations: true,
@@ -21,9 +38,20 @@ module.exports = defineConfig({
     redisUrl: process.env.REDIS_URL,
     redisPrefix: "larumsport:",
     http: {
-      storeCors: process.env.STORE_CORS!,
-      adminCors: process.env.ADMIN_CORS!,
-      authCors: process.env.AUTH_CORS!,
+      storeCors: expandPublicUrl(
+        process.env.STORE_CORS,
+        `http://localhost:8010,${publicUrl(8010)}`
+      ),
+      adminCors: expandPublicUrl(
+        process.env.ADMIN_CORS,
+        `http://localhost:8030,${publicUrl(8030)}`
+      ),
+      authCors: expandPublicUrl(
+        process.env.AUTH_CORS,
+        `http://localhost:8010,http://localhost:8030,${publicUrl(
+          8010
+        )},${publicUrl(8030)}`
+      ),
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
     },
@@ -48,6 +76,29 @@ module.exports = defineConfig({
     },
     {
       resolve: "./src/modules/referral",
+    },
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-s3",
+            id: "s3",
+            options: {
+              file_url: process.env.S3_FILE_URL,
+              access_key_id: process.env.S3_ACCESS_KEY_ID,
+              secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
+              region: process.env.S3_REGION || "us-east-1",
+              bucket: process.env.S3_BUCKET,
+              endpoint: process.env.S3_ENDPOINT,
+              prefix: process.env.S3_PREFIX,
+              additional_client_config: {
+                forcePathStyle: true,
+              },
+            },
+          },
+        ],
+      },
     },
     {
       resolve: "@medusajs/medusa/event-bus-redis",

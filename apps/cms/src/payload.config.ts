@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url"
 
 import { postgresAdapter } from "@payloadcms/db-postgres"
 import { lexicalEditor } from "@payloadcms/richtext-lexical"
+import { s3Storage } from "@payloadcms/storage-s3"
 import { en } from "@payloadcms/translations/languages/en"
 import { zh } from "@payloadcms/translations/languages/zh"
 import { zhTw } from "@payloadcms/translations/languages/zhTw"
@@ -46,14 +47,29 @@ loadLocalEnv()
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const isProduction = process.env.NODE_ENV === "production"
+const publicProtocol = process.env.PUBLIC_PROTOCOL || "http"
+const publicHost = process.env.PUBLIC_HOST || "127.0.0.1"
+const publicUrl = (port: number) => `${publicProtocol}://${publicHost}:${port}`
+const expandPublicUrl = (value: string | undefined, fallback: string) => {
+  if (!value) {
+    return fallback
+  }
+
+  return value
+    .replaceAll("$PUBLIC_PROTOCOL", publicProtocol)
+    .replaceAll("${PUBLIC_PROTOCOL}", publicProtocol)
+    .replaceAll("$PUBLIC_HOST", publicHost)
+    .replaceAll("${PUBLIC_HOST}", publicHost)
+}
+
 const publicServerURL =
-  process.env.PAYLOAD_PUBLIC_SERVER_URL || "http://127.0.0.1:8020"
+  expandPublicUrl(process.env.PAYLOAD_PUBLIC_SERVER_URL, publicUrl(8020))
 const csrfOrigins =
   isProduction
     ? [
         publicServerURL,
         "http://127.0.0.1:8020",
-        "http://203.88.118.104:8020",
+        publicUrl(8020),
       ]
     : []
 
@@ -77,13 +93,51 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, OnlineImages, ProductEnhancements, Articles],
+  plugins: [
+    s3Storage({
+      enabled: Boolean(
+        process.env.PAYLOAD_S3_BUCKET &&
+          process.env.PAYLOAD_S3_ACCESS_KEY_ID &&
+          process.env.PAYLOAD_S3_SECRET_ACCESS_KEY
+      ),
+      collections: {
+        media: {
+          disablePayloadAccessControl: true,
+          generateFileURL: ({ filename, prefix }) => {
+            if (filename.startsWith("http://") || filename.startsWith("https://")) {
+              return filename
+            }
+
+            const publicUrl = process.env.PAYLOAD_S3_PUBLIC_URL?.replace(
+              /\/$/,
+              ""
+            )
+            const key = prefix ? `${prefix}/${filename}` : filename
+            const normalizedKey = key.replace(/^\/+/, "")
+
+            return publicUrl ? `${publicUrl}/${normalizedKey}` : `/${normalizedKey}`
+          },
+        },
+      },
+      bucket: process.env.PAYLOAD_S3_BUCKET || "",
+      config: {
+        credentials: {
+          accessKeyId: process.env.PAYLOAD_S3_ACCESS_KEY_ID || "",
+          secretAccessKey: process.env.PAYLOAD_S3_SECRET_ACCESS_KEY || "",
+        },
+        endpoint: process.env.PAYLOAD_S3_ENDPOINT,
+        forcePathStyle: true,
+        region: process.env.PAYLOAD_S3_REGION || "us-east-1",
+      },
+    }),
+  ],
   cookiePrefix: "larumsport-payload",
   cors: [
-    process.env.NEXT_PUBLIC_BASE_URL || "http://127.0.0.1:8010",
+    expandPublicUrl(process.env.NEXT_PUBLIC_BASE_URL, publicUrl(8010)),
     "http://127.0.0.1:8010",
-    "http://203.88.118.104:8010",
+    publicUrl(8010),
     "http://127.0.0.1:8020",
-    "http://203.88.118.104:8020",
+    publicUrl(8020),
   ],
   csrf: csrfOrigins,
   db: postgresAdapter({

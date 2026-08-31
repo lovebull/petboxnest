@@ -108,11 +108,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     productId: product.id,
   })
 
-  const title = enhancement?.seo?.meta_title || `${product.title} | Larumsport`
+  const title = enhancement?.seo?.meta_title || `${product.title} | Petboxnest`
   const description =
     enhancement?.seo?.meta_description ||
     product.description ||
-    `${product.title} from Larumsport.`
+    `${product.title} from Petboxnest.`
   const ogImage =
     getAbsolutePayloadUrl(enhancement?.seo?.og_image?.url) ||
     product.thumbnail ||

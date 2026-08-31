@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev -H 0.0.0.0 -p 8020",
-    "start": "next start -p 8020",
+    "dev": "next dev -H 0.0.0.0 -p 7010",
+    "start": "next start -p 7010",
     "build": "payload generate:importmap && next build",
     "payload": "payload",
     "generate:importmap": "payload generate:importmap",

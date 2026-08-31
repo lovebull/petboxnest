@@ -25,7 +25,7 @@ export async function GET(
 
   target.searchParams.set("referral", "accepted")
   const response = NextResponse.redirect(target)
-  response.cookies.set("_larumsport_referral", normalizedCode, {
+  response.cookies.set("_petboxnest_referral", normalizedCode, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

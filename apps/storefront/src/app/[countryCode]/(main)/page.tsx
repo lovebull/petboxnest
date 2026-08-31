@@ -11,9 +11,9 @@ import LatestProducts from "@modules/home/components/latest-products"
 import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
-  title: "Larumsport | Badminton and Pickleball Gear",
+  title: "Petboxnest | A Cleaner Litter Box Without the Scrubbing ",
   description:
-    "Shop Larumsport training gear, badminton essentials, pickleball accessories, and everyday court-ready equipment.",
+    "Seriously. Swap your litter box instead of scrubbing it. Cleaner, less odor, and easier than traditional litter boxes.",
 }
 
 export default async function Home(props: {

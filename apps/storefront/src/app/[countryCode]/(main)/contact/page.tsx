@@ -2,9 +2,9 @@ import { Metadata } from "next"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 export const metadata: Metadata = {
-  title: "Contact Us | Larumsport",
+  title: "Contact Us | Petboxnest",
   description:
-    "Contact Larumsport customer care for help with orders, shipping, returns, warranty questions, and product information.",
+    "Contact Petboxnest customer care for help with orders, shipping, returns, warranty questions, and product information.",
 }
 
 const inputClasses =
@@ -40,10 +40,10 @@ export default function ContactPage() {
               </dt>
               <dd className="mt-2">
                 <a
-                  href="mailto:support@larumsport.com"
+                  href="mailto:support@Petboxnest.com"
                   className="border-b border-ui-fg-base pb-0.5 hover:opacity-60"
                 >
-                  support@larumsport.com
+                  support@Petboxnest.com
                 </a>
               </dd>
             </div>
@@ -80,7 +80,7 @@ export default function ContactPage() {
             ready to send.
           </p>
           <form
-            action="mailto:support@larumsport.com"
+            action="mailto:support@Petboxnest.com"
             method="post"
             encType="text/plain"
             className="mt-8 grid gap-6"

@@ -6,7 +6,7 @@ const BrandStory = () => {
           <div className="flex items-center px-2 py-10 small:px-8 small:py-14 medium:px-0 medium:py-16 medium:pr-16 large:pr-24">
             <div className="max-w-[500px]">
               <h2 className="font-serif text-[30px] font-normal leading-[1.18] tracking-[-0.02em] text-[#1f1d1a] small:text-[38px]">
-                We made Larumsport for you.
+                We made Petboxnest for you.
               </h2>
 
               <div className="mt-6 space-y-5 text-[15px] leading-7 text-[#302e2a]">
@@ -23,7 +23,7 @@ const BrandStory = () => {
                 </p>
                 <p>
                   You want to show up looking like you. That&apos;s why we made
-                  Larumsport.
+                  Petboxnest.
                 </p>
               </div>
             </div>

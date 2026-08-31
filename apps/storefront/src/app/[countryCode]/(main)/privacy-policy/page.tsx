@@ -6,9 +6,9 @@ import {
 } from "@modules/content/components/static-page-shell"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Larumsport",
+  title: "Privacy Policy | Petboxnest",
   description:
-    "Understand what personal information Larumsport collects, how it is used and shared, and the privacy choices available to U.S. customers.",
+    "Understand what personal information Petboxnest collects, how it is used and shared, and the privacy choices available to U.S. customers.",
 }
 
 export default function PrivacyPolicyPage() {
@@ -16,7 +16,7 @@ export default function PrivacyPolicyPage() {
     <StaticPageShell
       eyebrow="Legal"
       title="Privacy policy"
-      intro="This policy explains how Larumsport collects, uses, discloses, and protects personal information when you visit our storefront or purchase from us."
+      intro="This policy explains how Petboxnest collects, uses, discloses, and protects personal information when you visit our storefront or purchase from us."
       updated="August 9, 2026"
     >
       <PolicySection title="Information we collect">
@@ -87,7 +87,7 @@ export default function PrivacyPolicyPage() {
           rights.
         </p>
         <p>
-          Submit a request to support@larumsport.com with the subject “Privacy
+          Submit a request to support@Petboxnest.com with the subject “Privacy
           Request.” An authorized agent may submit a request where permitted by
           law.
         </p>
@@ -110,7 +110,7 @@ export default function PrivacyPolicyPage() {
         <p>
           We may update this policy to reflect operational, legal, or technical
           changes. The date at the top shows the latest revision. Questions may
-          be sent to support@larumsport.com.
+          be sent to support@Petboxnest.com.
         </p>
       </PolicySection>
     </StaticPageShell>

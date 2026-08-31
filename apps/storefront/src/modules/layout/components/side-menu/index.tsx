@@ -127,7 +127,7 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                         />
                       </div>
                       <Text className="flex justify-between txt-compact-small">
-                        © 2022-{new Date().getFullYear()} Larumsport.  All rights reserved.
+                        © 2022-{new Date().getFullYear()} Petboxnest.  All rights reserved.
                       </Text>
                     </div>
                   </div>

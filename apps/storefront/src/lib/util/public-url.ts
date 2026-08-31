@@ -34,5 +34,5 @@ export const expandPublicUrl = (value: string | undefined, fallback: string) => 
 export const getPayloadServerUrl = () =>
   expandPublicUrl(
     process.env.PAYLOAD_SERVER_URL || process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL,
-    getPublicUrl(8020)
+    getPublicUrl(7010)
   )

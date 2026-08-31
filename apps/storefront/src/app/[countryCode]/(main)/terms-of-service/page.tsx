@@ -6,9 +6,9 @@ import {
 } from "@modules/content/components/static-page-shell"
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Larumsport",
+  title: "Terms of Service | Petboxnest",
   description:
-    "Read the terms governing use of the Larumsport website, product purchases, payments, shipping, returns, and account activity.",
+    "Read the terms governing use of the Petboxnest website, product purchases, payments, shipping, returns, and account activity.",
 }
 
 export default function TermsOfServicePage() {
@@ -16,7 +16,7 @@ export default function TermsOfServicePage() {
     <StaticPageShell
       eyebrow="Legal"
       title="Terms of service"
-      intro="These terms govern your use of the Larumsport storefront and purchases made directly from us. By using the site, you agree to these terms."
+      intro="These terms govern your use of the Petboxnest storefront and purchases made directly from us. By using the site, you agree to these terms."
       updated="August 9, 2026"
     >
       <PolicySection title="1. Store use and eligibility">
@@ -71,8 +71,8 @@ export default function TermsOfServicePage() {
 
       <PolicySection title="6. Intellectual property">
         <p>
-          The Larumsport name, site design, text, graphics, product imagery, and
-          other original content are owned by or licensed to Larumsport and are
+          The Petboxnest name, site design, text, graphics, product imagery, and
+          other original content are owned by or licensed to Petboxnest and are
           protected by applicable intellectual-property laws. Personal,
           noncommercial viewing is permitted; no other license is granted.
         </p>
@@ -82,7 +82,7 @@ export default function TermsOfServicePage() {
         <p>
           To the extent permitted by law, the storefront is provided “as is”
           and “as available.” We do not guarantee uninterrupted or error-free
-          operation. Larumsport will not be liable for indirect, incidental,
+          operation. Petboxnest will not be liable for indirect, incidental,
           special, or consequential losses arising from use of the storefront
           or products where such limitations are legally permitted.
         </p>
@@ -99,7 +99,7 @@ export default function TermsOfServicePage() {
           by posting a revised version and changing the date above. Continued
           use after an update constitutes acceptance where permitted by law.
         </p>
-        <p>Questions about these terms may be sent to support@larumsport.com.</p>
+        <p>Questions about these terms may be sent to support@Petboxnest.com.</p>
       </PolicySection>
     </StaticPageShell>
   )

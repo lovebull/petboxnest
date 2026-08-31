@@ -1,4 +1,4 @@
-# Larumsport
+# Petboxnest
 
 面向美国市场的单品牌 D2C/B2C 实物商城。工程基于 Medusa v2 与 Next.js，采用 pnpm workspace 管理。
 

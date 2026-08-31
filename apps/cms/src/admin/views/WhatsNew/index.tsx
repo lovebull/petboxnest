@@ -4,6 +4,27 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.0.12",
+    date: "2026-08-31 11:34:13 EDT",
+    title: "🏷️ Petboxnest brand migration and local port alignment",
+    items: [
+      "✨ 项目品牌从 Larumsport 更新为 Petboxnest，README、Agent 指南、Storefront 导航、页脚、首页模块和静态内容页同步展示新品牌名称。",
+      "🌐 Storefront、CMS 和 Backend 的本地开发端口统一调整为 7000 / 7010 / 7020，并同步 Payload、Medusa、公开 URL 工具和环境模板中的默认地址。",
+      "⚙️ Medusa Redis 前缀、缓存模块前缀、session cookie 名称和 Payload cookiePrefix 切换为 Petboxnest 命名空间，避免与旧品牌运行数据混用。",
+      "✉️ 订单确认邮件的预览文本、品牌抬头和通知主题更新为 Petboxnest，客户收到的邮件内容与新站点品牌保持一致。",
+      "🍪 Storefront 推荐码 cookie 与 Cookie Consent storage/cookie key 更新为 Petboxnest 前缀，前台持久化数据命名保持一致。",
+      "📦 数据库备份文件从仓库根目录整理到 data/ 目录，减少根目录杂乱并集中存放历史 PostgreSQL 备份。",
+    ],
+    fixes: [
+      "🐛 修复页面标题、SEO description、法律政策、FAQ、Contact、Warranty 等前台文案仍显示 Larumsport 的问题。",
+      "🐛 修复页脚版权、客服邮箱和导航品牌名未同步新品牌，导致用户在不同页面看到品牌不一致的问题。",
+      "🐛 修复 Medusa Redis/session 与 Payload cookie 仍使用旧命名空间，可能与旧站点 cookie 或缓存数据冲突的问题。",
+      "🐛 修复 Payload/Storefront 默认读取 8020 端口、项目指南记录 8010/9010 端口，和当前 Petboxnest 本地服务端口不一致的问题。",
+      "🐛 修复推荐短链写入旧 `_larumsport_referral` cookie 后，新品牌站点数据命名不一致的问题。",
+      "🐛 修复根目录直接放置数据库压缩备份导致项目文件结构不清晰的问题，备份文件现集中归档到 data/。",
+    ],
+  },
+  {
     version: "v1.0.11",
     date: "2026-08-30 02:15:11 EDT",
     title: "S3 media storage and domain deployment templates",

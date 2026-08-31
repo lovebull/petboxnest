@@ -6,9 +6,9 @@ import {
 } from "@modules/content/components/static-page-shell"
 
 export const metadata: Metadata = {
-  title: "Warranty | Larumsport",
+  title: "Warranty | Petboxnest",
   description:
-    "Review Larumsport's limited product warranty, coverage, exclusions, and how to submit a warranty claim.",
+    "Review Petboxnest's limited product warranty, coverage, exclusions, and how to submit a warranty claim.",
 }
 
 export default function WarrantyPage() {
@@ -16,7 +16,7 @@ export default function WarrantyPage() {
     <StaticPageShell
       eyebrow="Help"
       title="Product warranty"
-      intro="Larumsport products are covered against manufacturing defects for 90 days from the original delivery date, subject to the terms below."
+      intro="Petboxnest products are covered against manufacturing defects for 90 days from the original delivery date, subject to the terms below."
       updated="August 9, 2026"
     >
       <PolicySection title="What is covered">
@@ -39,12 +39,12 @@ export default function WarrantyPage() {
 
       <PolicySection title="Submit a claim">
         <p>
-          Email support@larumsport.com with your order number, a description of
+          Email support@Petboxnest.com with your order number, a description of
           the issue, and clear photos or video showing the product and defect.
           Please keep the product until the claim is resolved.
         </p>
         <p>
-          If approved, Larumsport may repair the product, replace it with the
+          If approved, Petboxnest may repair the product, replace it with the
           same or a comparable item, or issue a refund at our discretion. This
           warranty does not limit rights that cannot be excluded under
           applicable law.

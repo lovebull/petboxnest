@@ -36,7 +36,7 @@ module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL,
-    redisPrefix: "larumsport:",
+    redisPrefix: "petboxnest:",
     http: {
       storeCors: expandPublicUrl(
         process.env.STORE_CORS,
@@ -56,7 +56,7 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET,
     },
     sessionOptions: {
-      name: "larumsport.sid",
+      name: "petboxnest.sid",
       resave: false,
       rolling: true,
       saveUninitialized: false,
@@ -149,7 +149,7 @@ module.exports = defineConfig({
             is_default: true,
             options: {
               redisUrl: process.env.REDIS_URL,
-              prefix: "larumsport:",
+              prefix: "petboxnest:",
             },
           },
         ],

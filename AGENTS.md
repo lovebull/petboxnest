@@ -1,12 +1,12 @@
-# Larumsport Repository Guidelines
+# Petboxnest Repository Guidelines
 
 ## 项目概况
 
-Larumsport 是面向美国市场的单品牌 D2C/B2C 实物商城。项目使用 pnpm workspace 管理，后端为 Medusa v2，前端为 Next.js Storefront。
+Petboxnest 是面向美国市场的单品牌 D2C/B2C 实物商城。项目使用 pnpm workspace 管理，后端为 Medusa v2，前端为 Next.js Storefront。
 
-- Storefront：`http://localhost:8010`
-- Medusa API：`http://localhost:9010`
-- Medusa Admin：`http://localhost:9010/app`
+- Storefront：`http://localhost:7000`
+- Medusa API：`http://localhost:7020`
+- Medusa Admin：`http://localhost:7020/app`
 - Node.js：20 或更高版本
 - 包管理器：pnpm 11
 
@@ -59,7 +59,7 @@ pnpm backend:seed
 - 后端改动：运行相关 lint、单元测试或针对性的集成测试。
 - API 改动：验证 `/health`、相关 Store/Admin API，以及受影响页面。
 - 页面改动：至少检查移动端和桌面端，并留意 hydration、控制台、图片配置和国家代码路由。
-- 启动服务后确认 8010 与 9010 实际返回 HTTP 200。
+- 启动服务后确认 7000 与 7020 实际返回 HTTP 200。
 - 不为通过检查而删除、覆盖或回退用户已有改动。
 
 ## 数据、缓存与基础设施

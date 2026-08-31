@@ -49,11 +49,11 @@ export default function OrderPlacedEmail({
   return (
     <Html lang="en">
       <Head />
-      <Preview>Your Larumsport order is confirmed</Preview>
+      <Preview>Your petboxnest order is confirmed</Preview>
       <Body style={styles.body}>
         <Container style={styles.container}>
           <Section style={styles.header}>
-            <Text style={styles.brand}>LARUMSPORT</Text>
+            <Text style={styles.brand}>PETBOXNEST</Text>
           </Section>
 
           <Section style={styles.content}>

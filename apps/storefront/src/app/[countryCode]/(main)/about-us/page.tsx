@@ -7,21 +7,21 @@ import {
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 export const metadata: Metadata = {
-  title: "About Us | Larumsport",
+  title: "About Us | Petboxnest",
   description:
-    "Meet Larumsport and learn why we create considered equipment and everyday essentials for life on and beyond the court.",
+    "Meet Petboxnest and learn why we create considered equipment and everyday essentials for life on and beyond the court.",
 }
 
 export default function AboutUsPage() {
   return (
     <StaticPageShell
-      eyebrow="About Larumsport"
+      eyebrow="About Petboxnest"
       title="Made for the way you play."
-      intro="Larumsport creates approachable sports essentials for people who care about movement, good design, and the community built around a game."
+      intro="Petboxnest creates approachable sports essentials for people who care about movement, good design, and the community built around a game."
     >
       <PolicySection title="Our story" id="our-story">
         <p>
-          Larumsport began with a simple idea: the best days on court rarely
+          Petboxnest began with a simple idea: the best days on court rarely
           end when the final point is played. The ritual before a match, the
           conversation afterward, and the people who return each week matter
           just as much.

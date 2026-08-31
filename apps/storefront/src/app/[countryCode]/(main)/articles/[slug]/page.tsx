@@ -21,15 +21,15 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   if (!article) {
     return {
-      title: "Article Not Found | Larumsport",
+      title: "Article Not Found | Petboxnest",
     }
   }
 
-  const title = article.seo?.meta_title || `${article.title} | Larumsport`
+  const title = article.seo?.meta_title || `${article.title} | Petboxnest`
   const description =
     article.seo?.meta_description ||
     article.excerpt ||
-    "Read the latest from Larumsport."
+    "Read the latest from Petboxnest."
   const image = article.seo?.og_image?.url || getArticleImage(article)
 
   return {

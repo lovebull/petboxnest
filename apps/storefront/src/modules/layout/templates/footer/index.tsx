@@ -48,17 +48,17 @@ export default function Footer() {
               href="/"
               className="font-serif text-[30px] font-normal uppercase tracking-[-0.02em] text-ui-fg-base transition-opacity hover:opacity-60"
             >
-              Larumsport
+              Petboxnest
             </LocalizedClientLink>
             <p className="mt-5 max-w-[300px] text-sm leading-6 text-ui-fg-subtle">
               Equipment and everyday essentials made for play, movement, and
               the moments beyond the court.
             </p>
             <a
-              href="mailto:support@larumsport.com"
+              href="mailto:support@petboxnest.com"
               className="mt-5 inline-block border-b border-ui-fg-base pb-0.5 text-sm text-ui-fg-base transition-opacity hover:opacity-60"
             >
-              support@larumsport.com
+              support@petboxnest.com
             </a>
           </div>
 
@@ -120,7 +120,7 @@ export default function Footer() {
           </ul>
           <div className="flex w-full flex-wrap justify-between gap-3 text-ui-fg-muted">
             <Text className="text-[11px] leading-5">
-              © 2022-2026 Larumsport. All rights reserved.
+              © 2022-2026 Petboxnest. All rights reserved.
             </Text>
             <MedusaCTA />
           </div>

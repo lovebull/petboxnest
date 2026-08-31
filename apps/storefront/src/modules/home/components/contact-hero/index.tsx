@@ -2,7 +2,7 @@ const ContactHero = () => {
   return (
     <section className="relative isolate flex min-h-[380px] w-full items-center justify-center overflow-hidden small:min-h-[460px]">
       <img
-        src="https://cdn.larumsport.com/s/files/0822/banner-brand-img-blog.webp"
+        src="https://cdn.petboxnest.com/s/files/0822/banner-brand-img-blog.webp"
         alt=""
         className="absolute inset-0 -z-20 h-full w-full object-cover"
         loading="lazy"
@@ -15,7 +15,7 @@ const ContactHero = () => {
           We create quality badminton gear and accessories designed for players of all levels, bringing performance, passion, and the spirit of badminton to every game.
         </h2>
         <a
-          href="mailto:contact@larumsport.com"
+          href="mailto:contact@petboxnest.com"
           className="mt-8 inline-flex min-h-12 min-w-[156px] items-center justify-center bg-white px-8 text-sm font-medium tracking-[0.08em] text-[#272522] transition-colors duration-200 hover:bg-[#f0ede5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
         >
           Contact us

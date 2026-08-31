@@ -49,7 +49,7 @@ const StorefrontCacheClearWidget = () => {
 
 export const config = defineWidgetConfig({
   zone: "product.list.before",
-  id: "larumsport-storefront-cache-clear",
+  id: "petboxnest-storefront-cache-clear",
 })
 
 export default StorefrontCacheClearWidget

@@ -3,9 +3,9 @@ import { getLatestArticles } from "@lib/data/payload-articles"
 import ArticleCard from "@modules/articles/components/article-card"
 
 export const metadata: Metadata = {
-  title: "Notes From The Clubhouse | Larumsport",
+  title: "Notes From The Clubhouse | Petboxnest",
   description:
-    "Read Larumsport stories, court notes, product ideas, and guides from the clubhouse.",
+    "Read Petboxnest stories, court notes, product ideas, and guides from the clubhouse.",
 }
 
 export default async function ArticlesPage() {

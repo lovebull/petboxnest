@@ -84,9 +84,9 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
 
     switch (template) {
       case Templates.ORDER_PLACED:
-        return "Your Larumsport order is confirmed"
+        return "Your petboxnest order is confirmed"
       default:
-        return "Larumsport notification"
+        return "petboxnest notification"
     }
   }
 

@@ -63,13 +63,13 @@ const expandPublicUrl = (value: string | undefined, fallback: string) => {
 }
 
 const publicServerURL =
-  expandPublicUrl(process.env.PAYLOAD_PUBLIC_SERVER_URL, publicUrl(8020))
+  expandPublicUrl(process.env.PAYLOAD_PUBLIC_SERVER_URL, publicUrl(7010))
 const csrfOrigins =
   isProduction
     ? [
         publicServerURL,
-        "http://127.0.0.1:8020",
-        publicUrl(8020),
+        "http://127.0.0.1:7010",
+        publicUrl(7010),
       ]
     : []
 
@@ -131,13 +131,13 @@ export default buildConfig({
       },
     }),
   ],
-  cookiePrefix: "larumsport-payload",
+  cookiePrefix: "petboxnest-payload",
   cors: [
-    expandPublicUrl(process.env.NEXT_PUBLIC_BASE_URL, publicUrl(8010)),
-    "http://127.0.0.1:8010",
-    publicUrl(8010),
-    "http://127.0.0.1:8020",
-    publicUrl(8020),
+    expandPublicUrl(process.env.NEXT_PUBLIC_BASE_URL, publicUrl(7000)),
+    "http://127.0.0.1:7000",
+    publicUrl(7000),
+    "http://127.0.0.1:7010",
+    publicUrl(7010),
   ],
   csrf: csrfOrigins,
   db: postgresAdapter({

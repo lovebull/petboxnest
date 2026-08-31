@@ -21,7 +21,7 @@ const JoinTheClub = ({ countryCode }: { countryCode: string }) => {
                 You&apos;ve been a member all along.
               </h2>
               <p className="mt-6 max-w-[500px] text-base leading-7 text-[#393631]">
-                Earn rewards on every Larumsport order, get first access to
+                Earn rewards on every Petboxnest order, get first access to
                 new drops, and discover more from our growing sports
                 community.
               </p>

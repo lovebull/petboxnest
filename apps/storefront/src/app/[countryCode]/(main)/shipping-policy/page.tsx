@@ -6,9 +6,9 @@ import {
 } from "@modules/content/components/static-page-shell"
 
 export const metadata: Metadata = {
-  title: "Shipping Policy | Larumsport",
+  title: "Shipping Policy | Petboxnest",
   description:
-    "Review Larumsport order processing, U.S. shipping methods, estimated delivery times, tracking, and lost package information.",
+    "Review Petboxnest order processing, U.S. shipping methods, estimated delivery times, tracking, and lost package information.",
 }
 
 export default function ShippingPolicyPage() {
@@ -57,7 +57,7 @@ export default function ShippingPolicyPage() {
 
       <PolicySection title="Shipping Costs">
         <p>
-         We offer the following shipping rates for orders placed on LarumSport:
+         We offer the following shipping rates for orders placed on Petboxnest:
         </p>
         <li>Free Shipping for orders totaling over $100.</li>
         <li>A flat rate of $9.99 for orders totaling less than $100.</li>
@@ -66,14 +66,14 @@ export default function ShippingPolicyPage() {
 
       <PolicySection title="Shipping Carriers">
         <p>
-        LarumSport partners with reliable carriers to ensure your order arrives safely and on time. We primarily use FedEx, UPS, and USPS for all shipments.
+        Petboxnest partners with reliable carriers to ensure your order arrives safely and on time. We primarily use FedEx, UPS, and USPS for all shipments.
         </p>
       </PolicySection>
 
 
       <PolicySection title="Lost or Damaged Packages">
         <p>
-        LarumSport is not liable for any products damaged or lost during shipping. If you received your order damaged, please contact the shipment carrier to file a claim. Please save all packaging materials and damaged goods before filing a claim.
+        Petboxnest is not liable for any products damaged or lost during shipping. If you received your order damaged, please contact the shipment carrier to file a claim. Please save all packaging materials and damaged goods before filing a claim.
         </p>
 
       </PolicySection>
@@ -81,7 +81,7 @@ export default function ShippingPolicyPage() {
 
       <PolicySection title="Incorrect Shipping Information">
         <p>
-        It is the responsibility of the customer to ensure that the shipping address provided is accurate and complete.LarumSport is not responsible for orders delivered to incorrect addresses supplied by the customer. If an order is returned to us due to an incorrect address, the customer will be responsible for the re-shipping costs.
+        It is the responsibility of the customer to ensure that the shipping address provided is accurate and complete.Petboxnest is not responsible for orders delivered to incorrect addresses supplied by the customer. If an order is returned to us due to an incorrect address, the customer will be responsible for the re-shipping costs.
         </p>
 
       </PolicySection>

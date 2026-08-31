@@ -133,10 +133,10 @@ export const removeCartId = async () => {
 
 export const getReferralCode = async () => {
   const cookies = await nextCookies()
-  return cookies.get("_larumsport_referral")?.value || null
+  return cookies.get("_petboxnest_referral")?.value || null
 }
 
 export const removeReferralCode = async () => {
   const cookies = await nextCookies()
-  cookies.set("_larumsport_referral", "", { maxAge: -1 })
+  cookies.set("_petboxnest_referral", "", { maxAge: -1 })
 }

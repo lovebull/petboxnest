@@ -9,8 +9,8 @@ type ConsentPreferences = {
   marketing: boolean
 }
 
-const CONSENT_STORAGE_KEY = "larumsport_cookie_consent_v1"
-const CONSENT_COOKIE_NAME = "larumsport_cookie_consent"
+const CONSENT_STORAGE_KEY = "petboxnest_cookie_consent_v1"
+const CONSENT_COOKIE_NAME = "petboxnest_cookie_consent"
 const CONSENT_MAX_AGE = 60 * 60 * 24 * 180
 
 const defaultPreferences: ConsentPreferences = {

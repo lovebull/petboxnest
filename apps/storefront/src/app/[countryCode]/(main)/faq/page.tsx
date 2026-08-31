@@ -3,9 +3,9 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { StaticPageShell } from "@modules/content/components/static-page-shell"
 
 export const metadata: Metadata = {
-  title: "FAQ | Larumsport",
+  title: "FAQ | Petboxnest",
   description:
-    "Find answers about Larumsport orders, payments, shipping, returns, product availability, warranties, and Amazon purchases.",
+    "Find answers about Petboxnest orders, payments, shipping, returns, product availability, warranties, and Amazon purchases.",
 }
 
 const faqGroups = [
@@ -30,7 +30,7 @@ const faqGroups = [
       {
 
         question:"Can I change the shipping address on my order?",
-        answer:"If you notice that your shipping address is incorrect, please log in to your account to cancel your order before it has been fulfilled. If your order has already been fulfilled, it may be too late to cancel the order, but please reach out to support@larumsport.com for assistance."
+        answer:"If you notice that your shipping address is incorrect, please log in to your account to cancel your order before it has been fulfilled. If your order has already been fulfilled, it may be too late to cancel the order, but please reach out to support@Petboxnest.com for assistance."
       },
     ],
   },
@@ -56,11 +56,11 @@ const faqGroups = [
       {
         question: "My order was lost, stolen, or damaged. Can you help? ",
         answer:
-          "Occasionally a carrier will mark a package as delivered early, so we recommend keeping an eye out for your order for the next 48 hours. We also suggest checking all surrounding areas and/or entrances to your home to check that your package is not hiding or jammed, and asking your neighbors if they may have received it for you by mistake.If your package is lost or stolen after being marked as delivered or is damaged during transit, LarumSport offers a replacement order free of charge or your original order value in store credit. Please email support@larumsport.com to start the process. ",
+          "Occasionally a carrier will mark a package as delivered early, so we recommend keeping an eye out for your order for the next 48 hours. We also suggest checking all surrounding areas and/or entrances to your home to check that your package is not hiding or jammed, and asking your neighbors if they may have received it for you by mistake.If your package is lost or stolen after being marked as delivered or is damaged during transit, Petboxnest offers a replacement order free of charge or your original order value in store credit. Please email support@Petboxnest.com to start the process. ",
       },
       {
         question:"Other shipping issues",
-        answer:"While we strive to ensure smooth and timely delivery, unforeseen circumstances such as weather conditions, natural disasters, or shipping carrier delays may affect delivery times. Please email us at support@larumsport.com for any other delivery questions, issues, or concerns."
+        answer:"While we strive to ensure smooth and timely delivery, unforeseen circumstances such as weather conditions, natural disasters, or shipping carrier delays may affect delivery times. Please email us at support@Petboxnest.com for any other delivery questions, issues, or concerns."
       },
     ],
   },
@@ -116,7 +116,7 @@ export default function FaqPage() {
       <StaticPageShell
         eyebrow="Help"
         title="Frequently asked questions"
-        intro="Start here for quick answers about shopping with Larumsport. If you still need help, our customer care team is ready."
+        intro="Start here for quick answers about shopping with Petboxnest. If you still need help, our customer care team is ready."
       >
         {faqGroups.map((group) => (
           <section key={group.title} className="border-t border-[#ded8c8] pt-8 first:border-t-0 first:pt-0">

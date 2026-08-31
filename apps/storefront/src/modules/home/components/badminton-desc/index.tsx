@@ -5,7 +5,7 @@ const BadmintonDesc = ({ countryCode }: { countryCode: string }) => {
         <div className="grid overflow-hidden medium:grid-cols-2 medium:items-stretch">
           <div className="h-[320px] overflow-hidden small:h-[440px] medium:h-[500px]">
             <img
-              src="https://cdn.larumsport.com/s/files/0822/Badminton-005-766x1024.webp"
+              src="https://cdn.petboxnest.com/s/files/0822/Badminton-005-766x1024.webp"
               alt="Club Recess sporting display with trophies and a pennant"
               className="h-full w-full object-contain object-center transition-transform duration-700 ease-out hover:scale-[1.015]"
               loading="lazy"
@@ -15,7 +15,7 @@ const BadmintonDesc = ({ countryCode }: { countryCode: string }) => {
           <div className="flex items-center px-7 py-12 small:px-12 small:py-16 medium:px-16 large:px-20">
             <div className="max-w-[520px]">
               <p className="text-xs font-medium uppercase tracking-[0.36em] text-[#272522]">
-                LarumSport
+                Petboxnest
               </p>
               <h2 className="mt-5 font-serif text-[34px] font-normal leading-[1.12] tracking-[-0.025em] text-[#1f1d1a] small:text-[46px]">
                 How Our Shuttlecocks Are Made

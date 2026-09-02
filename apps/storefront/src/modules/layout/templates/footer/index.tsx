@@ -1,5 +1,6 @@
 import { ArrowRight } from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Image from "next/image"
 
 const supportLinks = [
   { label: "Contact us", href: "/contact" },
@@ -23,9 +24,21 @@ export default function Footer() {
           <div>
             <LocalizedClientLink
               href="/"
-              className="pbn-focus rounded-lg font-display text-[30px] font-extrabold tracking-[-0.045em] transition-colors hover:text-brand"
+              className="pbn-focus -m-1 inline-flex w-fit flex-col items-start gap-4 rounded-[12px] p-1 transition-opacity hover:opacity-80"
+              aria-label="PetBoxNest home"
             >
-              PetBox<span className="text-brand">Nest</span>
+              {/* <span className="font-display text-[30px] font-extrabold tracking-[-0.045em] text-ink">
+                PetBox<span className="text-brand">Nest</span>
+              </span> */}
+              <Image
+                src="/images/home/logo.png"
+                alt=""
+                width={500}
+                height={111}
+                loading="lazy"
+                sizes="(max-width: 511px) 220px, 250px"
+                className="h-auto w-[220px] xsmall:w-[250px]"
+              />
             </LocalizedClientLink>
             <p className="mt-5 max-w-[360px] text-base leading-7 text-muted">
               Practical products, happier pets, calmer homes. Made for messy

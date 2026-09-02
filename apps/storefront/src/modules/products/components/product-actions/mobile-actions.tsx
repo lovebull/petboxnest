@@ -51,11 +51,6 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   }, [price])
 
   const isSimple = isSimpleProduct(product)
-  const amazonUrl =
-    typeof product.metadata?.amazon_url === "string"
-      ? product.metadata.amazon_url.trim()
-      : ""
-
   return (
     <>
       <div
@@ -141,18 +136,6 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                   : "Add to cart"}
               </Button>
             </div>
-            {amazonUrl && (
-              <a
-                href={amazonUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full"
-              >
-                <Button className="pbn-secondary-button w-full">
-                  Also available on Amazon
-                </Button>
-              </a>
-            )}
           </div>
         </Transition>
       </div>

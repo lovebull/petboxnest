@@ -38,11 +38,6 @@ export default function ProductActions({
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
   const countryCode = useParams().countryCode as string
-  const amazonUrl =
-    typeof product.metadata?.amazon_url === "string"
-      ? product.metadata.amazon_url.trim()
-      : ""
-
   // If there is only 1 variant, preselect the options
   useEffect(() => {
     if (product.variants?.length === 1) {
@@ -197,18 +192,6 @@ export default function ProductActions({
             ? "Out of stock"
             : "Add to cart"}
         </Button>
-        {amazonUrl && (
-          <a
-            href={amazonUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="w-full"
-          >
-            <Button className="pbn-secondary-button w-full">
-              Also available on Amazon
-            </Button>
-          </a>
-        )}
         <MobileActions
           product={product}
           variant={selectedVariant}

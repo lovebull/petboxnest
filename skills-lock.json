@@ -5,7 +5,7 @@
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-dev/skills/building-admin-dashboard-customizations/SKILL.md",
-      "computedHash": "97cb3b31a4e5bf0ec7a3627d2d21e601603f267d64cda41387274ad5e38acf6f"
+      "computedHash": "8543b8a31aa960940501034c95e8752bb232dfc9d075bb18f0a051ebd03c6960"
     },
     "building-storefronts": {
       "source": "medusajs/medusa-agent-skills",

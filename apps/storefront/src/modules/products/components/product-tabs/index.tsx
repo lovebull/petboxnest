@@ -43,30 +43,38 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
 
 const ProductInfoTab = ({ product }: ProductTabsProps) => {
   return (
-    <div className="text-small-regular py-8">
-      <div className="grid grid-cols-2 gap-x-8">
+    <div className="pb-5 pt-2 text-sm leading-6">
+      <div className="grid grid-cols-2 gap-5">
         <div className="flex flex-col gap-y-4">
           <div>
-            <span className="font-semibold">Material</span>
-            <p>{product.material ? product.material : "-"}</p>
+            <span className="font-bold text-ink">Material</span>
+            <p className="text-muted">
+              {product.material ? product.material : "-"}
+            </p>
           </div>
           <div>
-            <span className="font-semibold">Country of origin</span>
-            <p>{product.origin_country ? product.origin_country : "-"}</p>
+            <span className="font-bold text-ink">Country of origin</span>
+            <p className="text-muted">
+              {product.origin_country ? product.origin_country : "-"}
+            </p>
           </div>
           <div>
-            <span className="font-semibold">Type</span>
-            <p>{product.type ? product.type.value : "-"}</p>
+            <span className="font-bold text-ink">Type</span>
+            <p className="text-muted">
+              {product.type ? product.type.value : "-"}
+            </p>
           </div>
         </div>
         <div className="flex flex-col gap-y-4">
           <div>
-            <span className="font-semibold">Weight</span>
-            <p>{product.weight ? `${product.weight} g` : "-"}</p>
+            <span className="font-bold text-ink">Weight</span>
+            <p className="text-muted">
+              {product.weight ? `${product.weight} g` : "-"}
+            </p>
           </div>
           <div>
-            <span className="font-semibold">Dimensions</span>
-            <p>
+            <span className="font-bold text-ink">Dimensions</span>
+            <p className="text-muted">
               {product.length && product.width && product.height
                 ? `${product.length}L x ${product.width}W x ${product.height}H`
                 : "-"}

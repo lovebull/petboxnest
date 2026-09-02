@@ -59,7 +59,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   return (
     <>
       <div
-        className={clx("lg:hidden inset-x-0 bottom-0 fixed z-50", {
+        className={clx("small:hidden inset-x-0 bottom-0 fixed z-50", {
           "pointer-events-none": !show,
         })}
       >
@@ -74,25 +74,28 @@ const MobileActions: React.FC<MobileActionsProps> = ({
           leaveTo="opacity-0"
         >
           <div
-            className="bg-white flex flex-col gap-y-3 justify-center items-center text-large-regular p-4 h-full w-full border-t border-gray-200"
+            className="flex w-full flex-col gap-3 border-t border-grey-20 bg-white/95 px-4 pt-3 shadow-[0_-12px_30px_rgba(32,36,51,0.10)] backdrop-blur-md pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
             data-testid="mobile-actions"
           >
-            <div className="flex items-center gap-x-2">
-              <span data-testid="mobile-title">{product.title}</span>
-              <span>—</span>
+            <div className="flex w-full items-center justify-between gap-4">
+              <span
+                className="min-w-0 truncate text-sm font-bold text-ink"
+                data-testid="mobile-title"
+              >
+                {product.title}
+              </span>
               {selectedPrice ? (
-                <div className="flex items-end gap-x-2 text-ui-fg-base">
+                <div className="flex shrink-0 items-end gap-x-2 text-ink">
                   {selectedPrice.price_type === "sale" && (
                     <p>
-                      <span className="line-through text-small-regular">
+                      <span className="text-xs text-muted line-through">
                         {selectedPrice.original_price}
                       </span>
                     </p>
                   )}
                   <span
-                    className={clx({
-                      "text-ui-fg-interactive":
-                        selectedPrice.price_type === "sale",
+                    className={clx("font-display text-lg font-bold", {
+                      "text-brand-dark": selectedPrice.price_type === "sale",
                     })}
                   >
                     {selectedPrice.calculated_price}
@@ -102,28 +105,32 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 <div></div>
               )}
             </div>
-            <div className={clx("grid grid-cols-2 w-full gap-x-4", {
-              "!grid-cols-1": isSimple
-            })}>
-              {!isSimple && <Button
-                onClick={open}
-                variant="secondary"
-                className="w-full"
-                data-testid="mobile-actions-button"
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span>
-                    {variant
-                      ? Object.values(options).join(" / ")
-                      : "Select Options"}
-                  </span>
-                  <ChevronDown />
-                </div>
-              </Button>}
+            <div
+              className={clx("grid w-full grid-cols-2 gap-3", {
+                "!grid-cols-1": isSimple,
+              })}
+            >
+              {!isSimple && (
+                <Button
+                  onClick={open}
+                  variant="secondary"
+                  className="pbn-secondary-button w-full px-4"
+                  data-testid="mobile-actions-button"
+                >
+                  <div className="flex w-full items-center justify-between gap-2">
+                    <span className="truncate">
+                      {variant
+                        ? Object.values(options).join(" / ")
+                        : "Select options"}
+                    </span>
+                    <ChevronDown />
+                  </div>
+                </Button>
+              )}
               <Button
                 onClick={handleAddToCart}
                 disabled={!inStock || !variant}
-                className="w-full"
+                className="pbn-primary-button w-full px-4"
                 isLoading={isAdding}
                 data-testid="mobile-cart-button"
               >
@@ -141,8 +148,8 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 rel="noreferrer"
                 className="w-full"
               >
-                <Button className="w-full !bg-[#ff9900] !text-[#111827] hover:!bg-[#f3a847] !border-[#ff9900]">
-                  Go to Amazon
+                <Button className="pbn-secondary-button w-full">
+                  Also available on Amazon
                 </Button>
               </a>
             )}
@@ -163,7 +170,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
             <div className="fixed inset-0 bg-gray-700 bg-opacity-75 backdrop-blur-sm" />
           </Transition.Child>
 
-          <div className="fixed bottom-0 inset-x-0">
+          <div className="fixed inset-x-0 bottom-0">
             <div className="flex min-h-full h-full items-center justify-center text-center">
               <Transition.Child
                 as={Fragment}
@@ -175,21 +182,26 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 leaveTo="opacity-0"
               >
                 <Dialog.Panel
-                  className="w-full h-full transform overflow-hidden text-left flex flex-col gap-y-3"
+                  className="flex w-full transform flex-col gap-y-3 overflow-hidden text-left"
                   data-testid="mobile-actions-modal"
                 >
-                  <div className="w-full flex justify-end pr-6">
+                  <div className="flex w-full justify-end pr-4">
                     <button
+                      type="button"
                       onClick={close}
-                      className="bg-white w-12 h-12 rounded-full text-ui-fg-base flex justify-center items-center"
+                      className="pbn-focus flex h-12 w-12 items-center justify-center rounded-circle bg-white text-ink shadow-elevation-card-rest"
+                      aria-label="Close product options"
                       data-testid="close-modal-button"
                     >
                       <X />
                     </button>
                   </div>
-                  <div className="bg-white px-6 py-12">
+                  <div className="rounded-t-[24px] bg-white px-5 pt-7 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+                    <Dialog.Title className="font-display text-2xl font-bold text-ink">
+                      Choose your options
+                    </Dialog.Title>
                     {(product.variants?.length ?? 0) > 1 && (
-                      <div className="flex flex-col gap-y-6">
+                      <div className="mt-6 flex flex-col gap-y-6">
                         {(product.options || []).map((option) => {
                           return (
                             <div key={option.id}>

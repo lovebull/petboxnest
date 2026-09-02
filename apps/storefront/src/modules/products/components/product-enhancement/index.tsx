@@ -82,7 +82,7 @@ function renderRichTextNode(
       return (
         <Tag
           key={key}
-          className={`mt-8 text-2xl-semi text-ui-fg-base first:mt-0 ${textAlignClass}`}
+          className={`mt-8 font-display text-2xl font-bold leading-tight text-ink first:mt-0 xsmall:text-3xl ${textAlignClass}`}
         >
           {children}
         </Tag>
@@ -92,7 +92,7 @@ function renderRichTextNode(
       return (
         <p
           key={key}
-          className={`mt-4 text-base-regular leading-7 text-ui-fg-subtle first:mt-0 ${textAlignClass}`}
+          className={`mt-4 text-base leading-7 text-muted first:mt-0 ${textAlignClass}`}
         >
           {children}
         </p>
@@ -101,7 +101,7 @@ function renderRichTextNode(
       return (
         <blockquote
           key={key}
-          className={`mt-6 border-l-2 border-ui-border-strong pl-5 text-base-regular leading-7 text-ui-fg-subtle ${textAlignClass}`}
+          className={`mt-6 rounded-r-[16px] border-l-4 border-yellow bg-cream py-4 pl-5 pr-4 text-base font-semibold leading-7 text-ink ${textAlignClass}`}
         >
           {children}
         </blockquote>
@@ -109,14 +109,12 @@ function renderRichTextNode(
     case "list": {
       const ListTag = node.listType === "number" ? "ol" : "ul"
       const listClass =
-        node.listType === "number"
-          ? "list-decimal pl-6"
-          : "list-disc pl-6"
+        node.listType === "number" ? "list-decimal pl-6" : "list-disc pl-6"
 
       return (
         <ListTag
           key={key}
-          className={`mt-4 space-y-2 text-base-regular leading-7 text-ui-fg-subtle ${listClass} ${textAlignClass}`}
+          className={`mt-4 space-y-2 text-base leading-7 text-muted marker:text-brand ${listClass} ${textAlignClass}`}
         >
           {children}
         </ListTag>
@@ -131,7 +129,7 @@ function renderRichTextNode(
         <a
           key={key}
           href={href}
-          className="text-ui-fg-base underline underline-offset-4"
+          className="pbn-focus rounded-soft font-semibold text-brand-dark underline decoration-brand/40 underline-offset-4 hover:decoration-brand"
           rel={href.startsWith("http") ? "noreferrer" : undefined}
           target={href.startsWith("http") ? "_blank" : undefined}
         >
@@ -147,13 +145,18 @@ function renderRichTextNode(
       }
 
       return (
-        <figure key={key} className={`mt-8 flex ${getMediaAlignClass(node.format)}`}>
+        <figure
+          key={key}
+          className={`mt-8 flex overflow-hidden rounded-[24px] ${getMediaAlignClass(
+            node.format
+          )}`}
+        >
           <img
             src={media.url}
             alt={node.fields?.alt || media.alt || ""}
             width={media.width}
             height={media.height}
-            className="h-auto max-w-full"
+            className="h-auto max-w-full rounded-[24px]"
             loading="lazy"
           />
         </figure>
@@ -176,7 +179,7 @@ function ProductRichText({
   }
 
   return (
-    <div className="mt-10 max-w-4xl">
+    <div className="mt-8 max-w-3xl">
       {children.map((node, index) => renderRichTextNode(node, `${index}`))}
     </div>
   )
@@ -219,17 +222,17 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
   }
 
   return (
-    <section className="content-container my-16 small:my-24">
-      <div className="border-t border-ui-border-base pt-10">
+    <section className="bg-white py-16 small:py-24">
+      <div className="pbn-container">
         {(enhancement.hero_eyebrow || enhancement.subtitle) && (
-          <div className="max-w-3xl">
+          <div className="max-w-3xl rounded-[24px] bg-cream p-6 xsmall:p-8 small:p-10">
             {enhancement.hero_eyebrow && (
-              <p className="text-small-semi uppercase text-ui-fg-muted">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand">
                 {enhancement.hero_eyebrow}
               </p>
             )}
             {enhancement.subtitle && (
-              <p className="mt-3 text-xl-regular text-ui-fg-base">
+              <p className="mt-3 font-display text-2xl font-bold leading-tight text-ink xsmall:text-3xl">
                 {enhancement.subtitle}
               </p>
             )}
@@ -239,19 +242,28 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
         <ProductRichText content={enhancement.content} />
 
         {hasHighlights && (
-          <div className="mt-10 grid gap-6 small:grid-cols-3">
+          <div className="mt-10 grid gap-4 xsmall:grid-cols-3 small:mt-14 small:gap-6">
             {highlights.map((highlight, index) => (
               <div
                 key={`${highlight.label || "highlight"}-${index}`}
-                className="border-t border-ui-border-base pt-5"
+                className={`rounded-[22px] p-5 xsmall:p-6 ${
+                  index % 3 === 0
+                    ? "bg-mint/60"
+                    : index % 3 === 1
+                    ? "bg-sky/60"
+                    : "bg-yellow/60"
+                }`}
               >
+                <span className="grid h-9 w-9 place-items-center rounded-circle bg-white text-sm font-bold text-brand">
+                  {index + 1}
+                </span>
                 {highlight.label && (
-                  <h2 className="text-base-semi text-ui-fg-base">
+                  <h2 className="mt-5 font-display text-lg font-bold leading-tight text-ink">
                     {highlight.label}
                   </h2>
                 )}
                 {highlight.description && (
-                  <p className="mt-2 text-base-regular text-ui-fg-subtle">
+                  <p className="mt-2 text-sm leading-6 text-muted">
                     {highlight.description}
                   </p>
                 )}
@@ -261,14 +273,14 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
         )}
 
         {hasSections && (
-          <div className="mt-12 grid gap-10">
+          <div className="mt-14 grid gap-6 small:mt-20 small:gap-10">
             {storySections.map((section, index) => {
               const imageOnRight = section.image_position === "right"
 
               return (
                 <article
                   key={`${section.heading || "section"}-${index}`}
-                  className="grid gap-6 small:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] small:items-center"
+                  className="grid overflow-hidden rounded-[28px] border border-grey-20 bg-mist small:grid-cols-2 small:items-center"
                 >
                   {section.image?.url && (
                     <img
@@ -276,20 +288,24 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
                       alt={section.image.alt || section.heading || ""}
                       width={section.image.width}
                       height={section.image.height}
-                      className={`h-auto max-w-full ${
+                      className={`h-full min-h-[280px] w-full object-cover ${
                         imageOnRight ? "small:order-2" : ""
                       }`}
                       loading="lazy"
                     />
                   )}
-                  <div className={imageOnRight ? "small:order-1" : ""}>
+                  <div
+                    className={`p-6 xsmall:p-8 small:p-12 ${
+                      imageOnRight ? "small:order-1" : ""
+                    }`}
+                  >
                     {section.heading && (
-                      <h2 className="text-2xl-semi text-ui-fg-base">
+                      <h2 className="font-display text-3xl font-bold leading-tight text-ink">
                         {section.heading}
                       </h2>
                     )}
                     {section.body && (
-                      <p className="mt-4 whitespace-pre-line text-base-regular text-ui-fg-subtle">
+                      <p className="mt-4 whitespace-pre-line text-base leading-7 text-muted">
                         {section.body}
                       </p>
                     )}
@@ -301,28 +317,31 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
         )}
 
         {hasImageBlocks && (
-          <div className="mt-12 grid gap-8 border-t border-ui-border-base pt-8 small:grid-cols-3">
+          <div className="mt-14 grid gap-6 xsmall:grid-cols-3 small:mt-20">
             {imageBlocks.map((block, index) => (
-              <figure key={`${block.title || "image"}-${index}`}>
+              <figure
+                key={`${block.title || "image"}-${index}`}
+                className="overflow-hidden rounded-[22px] border border-grey-20 bg-white"
+              >
                 {block.image?.url && (
                   <img
                     src={block.image.url}
                     alt={block.image.alt || block.title || ""}
                     width={block.image.width}
                     height={block.image.height}
-                    className="mx-auto h-auto max-w-full"
+                    className="aspect-square h-auto w-full object-cover"
                     loading="lazy"
                   />
                 )}
                 {(block.title || block.description) && (
-                  <figcaption className="mt-4">
+                  <figcaption className="p-5">
                     {block.title && (
-                      <h2 className="text-base-semi text-ui-fg-base">
+                      <h2 className="font-display text-lg font-bold text-ink">
                         {block.title}
                       </h2>
                     )}
                     {block.description && (
-                      <p className="mt-2 whitespace-pre-line text-base-regular text-ui-fg-subtle">
+                      <p className="mt-2 whitespace-pre-line text-sm leading-6 text-muted">
                         {block.description}
                       </p>
                     )}
@@ -334,20 +353,20 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
         )}
 
         {(hasSpecs || enhancement.care_notes || enhancement.video_url) && (
-          <div className="mt-12 grid gap-8 border-t border-ui-border-base pt-8 small:grid-cols-2">
+          <div className="mt-14 grid gap-8 rounded-[28px] bg-brand p-6 text-white xsmall:p-8 small:mt-20 small:grid-cols-2 small:p-12">
             {hasSpecs && (
               <div>
-                <h2 className="text-base-semi text-ui-fg-base">
+                <h2 className="font-display text-2xl font-bold text-white">
                   Product details
                 </h2>
-                <dl className="mt-4 grid gap-3">
+                <dl className="mt-5 grid gap-3">
                   {specifications.map((spec, index) => (
                     <div
                       key={`${spec.label || "spec"}-${index}`}
-                      className="grid grid-cols-[120px_1fr] gap-4 text-small-regular"
+                      className="grid grid-cols-[minmax(90px,120px)_1fr] gap-4 border-b border-white/20 pb-3 text-sm"
                     >
-                      <dt className="text-ui-fg-muted">{spec.label}</dt>
-                      <dd className="text-ui-fg-base">{spec.value}</dd>
+                      <dt className="text-white/75">{spec.label}</dt>
+                      <dd className="font-semibold text-white">{spec.value}</dd>
                     </div>
                   ))}
                 </dl>
@@ -356,10 +375,10 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
             <div className="space-y-5">
               {enhancement.care_notes && (
                 <div>
-                  <h2 className="text-base-semi text-ui-fg-base">
+                  <h2 className="font-display text-2xl font-bold text-white">
                     Care notes
                   </h2>
-                  <p className="mt-3 whitespace-pre-line text-base-regular text-ui-fg-subtle">
+                  <p className="mt-3 whitespace-pre-line text-base leading-7 text-white/80">
                     {enhancement.care_notes}
                   </p>
                 </div>
@@ -367,7 +386,7 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
               {enhancement.video_url && (
                 <a
                   href={enhancement.video_url}
-                  className="inline-flex text-base-semi text-ui-fg-base underline underline-offset-4"
+                  className="pbn-focus inline-flex rounded-base text-base font-bold text-white underline decoration-white/50 underline-offset-4 hover:decoration-white"
                   rel="noreferrer"
                   target="_blank"
                 >

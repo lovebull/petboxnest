@@ -4,6 +4,33 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.0.15",
+    date: "2026-09-02 03:29:36 EDT",
+    title: "🛍️ PetBoxNest product detail experience refresh",
+    items: [
+      "🎨 商品详情页重构为响应式图片画廊与吸顶购买信息卡片，统一 PetBoxNest 品牌色、排版、间距和卡片层级。",
+      "🖼️ 商品画廊新增主图优先加载、其余图片懒加载、响应式 sizes、商品名语义化 alt 文本和图片数量提示。",
+      "🏷️ 商品信息区升级为明确的 H1 标题、系列返回入口、subtitle 与描述层级，并新增配送、退货和安全结账信任入口。",
+      "🎛️ 商品选项改为更大的按钮式选择器，增加选中状态、ARIA group 标签和 aria-pressed 状态，提升键盘及触摸操作体验。",
+      "💰 商品价格强化当前价、原价和 Save 折扣信息展示，并在购买区同步显示所选变体的 Available / Out of stock 状态。",
+      "📱 移动端购买栏更新商品名、价格、选项和加入购物车布局，加入安全区域适配及带标题的底部选项面板。",
+      "📖 Payload 商品增强内容重新设计富文本、卖点、故事图文、图片模块、规格、养护说明与视频入口。",
+      "📋 商品详情折叠区扩大完整标题行的点击范围，并统一材质、产地、类型、重量和尺寸的信息样式。",
+      "✨ 关联商品区域升级为 PetBoxNest 风格标题、说明和响应式商品网格。",
+      "🧰 更新 Medusa Agent Skills 文档示例及 skills-lock 校验信息。",
+    ],
+    fixes: [
+      "🐛 修复 React Router UIMatch SEO 示例读取 `match.data` 的错误，改为正确的 `match.loaderData`。",
+      "🐛 修复商品画廊前三张图片全部高优先级加载造成不必要资源竞争的问题，仅保留首图 priority。",
+      "🐛 修复商品图片使用通用 Product image 文案、无法描述具体商品的问题，改为包含商品标题和视图序号的 alt。",
+      "🐛 修复多变体商品尚未选定时按钮可能显示 Out of stock 而非 Select options 的误导状态。",
+      "🐛 修复移动端吸底购买栏未考虑 iOS safe-area，底部操作可能贴近或被 Home Indicator 遮挡的问题。",
+      "🐛 修复商品选项底部面板关闭按钮缺少 type、可访问名称和对话框标题的问题。",
+      "🐛 修复商品详情 Accordion 只有小图标区域可点击，标题行键盘焦点和点击范围不足的问题。",
+      "🐛 修复 Amazon 购买按钮使用硬编码橙色、与当前 PetBoxNest 按钮体系不一致的问题。",
+    ],
+  },
+  {
     version: "v1.0.14",
     date: "2026-09-02 02:14:17 EDT",
     title: "🛡️ PetBoxNest checkout experience refresh",

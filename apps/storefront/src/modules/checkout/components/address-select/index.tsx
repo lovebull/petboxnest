@@ -29,14 +29,16 @@ const AddressSelect = ({
   }
 
   const selectedAddress = useMemo(() => {
-    return addresses.find((a) => addressInput && compareAddresses(a, addressInput))
+    return addresses.find(
+      (a) => addressInput && compareAddresses(a, addressInput)
+    )
   }, [addresses, addressInput])
 
   return (
     <Listbox onChange={handleSelect} value={selectedAddress?.id}>
       <div className="relative">
         <Listbox.Button
-          className="relative w-full flex justify-between items-center px-4 py-[10px] text-left bg-white cursor-default focus:outline-none border rounded-rounded focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-gray-300 focus-visible:ring-offset-2 focus-visible:border-gray-300 text-base-regular"
+          className="relative flex min-h-12 w-full cursor-default items-center justify-between rounded-[14px] border border-[#E6E8EC] bg-white px-4 py-3 text-left text-base text-ink focus:outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/20"
           data-testid="shipping-address-select"
         >
           {({ open }) => (
@@ -61,7 +63,7 @@ const AddressSelect = ({
           leaveTo="opacity-0"
         >
           <Listbox.Options
-            className="absolute z-20 w-full overflow-auto text-small-regular bg-white border border-top-0 max-h-60 focus:outline-none sm:text-sm"
+            className="absolute z-20 mt-2 max-h-60 w-full overflow-auto rounded-[16px] border border-[#E6E8EC] bg-white p-2 text-sm shadow-[0_16px_40px_rgba(32,36,51,0.12)] focus:outline-none"
             data-testid="shipping-address-options"
           >
             {addresses.map((address) => {
@@ -69,7 +71,7 @@ const AddressSelect = ({
                 <Listbox.Option
                   key={address.id}
                   value={address.id}
-                  className="cursor-default select-none relative pl-6 pr-10 hover:bg-gray-50 py-4"
+                  className="relative cursor-default select-none rounded-[12px] px-4 py-3 hover:bg-cream"
                   data-testid="shipping-address-option"
                 >
                   <div className="flex gap-x-4 items-start">

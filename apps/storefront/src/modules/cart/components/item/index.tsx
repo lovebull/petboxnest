@@ -145,11 +145,14 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   }
 
   return (
-    <Table.Row className="w-full" data-testid="product-row">
-      <Table.Cell className="!pl-0 p-4 w-24">
+    <Table.Row
+      className="w-full border-b border-[#E6E8EC] last:border-b-0"
+      data-testid="product-row"
+    >
+      <Table.Cell className="w-20 !pl-0 py-4 pr-3">
         <LocalizedClientLink
           href={`/products/${item.product_handle}`}
-          className="flex w-16"
+          className="pbn-focus flex w-16 overflow-hidden rounded-[14px] bg-mist"
         >
           <Thumbnail
             thumbnail={item.thumbnail}
@@ -159,9 +162,9 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
         </LocalizedClientLink>
       </Table.Cell>
 
-      <Table.Cell className="text-left">
+      <Table.Cell className="min-w-0 py-4 text-left">
         <Text
-          className="txt-medium-plus text-ui-fg-base"
+          className="line-clamp-2 font-display text-sm font-bold leading-5 text-ink"
           data-testid="product-title"
         >
           {item.product_title}
@@ -169,10 +172,10 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
         <LineItemOptions variant={item.variant} data-testid="product-variant" />
       </Table.Cell>
 
-      <Table.Cell className="!pr-0">
+      <Table.Cell className="w-24 !pr-0 py-4">
         <span className="!pr-0 flex h-full flex-col items-end justify-center">
           <span className="flex gap-x-1">
-            <Text className="text-ui-fg-muted">{item.quantity}x </Text>
+            <Text className="text-sm text-muted">{item.quantity}x </Text>
             <LineItemUnitPrice
               item={item}
               style="tight"

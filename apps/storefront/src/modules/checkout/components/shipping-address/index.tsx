@@ -7,6 +7,9 @@ import React, { useEffect, useMemo, useState } from "react"
 import AddressSelect from "../address-select"
 import CountrySelect from "../country-select"
 
+const checkoutInputClassName =
+  "mt-0 block h-12 w-full appearance-none rounded-[14px] border border-[#E6E8EC] bg-white px-4 pb-1 pt-4 text-base text-ink transition-colors hover:bg-cream/40 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15"
+
 const ShippingAddress = ({
   customer,
   cart,
@@ -97,8 +100,8 @@ const ShippingAddress = ({
   return (
     <>
       {customer && (addressesInRegion?.length || 0) > 0 && (
-        <Container className="mb-6 flex flex-col gap-y-4 p-5">
-          <p className="text-small-regular">
+        <Container className="mb-6 flex flex-col gap-y-4 rounded-[18px] border border-brand/20 bg-cream p-5 shadow-none">
+          <p className="text-sm font-medium text-ink">
             {`Hi ${customer.first_name}, do you want to use one of your saved addresses?`}
           </p>
           <AddressSelect
@@ -112,8 +115,9 @@ const ShippingAddress = ({
           />
         </Container>
       )}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 xsmall:grid-cols-2">
         <Input
+          className={checkoutInputClassName}
           label="First name"
           name="shipping_address.first_name"
           autoComplete="given-name"
@@ -123,6 +127,7 @@ const ShippingAddress = ({
           data-testid="shipping-first-name-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="Last name"
           name="shipping_address.last_name"
           autoComplete="family-name"
@@ -132,6 +137,7 @@ const ShippingAddress = ({
           data-testid="shipping-last-name-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="Address"
           name="shipping_address.address_1"
           autoComplete="address-line1"
@@ -141,6 +147,7 @@ const ShippingAddress = ({
           data-testid="shipping-address-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="Company"
           name="shipping_address.company"
           value={formData["shipping_address.company"]}
@@ -149,6 +156,7 @@ const ShippingAddress = ({
           data-testid="shipping-company-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="Postal code"
           name="shipping_address.postal_code"
           autoComplete="postal-code"
@@ -158,6 +166,7 @@ const ShippingAddress = ({
           data-testid="shipping-postal-code-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="City"
           name="shipping_address.city"
           autoComplete="address-level2"
@@ -167,6 +176,7 @@ const ShippingAddress = ({
           data-testid="shipping-city-input"
         />
         <CountrySelect
+          className="min-h-12 rounded-[14px] border-[#E6E8EC] bg-white transition-colors hover:bg-cream/40 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15"
           name="shipping_address.country_code"
           autoComplete="country"
           region={cart?.region}
@@ -176,6 +186,7 @@ const ShippingAddress = ({
           data-testid="shipping-country-select"
         />
         <Input
+          className={checkoutInputClassName}
           label="State / Province"
           name="shipping_address.province"
           autoComplete="address-level1"
@@ -184,7 +195,7 @@ const ShippingAddress = ({
           data-testid="shipping-province-input"
         />
       </div>
-      <div className="my-8">
+      <div className="my-7 rounded-[16px] bg-cream p-4">
         <Checkbox
           label="Billing address same as shipping address"
           name="same_as_billing"
@@ -193,8 +204,9 @@ const ShippingAddress = ({
           data-testid="billing-address-checkbox"
         />
       </div>
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="mb-4 grid grid-cols-1 gap-4 xsmall:grid-cols-2">
         <Input
+          className={checkoutInputClassName}
           label="Email"
           name="email"
           type="email"
@@ -206,6 +218,7 @@ const ShippingAddress = ({
           data-testid="shipping-email-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="Phone"
           name="shipping_address.phone"
           autoComplete="tel"

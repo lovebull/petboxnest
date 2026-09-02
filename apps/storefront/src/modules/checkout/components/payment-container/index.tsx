@@ -34,24 +34,25 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
       value={paymentProviderId}
       disabled={disabled}
       className={clx(
-        "flex flex-col gap-y-2 text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+        "mb-3 flex min-h-16 cursor-pointer flex-col gap-y-2 rounded-[16px] border border-[#E6E8EC] bg-white px-4 py-4 text-sm transition hover:border-brand/40 hover:bg-cream/40 xsmall:px-5",
         {
-          "border-ui-border-interactive":
+          "!border-brand bg-cream/60 ring-2 ring-brand/10":
             selectedPaymentOptionId === paymentProviderId,
+          "cursor-not-allowed opacity-50": disabled,
         }
       )}
     >
       <div className="flex items-center justify-between ">
         <div className="flex items-center gap-x-4">
           <Radio checked={selectedPaymentOptionId === paymentProviderId} />
-          <Text className="text-base-regular">
+          <Text className="font-bold text-ink">
             {paymentInfoMap[paymentProviderId]?.title || paymentProviderId}
           </Text>
           {isManual(paymentProviderId) && isDevelopment && (
             <PaymentTest className="hidden small:block" />
           )}
         </div>
-        <span className="justify-self-end text-ui-fg-base">
+        <span className="justify-self-end text-ink">
           {paymentInfoMap[paymentProviderId]?.icon}
         </span>
       </div>
@@ -92,7 +93,7 @@ export const StripeCardContainer = ({
         },
       },
       classes: {
-        base: "pt-3 pb-1 block w-full h-11 px-4 mt-0 bg-ui-bg-field border rounded-md appearance-none focus:outline-none focus:ring-0 focus:shadow-borders-interactive-with-active border-ui-border-base hover:bg-ui-bg-field-hover transition-all duration-300 ease-in-out",
+        base: "mt-0 block h-12 w-full appearance-none rounded-[14px] border border-[#E6E8EC] bg-white px-4 pb-1 pt-3 transition-all duration-200 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15",
       },
     }
   }, [])
@@ -107,7 +108,7 @@ export const StripeCardContainer = ({
       {selectedPaymentOptionId === paymentProviderId &&
         (stripeReady ? (
           <div className="my-4 transition-all duration-150 ease-in-out">
-            <Text className="txt-medium-plus text-ui-fg-base mb-1">
+            <Text className="mb-2 text-sm font-bold text-ink">
               Enter your card details:
             </Text>
             <CardElement

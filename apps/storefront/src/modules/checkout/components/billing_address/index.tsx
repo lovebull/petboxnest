@@ -3,6 +3,9 @@ import Input from "@modules/common/components/input"
 import React, { useState } from "react"
 import CountrySelect from "../country-select"
 
+const checkoutInputClassName =
+  "mt-0 block h-12 w-full appearance-none rounded-[14px] border border-[#E6E8EC] bg-white px-4 pb-1 pt-4 text-base text-ink transition-colors hover:bg-cream/40 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15"
+
 const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
   const [formData, setFormData] = useState<Record<string, string>>({
     "billing_address.first_name": cart?.billing_address?.first_name || "",
@@ -29,8 +32,9 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 xsmall:grid-cols-2">
         <Input
+          className={checkoutInputClassName}
           label="First name"
           name="billing_address.first_name"
           autoComplete="given-name"
@@ -40,6 +44,7 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           data-testid="billing-first-name-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="Last name"
           name="billing_address.last_name"
           autoComplete="family-name"
@@ -49,6 +54,7 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           data-testid="billing-last-name-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="Address"
           name="billing_address.address_1"
           autoComplete="address-line1"
@@ -58,6 +64,7 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           data-testid="billing-address-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="Company"
           name="billing_address.company"
           value={formData["billing_address.company"]}
@@ -66,6 +73,7 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           data-testid="billing-company-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="Postal code"
           name="billing_address.postal_code"
           autoComplete="postal-code"
@@ -75,6 +83,7 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           data-testid="billing-postal-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="City"
           name="billing_address.city"
           autoComplete="address-level2"
@@ -82,6 +91,7 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           onChange={handleChange}
         />
         <CountrySelect
+          className="min-h-12 rounded-[14px] border-[#E6E8EC] bg-white transition-colors hover:bg-cream/40 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15"
           name="billing_address.country_code"
           autoComplete="country"
           region={cart?.region}
@@ -91,6 +101,7 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           data-testid="billing-country-select"
         />
         <Input
+          className={checkoutInputClassName}
           label="State / Province"
           name="billing_address.province"
           autoComplete="address-level1"
@@ -99,6 +110,7 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           data-testid="billing-province-input"
         />
         <Input
+          className={checkoutInputClassName}
           label="Phone"
           name="billing_address.phone"
           autoComplete="tel"

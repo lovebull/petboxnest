@@ -17,6 +17,10 @@
     scrollbar-width: none; /* Firefox */
   }
 
+  .text-balance {
+    text-wrap: balance;
+  }
+
   input:focus ~ label,
   input:not(:placeholder-shown) ~ label {
     @apply -translate-y-2 text-xsmall-regular;
@@ -52,6 +56,22 @@
 @layer components {
   .content-container {
     @apply max-w-[1440px] w-full mx-auto px-6;
+  }
+
+  .pbn-container {
+    @apply mx-auto w-full max-w-[1280px] px-4 xsmall:px-6 small:px-8;
+  }
+
+  .pbn-focus {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2;
+  }
+
+  .pbn-primary-button {
+    @apply pbn-focus inline-flex min-h-12 items-center justify-center rounded-[14px] bg-brand px-6 text-sm font-bold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-brand-dark;
+  }
+
+  .pbn-secondary-button {
+    @apply pbn-focus inline-flex min-h-12 items-center justify-center rounded-[14px] border-2 border-ink bg-cream px-6 text-sm font-bold text-ink transition duration-200 hover:-translate-y-0.5 hover:bg-white;
   }
 
   .contrast-btn {

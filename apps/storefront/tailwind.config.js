@@ -20,6 +20,18 @@ module.exports = {
         padding: "padding-top padding-right padding-bottom padding-left",
       },
       colors: {
+        brand: {
+          DEFAULT: "#6557D9",
+          dark: "#4A3DB8",
+        },
+        ink: "#202433",
+        muted: "#596071",
+        cream: "#FFF8EF",
+        mist: "#F4F6F8",
+        mint: "#BFE7D3",
+        yellow: "#FFD966",
+        coral: "#FF766C",
+        sky: "#BFE3F4",
         grey: {
           0: "#FFFFFF",
           5: "#F9FAFB",
@@ -58,6 +70,7 @@ module.exports = {
         "3xl": "2rem",
       },
       fontFamily: {
+        display: ["Inter", "Arial Rounded MT Bold", "sans-serif"],
         sans: [
           "Inter",
           "-apple-system",

@@ -11,12 +11,14 @@ import CountrySelect from "../country-select"
 import LanguageSelect from "../language-select"
 import { Locale } from "@lib/data/locales"
 
-
 const SideMenuItems = {
   Home: "/",
-  Store: "/store",
+  "Shop all": "/store",
+  "Shop by pet": "/#shop-by-pet",
+  "Best sellers": "/#best-sellers",
+  "How it works": "/#how-it-works",
+  "Our story": "/about-us",
   Account: "/account",
-  Cart: "/cart",
 }
 
 type SideMenuProps = {
@@ -38,7 +40,7 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
               <div className="relative flex h-full">
                 <Popover.Button
                   data-testid="nav-menu-button"
-                  className="relative h-full flex items-center transition-all ease-out duration-200 focus:outline-none hover:text-ui-fg-base"
+                  className="pbn-focus relative flex h-full min-w-11 items-center rounded-lg font-bold transition-colors hover:text-brand"
                 >
                   Menu
                 </Popover.Button>
@@ -46,7 +48,7 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
 
               {open && (
                 <div
-                  className="fixed inset-0 z-[50] bg-black/0 pointer-events-auto"
+                  className="fixed inset-0 z-[50] bg-ink/35 pointer-events-auto"
                   onClick={close}
                   data-testid="side-menu-backdrop"
                 />
@@ -62,23 +64,28 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                 leaveFrom="opacity-100 backdrop-blur-2xl"
                 leaveTo="opacity-0"
               >
-                <PopoverPanel className="flex flex-col absolute w-full pr-4 sm:pr-0 sm:w-1/3 2xl:w-1/4 sm:min-w-min h-[calc(100vh-1rem)] z-[51] inset-x-0 text-sm text-ui-fg-on-color m-2 backdrop-blur-2xl">
+                <PopoverPanel className="absolute inset-x-0 z-[51] m-2 flex h-[calc(100vh-1rem)] w-[calc(100%-1rem)] flex-col pr-4 text-sm text-ink sm:w-[420px]">
                   <div
                     data-testid="nav-menu-popup"
-                    className="flex flex-col h-full bg-[rgba(3,7,18,0.5)] rounded-rounded justify-between p-6"
+                    className="flex h-full flex-col justify-between rounded-[24px] border border-[#E6E8EC] bg-cream p-6 shadow-[0_16px_40px_rgba(32,36,51,0.12)]"
                   >
                     <div className="flex justify-end" id="xmark">
-                      <button data-testid="close-menu-button" onClick={close}>
+                      <button
+                        className="pbn-focus grid h-11 w-11 place-items-center rounded-xl bg-white hover:text-brand"
+                        data-testid="close-menu-button"
+                        onClick={close}
+                        aria-label="Close menu"
+                      >
                         <XMark />
                       </button>
                     </div>
-                    <ul className="flex flex-col gap-6 items-start justify-start">
+                    <ul className="flex flex-col items-start justify-start gap-2">
                       {Object.entries(SideMenuItems).map(([name, href]) => {
                         return (
                           <li key={name}>
                             <LocalizedClientLink
                               href={href}
-                              className="text-3xl leading-10 hover:text-ui-fg-disabled"
+                              className="pbn-focus flex min-h-12 items-center rounded-xl px-3 font-display text-2xl font-bold hover:bg-white hover:text-brand"
                               onClick={close}
                               data-testid={`${name.toLowerCase()}-link`}
                             >
@@ -126,8 +133,9 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                           )}
                         />
                       </div>
-                      <Text className="flex justify-between txt-compact-small">
-                        © 2022-{new Date().getFullYear()} Petboxnest.  All rights reserved.
+                      <Text className="flex justify-between text-xs text-muted">
+                        © 2022-{new Date().getFullYear()} PetBoxNest. All rights
+                        reserved.
                       </Text>
                     </div>
                   </div>

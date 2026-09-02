@@ -26,11 +26,17 @@ export default async function ReferralsPage({
 
   if (!dashboard) {
     return (
-      <div className="w-full">
-        <Heading level="h1" className="text-2xl-semi">
+      <div className="w-full rounded-[22px] bg-cream p-5 xsmall:p-6">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand">
+          Share the nest
+        </p>
+        <Heading
+          level="h1"
+          className="mt-2 font-display text-3xl font-bold leading-tight text-ink"
+        >
           Refer a friend
         </Heading>
-        <Text className="mt-2 text-ui-fg-subtle">
+        <Text className="mt-3 max-w-2xl text-base leading-7 text-muted">
           Referral information is temporarily unavailable. Please refresh after
           the Medusa backend has restarted.
         </Text>

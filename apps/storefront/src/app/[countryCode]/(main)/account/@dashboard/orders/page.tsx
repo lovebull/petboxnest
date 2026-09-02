@@ -19,15 +19,20 @@ export default async function Orders() {
   }
 
   return (
-    <div className="w-full" data-testid="orders-page-wrapper">
-      <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Orders</h1>
-        <p className="text-base-regular">
+    <div className="w-full space-y-8" data-testid="orders-page-wrapper">
+      <div className="rounded-[22px] bg-cream p-5 xsmall:p-6">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand">
+          Order history
+        </p>
+        <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-ink">
+          Orders
+        </h1>
+        <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
           View your previous orders and their status. You can also create
           returns or exchanges for your orders if needed.
         </p>
       </div>
-      <div>
+      <div className="space-y-8">
         <OrderOverview orders={orders} />
         <Divider className="mb-8 mt-8" />
         <TransferRequestForm />

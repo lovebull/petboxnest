@@ -4,6 +4,31 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.0.13",
+    date: "2026-09-02 01:22:14 EDT",
+    title: "🎨 PetBoxNest storefront experience redesign",
+    items: [
+      "✨ 新增 PetBoxNest Storefront UI 设计技能文档，沉淀品牌视觉方向、首页结构、色彩、排版、组件和响应式设计规范。",
+      "🎨 Storefront 新增 PetBoxNest 视觉 tokens：brand、ink、muted、cream、mist、mint、yellow、coral、sky，并加入 pbn-container、pbn-focus、pbn-primary-button 和 pbn-secondary-button 通用样式。",
+      "🏠 首页重构为宠物家居品牌体验，新增 Hero、TrustStrip、ShopByPet、BrandValues、HowItWorks 和 SocialProof 模块，并接入新的猫狗场景图片资源。",
+      "🛒 购物车页面、空购物车、订单摘要、折扣码表单和 mini cart 全面更新为 PetBoxNest 卡片化体验，增加信任提示、数量/价格信息层级和移动端友好布局。",
+      "👤 账户中心重做导航、Overview、登录、注册、资料、地址、订单、返现和推荐好友模块，统一使用更清晰的账户卡片、状态摘要和移动端横向导航。",
+      "📰 文章列表、文章详情、富文本和文章卡片升级为 The Nest journal 风格，支持更好的日期语义、阅读入口、相关文章导航和图片兜底展示。",
+      "📄 About、Contact、FAQ、Privacy、Shipping、Terms、Refund 等静态页面从旧文本版布局升级为带目录、图标、CTA 和品牌语气的 PetBoxNest 页面体系。",
+      "🖼️ 产品卡片和缩略图增加新视觉样式、subtitle 展示和可传入 alt 文本，提升商品浏览的一致性和图片可访问性。",
+    ],
+    fixes: [
+      "🐛 修复首页仍保留旧运动/羽毛球内容结构的问题，改为匹配 PetBoxNest 猫狗家居用品定位的模块顺序和文案。",
+      "🐛 修复 Hero 依赖 CMS 在线图片为空时可能不展示首屏品牌信号的问题，改为固定品牌主视觉并删除旧 HeroSlider。",
+      "🐛 修复导航、页脚、购物车和账户页面视觉风格不统一、触摸目标和 focus 状态不够一致的问题。",
+      "🐛 修复 mini cart 鼠标移出立即关闭导致难以操作的问题，增加短延迟关闭和关闭按钮，并补充 aria-label / aria-live。",
+      "🐛 修复购物车明细在移动端以表格呈现导致信息拥挤的问题，改为响应式商品卡片并保留 variant、quantity、unit price 和 item total。",
+      "🐛 修复促销码组件只有 checkout 默认样式，无法贴合 cart summary 的问题，新增 cart variant 并保持原默认样式兼容。",
+      "🐛 修复文章卡片缺少语义化 time、图片 alt 兜底和无图状态不完整的问题。",
+      "🐛 修复 CMS 本地 media 上传目录可能被误提交的问题，补充 apps/cms/media/* 忽略规则。",
+    ],
+  },
+  {
     version: "v1.0.12",
     date: "2026-08-31 11:34:13 EDT",
     title: "🏷️ Petboxnest brand migration and local port alignment",

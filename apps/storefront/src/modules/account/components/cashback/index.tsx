@@ -24,32 +24,45 @@ export default function Cashback({
     .reduce((sum, entry) => sum + Number(entry.pending_amount), 0)
 
   return (
-    <div className="w-full" data-testid="cashback-page">
-      <div className="mb-8 flex flex-col gap-y-1">
-        <Heading level="h1" className="text-2xl-semi">Cashback</Heading>
-        <Text className="text-base-regular text-ui-fg-subtle">
+    <div className="w-full space-y-8" data-testid="cashback-page">
+      <div className="rounded-[22px] bg-cream p-5 xsmall:p-6">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand">
+          Store credit
+        </p>
+        <Heading
+          level="h1"
+          className="mt-2 font-display text-3xl font-bold leading-tight text-ink"
+        >
+          Cashback
+        </Heading>
+        <Text className="mt-3 max-w-2xl text-base leading-7 text-muted">
           Available credit can be applied during checkout.
         </Text>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 border-y border-gray-200 py-6 small:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 small:grid-cols-2">
         <Balance label="Available balance" amount={balance} currency={currency} />
         <Balance label="Pending cashback" amount={pending} currency={currency} />
       </div>
 
-      <div className="mt-8">
-        <Heading level="h2" className="mb-4 text-xl-semi">Activity</Heading>
+      <div className="rounded-[22px] border border-[#E6E8EC] bg-white p-5">
+        <Heading
+          level="h2"
+          className="mb-4 font-display text-2xl font-bold text-ink"
+        >
+          Activity
+        </Heading>
         {entries.length ? (
-          <div className="divide-y divide-gray-200 border-y border-gray-200">
+          <div className="divide-y divide-[#E6E8EC]">
             {entries.map((entry) => (
               <div key={entry.id} className="grid grid-cols-[1fr_auto] gap-4 py-4">
                 <div>
-                  <Text className="text-base-semi">Order #{entry.order_display_id}</Text>
-                  <Text className="text-small-regular text-ui-fg-subtle">
+                  <Text className="font-bold text-ink">Order #{entry.order_display_id}</Text>
+                  <Text className="text-sm text-muted">
                     {labels[entry.status]} · {new Date(entry.created_at).toLocaleDateString("en-US")}
                   </Text>
                 </div>
-                <Text className="text-base-semi">
+                <Text className="font-bold text-ink">
                   {convertToLocale({
                     amount: Number(entry.pending_amount || entry.credited_amount),
                     currency_code: entry.currency_code,
@@ -59,7 +72,7 @@ export default function Cashback({
             ))}
           </div>
         ) : (
-          <Text className="border-y border-gray-200 py-6 text-ui-fg-subtle">
+          <Text className="rounded-[18px] border border-dashed border-brand/30 bg-cream p-6 text-center text-muted">
             No cashback activity yet.
           </Text>
         )}
@@ -69,9 +82,9 @@ export default function Cashback({
 }
 
 const Balance = ({ label, amount, currency }: { label: string; amount: number; currency: string }) => (
-  <div>
-    <Text className="text-small-regular text-ui-fg-subtle">{label}</Text>
-    <Text className="mt-1 text-2xl-semi">
+  <div className="rounded-[20px] border border-[#E6E8EC] bg-white p-5 shadow-[0_8px_24px_rgba(32,36,51,0.04)]">
+    <Text className="text-sm font-bold text-muted">{label}</Text>
+    <Text className="mt-2 font-display text-3xl font-bold text-ink">
       {convertToLocale({ amount, currency_code: currency })}
     </Text>
   </div>

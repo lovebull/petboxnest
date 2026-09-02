@@ -63,15 +63,15 @@ function renderUpload(node: PayloadRichTextNode, key: number) {
   }
 
   return (
-    <figure key={key} className="my-10">
+    <figure key={key} className="my-10 small:my-12">
       <img
         src={value.url}
         alt={value.alt || ""}
-        className="aspect-[16/10] w-full object-cover"
+        className="aspect-[4/3] w-full rounded-[20px] border border-[#E6E8EC] object-cover xsmall:aspect-[16/10]"
         loading="lazy"
       />
       {value.alt && (
-        <figcaption className="mt-3 text-xs leading-5 text-ui-fg-muted">
+        <figcaption className="mt-3 text-sm leading-6 text-muted">
           {value.alt}
         </figcaption>
       )}
@@ -91,8 +91,8 @@ function renderNode(node: PayloadRichTextNode, key: number): ReactNode {
       const Tag = node.tag === "h2" || node.tag === "h3" ? node.tag : "h2"
       const className =
         Tag === "h3"
-          ? "mt-9 font-serif text-[28px] leading-tight tracking-[-0.02em] text-ui-fg-base"
-          : "mt-12 font-serif text-[36px] leading-tight tracking-[-0.02em] text-ui-fg-base"
+          ? "mb-4 mt-10 font-display text-[25px] font-bold leading-tight tracking-[-0.025em] text-ink small:text-[30px]"
+          : "mb-5 mt-12 font-display text-[31px] font-bold leading-tight tracking-[-0.035em] text-ink small:text-[38px]"
 
       return (
         <Tag key={key} className={`${className} ${alignment}`.trim()}>
@@ -102,7 +102,7 @@ function renderNode(node: PayloadRichTextNode, key: number): ReactNode {
     }
     case "paragraph":
       return (
-        <p key={key} className={`my-5 ${alignment}`.trim()}>
+        <p key={key} className={`my-6 ${alignment}`.trim()}>
           {renderChildren(node.children)}
         </p>
       )
@@ -110,18 +110,24 @@ function renderNode(node: PayloadRichTextNode, key: number): ReactNode {
       return (
         <blockquote
           key={key}
-          className="my-8 border-l border-ui-fg-base pl-6 font-serif text-[26px] leading-snug text-ui-fg-base"
+          className="my-10 rounded-r-[20px] border-l-4 border-brand bg-mint/45 px-6 py-6 font-display text-[23px] font-semibold leading-snug text-ink small:px-8 small:text-[28px]"
         >
           {renderChildren(node.children)}
         </blockquote>
       )
     case "list":
       return node.tag === "ol" ? (
-        <ol key={key} className="my-6 list-decimal space-y-2 pl-6">
+        <ol
+          key={key}
+          className="my-7 list-decimal space-y-3 pl-6 marker:font-bold marker:text-brand"
+        >
           {renderChildren(node.children)}
         </ol>
       ) : (
-        <ul key={key} className="my-6 list-disc space-y-2 pl-6">
+        <ul
+          key={key}
+          className="my-7 list-disc space-y-3 pl-6 marker:text-brand"
+        >
           {renderChildren(node.children)}
         </ul>
       )
@@ -136,7 +142,11 @@ function renderNode(node: PayloadRichTextNode, key: number): ReactNode {
 
       if (href.startsWith("/")) {
         return (
-          <LocalizedClientLink key={key} href={href} className="underline">
+          <LocalizedClientLink
+            key={key}
+            href={href}
+            className="pbn-focus rounded-sm font-semibold text-brand underline decoration-2 underline-offset-4 hover:text-brand-dark"
+          >
             {renderChildren(node.children)}
           </LocalizedClientLink>
         )
@@ -146,7 +156,7 @@ function renderNode(node: PayloadRichTextNode, key: number): ReactNode {
         <a
           key={key}
           href={href}
-          className="underline"
+          className="pbn-focus rounded-sm font-semibold text-brand underline decoration-2 underline-offset-4 hover:text-brand-dark"
           rel={node.fields?.newTab ? "noreferrer" : undefined}
           target={node.fields?.newTab ? "_blank" : undefined}
         >
@@ -157,7 +167,7 @@ function renderNode(node: PayloadRichTextNode, key: number): ReactNode {
     case "upload":
       return renderUpload(node, key)
     case "horizontalrule":
-      return <hr key={key} className="my-10 border-[#ded8c8]" />
+      return <hr key={key} className="my-12 border-[#E6E8EC]" />
     default:
       return <div key={key}>{renderChildren(node.children)}</div>
   }
@@ -169,7 +179,7 @@ export default function RichText({ content }: { content?: PayloadRichText }) {
   }
 
   return (
-    <div className="text-[15px] leading-7 text-ui-fg-subtle small:text-base small:leading-8">
+    <div className="break-words text-base leading-8 text-muted small:text-[18px] small:leading-9">
       {renderChildren(content.root.children)}
     </div>
   )

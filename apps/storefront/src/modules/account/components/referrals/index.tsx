@@ -37,12 +37,18 @@ export default function Referrals({
   )
 
   return (
-    <div className="w-full" data-testid="referrals-page">
-      <div className="mb-8 flex flex-col gap-y-1">
-        <Heading level="h1" className="text-2xl-semi">
+    <div className="w-full space-y-8" data-testid="referrals-page">
+      <div className="rounded-[22px] bg-cream p-5 xsmall:p-6">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand">
+          Share the nest
+        </p>
+        <Heading
+          level="h1"
+          className="mt-2 font-display text-3xl font-bold leading-tight text-ink"
+        >
           Refer a friend
         </Heading>
-        <Text className="text-base-regular text-ui-fg-subtle">
+        <Text className="mt-3 max-w-2xl text-base leading-7 text-muted">
           Friends get {Number(program?.referee_discount_percentage || 10)}% off
           their first eligible order. You earn {Number(program?.commission_percentage || 8)}%
           in store credit after the order is completed and the {program?.waiting_days || 30}-day
@@ -57,40 +63,48 @@ export default function Referrals({
           configuredOrigin={process.env.NEXT_PUBLIC_BASE_URL || ""}
         />
       ) : (
-        <form action={activateReferralParticipant}>
-          <Text className="mb-3 text-ui-fg-subtle">
+        <form
+          action={activateReferralParticipant}
+          className="rounded-[22px] border border-[#E6E8EC] bg-white p-5"
+        >
+          <Text className="mb-4 text-muted">
             Activate your personal referral link to start sharing.
           </Text>
-          <Button type="submit">Activate referral link</Button>
+          <Button type="submit" className="pbn-primary-button">
+            Activate referral link
+          </Button>
         </form>
       )}
 
-      <div className="my-8 grid grid-cols-1 gap-6 border-y border-gray-200 py-6 small:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 small:grid-cols-2">
         <Balance label="Pending commission" amount={pending} currency={currency} />
         <Balance label="Paid as store credit" amount={paid} currency={currency} />
       </div>
 
-      <div>
-        <Heading level="h2" className="mb-4 text-xl-semi">
+      <div className="rounded-[22px] border border-[#E6E8EC] bg-white p-5">
+        <Heading
+          level="h2"
+          className="mb-4 font-display text-2xl font-bold text-ink"
+        >
           Commission activity
         </Heading>
         {dashboard.referral_conversions.length ? (
-          <div className="divide-y divide-gray-200 border-y border-gray-200">
+          <div className="divide-y divide-[#E6E8EC]">
             {dashboard.referral_conversions.map((conversion) => (
               <div
                 key={conversion.id}
                 className="grid grid-cols-[1fr_auto] gap-4 py-4"
               >
                 <div>
-                  <Text className="text-base-semi">
+                  <Text className="font-bold text-ink">
                     Order #{conversion.order_display_id}
                   </Text>
-                  <Text className="text-small-regular text-ui-fg-subtle">
+                  <Text className="text-sm text-muted">
                     {statusLabels[conversion.status]} ·{" "}
                     {new Date(conversion.created_at).toLocaleDateString("en-US")}
                   </Text>
                 </div>
-                <Text className="text-base-semi">
+                <Text className="font-bold text-ink">
                   {convertToLocale({
                     amount: Number(conversion.commission_amount),
                     currency_code: conversion.currency_code,
@@ -100,13 +114,13 @@ export default function Referrals({
             ))}
           </div>
         ) : (
-          <Text className="border-y border-gray-200 py-6 text-ui-fg-subtle">
+          <Text className="rounded-[18px] border border-dashed border-brand/30 bg-cream p-6 text-center text-muted">
             No referral activity yet.
           </Text>
         )}
       </div>
 
-      <Text className="mt-8 text-small-regular text-ui-fg-subtle">
+      <Text className="rounded-[18px] bg-cream p-4 text-sm leading-6 text-muted">
         Share honestly and disclose that you may receive store credit. Self-referrals,
         existing-customer orders, cancelled orders, and refunded amounts are not eligible.
       </Text>
@@ -124,9 +138,9 @@ function Balance({
   currency: string
 }) {
   return (
-    <div>
-      <Text className="text-small-regular text-ui-fg-subtle">{label}</Text>
-      <Text className="mt-1 text-2xl-semi">
+    <div className="rounded-[20px] border border-[#E6E8EC] bg-white p-5 shadow-[0_8px_24px_rgba(32,36,51,0.04)]">
+      <Text className="text-sm font-bold text-muted">{label}</Text>
+      <Text className="mt-2 font-display text-3xl font-bold text-ink">
         {convertToLocale({ amount, currency_code: currency })}
       </Text>
     </div>

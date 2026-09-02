@@ -1,19 +1,20 @@
 import { Metadata } from "next"
 
-import BrandStory from "@modules/home/components/brand-story"
+import BrandValues from "@modules/home/components/brand-values"
 import ClubhouseNotes from "@modules/home/components/clubhouse-notes"
-import ContactHero from "@modules/home/components/contact-hero"
 import EarlyAccessSignup from "@modules/home/components/early-access-signup"
 import Hero from "@modules/home/components/hero"
-import JoinTheClub from "@modules/home/components/join-the-club"
-import BadmintonDesc from "@modules/home/components/badminton-desc"
+import HowItWorks from "@modules/home/components/how-it-works"
 import LatestProducts from "@modules/home/components/latest-products"
+import ShopByPet from "@modules/home/components/shop-by-pet"
+import SocialProof from "@modules/home/components/social-proof"
+import TrustStrip from "@modules/home/components/trust-strip"
 import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
-  title: "Petboxnest | A Cleaner Litter Box Without the Scrubbing ",
+  title: "PetBoxNest | Better Spaces for Pets and Their People",
   description:
-    "Seriously. Swap your litter box instead of scrubbing it. Cleaner, less odor, and easier than traditional litter boxes.",
+    "Practical litter solutions, cozy resting spots, and everyday pet essentials designed to feel at home in your home.",
 }
 
 export default async function Home(props: {
@@ -32,12 +33,13 @@ export default async function Home(props: {
   return (
     <>
       <Hero />
+      <TrustStrip />
+      <ShopByPet />
       <LatestProducts countryCode={countryCode} region={region} />
-      <BadmintonDesc countryCode={countryCode} />
-      <JoinTheClub countryCode={countryCode} />
-      <BrandStory />
+      <BrandValues />
+      <HowItWorks />
+      <SocialProof />
       <ClubhouseNotes />
-      <ContactHero />
       <EarlyAccessSignup />
     </>
   )

@@ -24,10 +24,15 @@ export default async function Addresses(props: {
   }
 
   return (
-    <div className="w-full" data-testid="addresses-page-wrapper">
-      <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Shipping Addresses</h1>
-        <p className="text-base-regular">
+    <div className="w-full space-y-8" data-testid="addresses-page-wrapper">
+      <div className="rounded-[22px] bg-cream p-5 xsmall:p-6">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand">
+          Saved delivery spots
+        </p>
+        <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-ink">
+          Shipping Addresses
+        </h1>
+        <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
           View and update your shipping addresses, you can add as many as you
           like. Saving your addresses will make them available during checkout.
         </p>

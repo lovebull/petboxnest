@@ -47,12 +47,24 @@ const AddAddress = ({
   return (
     <>
       <button
-        className="border border-ui-border-base rounded-rounded p-5 min-h-[220px] h-full w-full flex flex-col justify-between"
+        className="pbn-focus group flex min-h-[220px] h-full w-full flex-col justify-between rounded-[20px] border border-dashed border-brand/35 bg-cream p-5 text-left transition hover:-translate-y-0.5 hover:border-brand motion-reduce:transition-none"
         onClick={open}
         data-testid="add-address-button"
       >
-        <span className="text-base-semi">New address</span>
-        <Plus />
+        <span>
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-brand transition group-hover:bg-brand group-hover:text-white">
+            <Plus />
+          </span>
+          <span className="mt-5 block font-display text-xl font-bold text-ink">
+            New address
+          </span>
+          <span className="mt-2 block text-sm leading-6 text-muted">
+            Save another delivery spot for faster future checkouts.
+          </span>
+        </span>
+        <span className="mt-6 inline-flex min-h-10 w-fit items-center rounded-[14px] bg-white px-4 text-sm font-bold text-brand">
+          Add address
+        </span>
       </button>
 
       <Modal isOpen={state} close={close} data-testid="add-address-modal">
@@ -61,8 +73,8 @@ const AddAddress = ({
         </Modal.Title>
         <form action={formAction}>
           <Modal.Body>
-            <div className="flex flex-col gap-y-2">
-              <div className="grid grid-cols-2 gap-x-2">
+            <div className="flex flex-col gap-y-3">
+              <div className="grid grid-cols-1 gap-3 xsmall:grid-cols-2">
                 <Input
                   label="First name"
                   name="first_name"
@@ -97,7 +109,7 @@ const AddAddress = ({
                 autoComplete="address-line2"
                 data-testid="address-2-input"
               />
-              <div className="grid grid-cols-[144px_1fr] gap-x-2">
+              <div className="grid grid-cols-1 gap-3 xsmall:grid-cols-[144px_1fr]">
                 <Input
                   label="Postal code"
                   name="postal_code"
@@ -143,12 +155,12 @@ const AddAddress = ({
             )}
           </Modal.Body>
           <Modal.Footer>
-            <div className="flex gap-3 mt-6">
+            <div className="mt-6 grid gap-3 xsmall:flex xsmall:justify-end">
               <Button
                 type="reset"
                 variant="secondary"
                 onClick={close}
-                className="h-10"
+                className="min-h-11 rounded-[14px]"
                 data-testid="cancel-button"
               >
                 Cancel

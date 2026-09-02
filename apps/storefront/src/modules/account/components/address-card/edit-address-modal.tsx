@@ -63,29 +63,32 @@ const EditAddress: React.FC<EditAddressProps> = ({
     <>
       <div
         className={clx(
-          "border rounded-rounded p-5 min-h-[220px] h-full w-full flex flex-col justify-between transition-colors",
+          "flex min-h-[220px] h-full w-full flex-col justify-between rounded-[20px] border border-[#E6E8EC] bg-white p-5 shadow-[0_8px_24px_rgba(32,36,51,0.04)] transition hover:-translate-y-0.5 hover:border-brand/40 motion-reduce:transition-none",
           {
-            "border-gray-900": isActive,
+            "border-brand": isActive,
           }
         )}
         data-testid="address-container"
       >
         <div className="flex flex-col">
+          <span className="mb-4 inline-flex w-fit rounded-full bg-mint px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-ink">
+            Shipping address
+          </span>
           <Heading
-            className="text-left text-base-semi"
+            className="text-left font-display text-xl font-bold text-ink"
             data-testid="address-name"
           >
             {address.first_name} {address.last_name}
           </Heading>
           {address.company && (
             <Text
-              className="txt-compact-small text-ui-fg-base"
+              className="mt-1 text-sm font-semibold text-muted"
               data-testid="address-company"
             >
               {address.company}
             </Text>
           )}
-          <Text className="flex flex-col text-left text-base-regular mt-2">
+          <Text className="mt-4 flex flex-col text-left text-sm leading-6 text-muted">
             <span data-testid="address-address">
               {address.address_1}
               {address.address_2 && <span>, {address.address_2}</span>}
@@ -99,9 +102,9 @@ const EditAddress: React.FC<EditAddressProps> = ({
             </span>
           </Text>
         </div>
-        <div className="flex items-center gap-x-4">
+        <div className="mt-6 grid grid-cols-2 gap-3">
           <button
-            className="text-small-regular text-ui-fg-base flex items-center gap-x-2"
+            className="pbn-focus inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] bg-cream px-4 text-sm font-bold text-ink transition-colors hover:text-brand"
             onClick={open}
             data-testid="address-edit-button"
           >
@@ -109,7 +112,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
             Edit
           </button>
           <button
-            className="text-small-regular text-ui-fg-base flex items-center gap-x-2"
+            className="pbn-focus inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] border border-[#E6E8EC] bg-white px-4 text-sm font-bold text-muted transition-colors hover:border-brand hover:text-brand"
             onClick={removeAddress}
             data-testid="address-delete-button"
           >
@@ -126,8 +129,8 @@ const EditAddress: React.FC<EditAddressProps> = ({
         <form action={formAction}>
           <input type="hidden" name="addressId" value={address.id} />
           <Modal.Body>
-            <div className="grid grid-cols-1 gap-y-2">
-              <div className="grid grid-cols-2 gap-x-2">
+            <div className="grid grid-cols-1 gap-3">
+              <div className="grid grid-cols-1 gap-3 xsmall:grid-cols-2">
                 <Input
                   label="First name"
                   name="first_name"
@@ -167,7 +170,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
                 defaultValue={address.address_2 || undefined}
                 data-testid="address-2-input"
               />
-              <div className="grid grid-cols-[144px_1fr] gap-x-2">
+              <div className="grid grid-cols-1 gap-3 xsmall:grid-cols-[144px_1fr]">
                 <Input
                   label="Postal code"
                   name="postal_code"
@@ -215,12 +218,12 @@ const EditAddress: React.FC<EditAddressProps> = ({
             )}
           </Modal.Body>
           <Modal.Footer>
-            <div className="flex gap-3 mt-6">
+            <div className="mt-6 grid gap-3 xsmall:flex xsmall:justify-end">
               <Button
                 type="reset"
                 variant="secondary"
                 onClick={close}
-                className="h-10"
+                className="min-h-11 rounded-[14px]"
                 data-testid="cancel-button"
               >
                 Cancel

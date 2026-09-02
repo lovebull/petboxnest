@@ -21,56 +21,64 @@ export default async function Nav({ customer }: NavProps) {
   const locales = null
 
   return (
-    <div className="sticky top-0 inset-x-0 z-50 group">
-      <div className="flex h-9 items-center justify-center bg-[#0b1110] px-4 text-center text-[13px] font-medium tracking-[0.08em] text-white small:text-[17px]">
-        Free shipping on purchases $100+
+    <div className="sticky inset-x-0 top-0 z-50 text-ink">
+      <div className="flex min-h-9 items-center justify-center bg-brand px-4 py-2 text-center text-xs font-bold tracking-[0.04em] text-white small:text-sm">
+        Free shipping on purchases $100+ · Less cleanup, more cuddle time
       </div>
-      <header className="relative h-16 mx-auto border-b duration-200 bg-white border-ui-border-base">
-        <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-full text-small-regular">
-          <div className="flex-1 basis-0 h-full flex items-center small:hidden">
+      <header className="relative h-[72px] border-b border-[#E6E8EC] bg-white/95 backdrop-blur-md small:h-20">
+        <nav className="pbn-container flex h-full w-full items-center justify-between text-sm font-semibold">
+          <div className="flex h-full flex-1 basis-0 items-center small:hidden">
             <div className="h-full">
-              <SideMenu regions={regions} locales={locales} currentLocale={currentLocale} />
+              <SideMenu
+                regions={regions}
+                locales={locales}
+                currentLocale={currentLocale}
+              />
             </div>
           </div>
-          <div className="hidden small:flex flex-1 basis-0 h-full items-center gap-x-8 text-base-regular">
-            <LocalizedClientLink
-              href="/"
-              className="hover:text-ui-fg-base"
-              data-testid="desktop-nav-home-link"
-            >
-              Home
-            </LocalizedClientLink>
+          <div className="hidden h-full flex-1 basis-0 items-center gap-x-6 small:flex">
             <LocalizedClientLink
               href="/store"
-              className="hover:text-ui-fg-base"
+              className="pbn-focus rounded-lg py-3 hover:text-brand"
               data-testid="desktop-nav-store-link"
             >
-              Store
+              Shop all
             </LocalizedClientLink>
-             <LocalizedClientLink
-              href="/about-us"
-              className="hover:text-ui-fg-base"
-              data-testid="desktop-nav-account-link"
+            <LocalizedClientLink
+              href="/#shop-by-pet"
+              className="pbn-focus rounded-lg py-3 hover:text-brand"
             >
-              About
+              Shop by pet
+            </LocalizedClientLink>
+            <LocalizedClientLink
+              href="/#best-sellers"
+              className="pbn-focus rounded-lg py-3 hover:text-brand"
+            >
+              Best sellers
             </LocalizedClientLink>
           </div>
 
           <div className="flex items-center h-full">
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
+              className="pbn-focus rounded-lg font-display text-xl font-extrabold tracking-[-0.04em] text-ink hover:text-brand xsmall:text-2xl"
               data-testid="nav-store-link"
             >
-              Petboxnest
+              PetBox<span className="text-brand">Nest</span>
             </LocalizedClientLink>
           </div>
 
-          <div className="flex items-center gap-x-6 h-full flex-1 basis-0 justify-end">
+          <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-2 xsmall:gap-x-4">
+            <LocalizedClientLink
+              href="/about-us"
+              className="pbn-focus hidden rounded-lg py-3 hover:text-brand small:block"
+            >
+              Our story
+            </LocalizedClientLink>
             <Suspense
               fallback={
                 <LocalizedClientLink
-                  className="hover:text-ui-fg-base flex gap-2"
+                  className="pbn-focus flex min-h-11 items-center rounded-lg px-2 hover:text-brand"
                   href="/cart"
                   data-testid="nav-cart-link"
                 >
@@ -82,7 +90,7 @@ export default async function Nav({ customer }: NavProps) {
             </Suspense>
             <LocalizedClientLink
               href="/account"
-              className="flex min-h-11 min-w-11 items-center justify-center hover:text-ui-fg-base small:min-h-0 small:min-w-0"
+              className="pbn-focus flex min-h-11 min-w-11 items-center justify-center rounded-lg hover:bg-mist hover:text-brand"
               data-testid="nav-account-link"
               aria-label={customer ? "Account" : "Sign in to account"}
             >

@@ -42,30 +42,38 @@ const AccountInfo = ({
   }, [isSuccess, close])
 
   return (
-    <div className="text-small-regular" data-testid={dataTestid}>
-      <div className="flex items-end justify-between">
-        <div className="flex flex-col">
-          <span className="uppercase text-ui-fg-base">{label}</span>
-          <div className="flex items-center flex-1 basis-0 justify-end gap-x-4">
+    <div
+      className="rounded-[20px] border border-[#E6E8EC] bg-white p-5 text-sm shadow-[0_8px_24px_rgba(32,36,51,0.04)]"
+      data-testid={dataTestid}
+    >
+      <div className="grid gap-4 xsmall:grid-cols-[minmax(0,1fr)_auto] xsmall:items-start">
+        <div className="min-w-0">
+          <span className="text-xs font-bold uppercase tracking-[0.14em] text-brand">
+            {label}
+          </span>
+          <div className="mt-2 flex min-w-0 items-center gap-x-4 text-base leading-7 text-ink">
             {typeof currentInfo === "string" ? (
-              <span className="font-semibold" data-testid="current-info">{currentInfo}</span>
+              <span
+                className="break-words font-semibold"
+                data-testid="current-info"
+              >
+                {currentInfo || "Not added yet"}
+              </span>
             ) : (
               currentInfo
             )}
           </div>
         </div>
-        <div>
-          <Button
-            variant="secondary"
-            className="w-[100px] min-h-[25px] py-1"
-            onClick={handleToggle}
-            type={state ? "reset" : "button"}
-            data-testid="edit-button"
-            data-active={state}
-          >
-            {state ? "Cancel" : "Edit"}
-          </Button>
-        </div>
+        <Button
+          variant="secondary"
+          className="min-h-11 w-full rounded-[14px] border-[#E6E8EC] px-5 text-sm font-bold hover:border-brand hover:bg-cream xsmall:w-[118px]"
+          onClick={handleToggle}
+          type={state ? "reset" : "button"}
+          data-testid="edit-button"
+          data-active={state}
+        >
+          {state ? "Cancel" : "Edit"}
+        </Button>
       </div>
 
       {/* Success state */}
@@ -81,8 +89,8 @@ const AccountInfo = ({
           )}
           data-testid="success-message"
         >
-          <Badge className="p-2 my-4" color="green">
-            <span>{label} updated succesfully</span>
+          <Badge className="my-4 bg-mint px-3 py-2 text-ink" color="green">
+            <span>{label} updated successfully</span>
           </Badge>
         </Disclosure.Panel>
       </Disclosure>
@@ -100,7 +108,7 @@ const AccountInfo = ({
           )}
           data-testid="error-message"
         >
-          <Badge className="p-2 my-4" color="red">
+          <Badge className="my-4 px-3 py-2" color="red">
             <span>{errorMessage}</span>
           </Badge>
         </Disclosure.Panel>
@@ -117,12 +125,12 @@ const AccountInfo = ({
             }
           )}
         >
-          <div className="flex flex-col gap-y-2 py-4">
+          <div className="mt-5 rounded-[18px] bg-cream p-4">
             <div>{children}</div>
-            <div className="flex items-center justify-end mt-2">
+            <div className="mt-4 flex items-center justify-end">
               <Button
                 isLoading={pending}
-                className="w-full small:max-w-[140px]"
+                className="pbn-primary-button w-full border-0 small:max-w-[160px]"
                 type="submit"
                 data-testid="save-button"
               >

@@ -14,16 +14,18 @@ const Login = ({ setCurrentView }: Props) => {
 
   return (
     <div
-      className="max-w-sm w-full flex flex-col items-center"
+      className="flex w-full max-w-sm flex-col items-center"
       data-testid="login-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">Welcome back</h1>
-      <p className="text-center text-base-regular text-ui-fg-base mb-8">
+      <h1 className="mb-4 text-center font-display text-3xl font-bold text-ink">
+        Welcome back
+      </h1>
+      <p className="mb-8 text-center text-base leading-7 text-muted">
         Sign in to access an enhanced shopping experience.
       </p>
       {message?.state === "verification_required" && (
         <div
-          className="w-full mb-6 text-center text-base-regular text-ui-fg-base bg-ui-bg-subtle border border-ui-border-base rounded-rounded p-4"
+          className="mb-6 w-full rounded-[18px] border border-[#E6E8EC] bg-cream p-4 text-center text-base leading-7 text-ink"
           data-testid="login-verification-message"
         >
           We sent a verification link to <strong>{message.email}</strong>.
@@ -54,15 +56,18 @@ const Login = ({ setCurrentView }: Props) => {
           error={message?.state === "error" ? message.error : null}
           data-testid="login-error-message"
         />
-        <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
+        <SubmitButton
+          data-testid="sign-in-button"
+          className="pbn-primary-button mt-6 w-full"
+        >
           Sign in
         </SubmitButton>
       </form>
-      <span className="text-center text-ui-fg-base text-small-regular mt-6">
+      <span className="mt-6 text-center text-sm text-muted">
         Not a member?{" "}
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.REGISTER)}
-          className="underline"
+          className="pbn-focus rounded-sm font-bold text-brand underline decoration-2 underline-offset-4"
           data-testid="register-button"
         >
           Join us

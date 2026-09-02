@@ -17,19 +17,19 @@ const Register = ({ setCurrentView }: Props) => {
 
   return (
     <div
-      className="max-w-sm flex flex-col items-center"
+      className="flex w-full max-w-sm flex-col items-center"
       data-testid="register-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">
-        Become a Medusa Store Member
+      <h1 className="mb-4 text-center font-display text-3xl font-bold text-ink">
+        Become a PetBoxNest member
       </h1>
-      <p className="text-center text-base-regular text-ui-fg-base mb-4">
-        Create your Medusa Store Member profile, and get access to an enhanced
-        shopping experience.
+      <p className="mb-6 text-center text-base leading-7 text-muted">
+        Create your PetBoxNest profile and keep checkout details ready for the
+        next cozy upgrade.
       </p>
       {message?.state === "verification_required" && (
         <div
-          className="w-full mb-4 text-center text-base-regular text-ui-fg-base bg-ui-bg-subtle border border-ui-border-base rounded-rounded p-4"
+          className="mb-4 w-full rounded-[18px] border border-[#E6E8EC] bg-cream p-4 text-center text-base leading-7 text-ink"
           data-testid="register-verification-message"
         >
           We sent a verification link to <strong>{message.email}</strong>.
@@ -80,32 +80,35 @@ const Register = ({ setCurrentView }: Props) => {
           error={message?.state === "error" ? message.error : null}
           data-testid="register-error"
         />
-        <span className="text-center text-ui-fg-base text-small-regular mt-6">
-          By creating an account, you agree to Medusa Store&apos;s{" "}
+        <span className="mt-6 text-center text-sm leading-6 text-muted">
+          By creating an account, you agree to PetBoxNest&apos;s{" "}
           <LocalizedClientLink
-            href="/content/privacy-policy"
-            className="underline"
+            href="/privacy-policy"
+            className="pbn-focus rounded-sm font-bold text-brand underline decoration-2 underline-offset-4"
           >
             Privacy Policy
           </LocalizedClientLink>{" "}
           and{" "}
           <LocalizedClientLink
-            href="/content/terms-of-use"
-            className="underline"
+            href="/terms-of-service"
+            className="pbn-focus rounded-sm font-bold text-brand underline decoration-2 underline-offset-4"
           >
-            Terms of Use
+            Terms of Service
           </LocalizedClientLink>
           .
         </span>
-        <SubmitButton className="w-full mt-6" data-testid="register-button">
+        <SubmitButton
+          className="pbn-primary-button mt-6 w-full"
+          data-testid="register-button"
+        >
           Join
         </SubmitButton>
       </form>
-      <span className="text-center text-ui-fg-base text-small-regular mt-6">
+      <span className="mt-6 text-center text-sm text-muted">
         Already a member?{" "}
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
-          className="underline"
+          className="pbn-focus rounded-sm font-bold text-brand underline decoration-2 underline-offset-4"
         >
           Sign in
         </button>

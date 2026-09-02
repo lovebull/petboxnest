@@ -28,23 +28,36 @@ export default async function ProductPreview({
   })
 
   return (
-    <LocalizedClientLink href={`/products/${product.handle}`} className="group">
-      <div data-testid="product-wrapper">
+    <LocalizedClientLink
+      href={`/products/${product.handle}`}
+      className="pbn-focus group block rounded-[22px]"
+    >
+      <article data-testid="product-wrapper">
         <Thumbnail
           thumbnail={product.thumbnail}
           images={product.images}
           size="full"
           isFeatured={isFeatured}
+          alt={product.title}
+          className="!rounded-[22px] !border !border-[#E6E8EC] !bg-mist !p-0 !shadow-none transition-transform duration-200 group-hover:-translate-y-1 group-hover:!shadow-[0_8px_24px_rgba(32,36,51,0.08)] motion-reduce:transition-none"
         />
-        <div className="flex txt-compact-medium mt-4 justify-between">
-          <Text className="text-ui-fg-subtle" data-testid="product-title">
+        <div className="mt-4 flex items-start justify-between gap-3 text-sm">
+          <Text
+            className="line-clamp-2 font-semibold leading-5 text-ink"
+            data-testid="product-title"
+          >
             {product.title}
           </Text>
-          <div className="flex items-center gap-x-2">
+          <div className="flex shrink-0 items-center gap-x-2 font-bold text-ink">
             {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
           </div>
         </div>
-      </div>
+        {product.subtitle && (
+          <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted">
+            {product.subtitle}
+          </p>
+        )}
+      </article>
     </LocalizedClientLink>
   )
 }

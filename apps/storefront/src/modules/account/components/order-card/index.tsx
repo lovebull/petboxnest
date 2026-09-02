@@ -24,36 +24,42 @@ const OrderCard = ({ order }: OrderCardProps) => {
   }, [order])
 
   return (
-    <div className="bg-white flex flex-col" data-testid="order-card">
-      <div className="uppercase text-large-semi mb-1">
-        #<span data-testid="order-display-id">{order.display_id}</span>
+    <div
+      className="flex flex-col rounded-[22px] border border-[#E6E8EC] bg-white p-5 shadow-[0_8px_24px_rgba(32,36,51,0.04)]"
+      data-testid="order-card"
+    >
+      <div className="mb-2 font-display text-2xl font-bold text-ink">
+        Order #<span data-testid="order-display-id">{order.display_id}</span>
       </div>
-      <div className="flex items-center divide-x divide-gray-200 text-small-regular text-ui-fg-base">
-        <span className="pr-2" data-testid="order-created-at">
+      <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
+        <span
+          className="rounded-full bg-cream px-3 py-1"
+          data-testid="order-created-at"
+        >
           {new Date(order.created_at).toDateString()}
         </span>
-        <span className="px-2" data-testid="order-amount">
+        <span className="rounded-full bg-cream px-3 py-1" data-testid="order-amount">
           {convertToLocale({
             amount: order.total,
             currency_code: order.currency_code,
           })}
         </span>
-        <span className="pl-2">{`${numberOfLines} ${
+        <span className="rounded-full bg-cream px-3 py-1">{`${numberOfLines} ${
           numberOfLines > 1 ? "items" : "item"
         }`}</span>
       </div>
-      <div className="grid grid-cols-2 small:grid-cols-4 gap-4 my-4">
+      <div className="my-5 grid grid-cols-2 gap-4 small:grid-cols-4">
         {order.items?.slice(0, 3).map((i) => {
           return (
             <div
               key={i.id}
-              className="flex flex-col gap-y-2"
+              className="flex flex-col gap-y-2 rounded-[18px] bg-mist p-3"
               data-testid="order-item"
             >
               <Thumbnail thumbnail={i.thumbnail} images={[]} size="full" />
-              <div className="flex items-center text-small-regular text-ui-fg-base">
+              <div className="flex items-center text-sm text-muted">
                 <span
-                  className="text-ui-fg-base font-semibold"
+                  className="font-semibold text-ink"
                   data-testid="item-title"
                 >
                   {i.title}
@@ -75,7 +81,11 @@ const OrderCard = ({ order }: OrderCardProps) => {
       </div>
       <div className="flex justify-end">
         <LocalizedClientLink href={`/account/orders/details/${order.id}`}>
-          <Button data-testid="order-details-link" variant="secondary">
+          <Button
+            data-testid="order-details-link"
+            variant="secondary"
+            className="min-h-11 rounded-[14px] border-[#E6E8EC] px-5 text-sm font-bold hover:border-brand hover:bg-cream hover:text-brand"
+          >
             See details
           </Button>
         </LocalizedClientLink>

@@ -4,6 +4,32 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.1.0",
+    date: "2026-09-02 20:23:28 EDT",
+    title: "💳 Stripe payment return flow and Medusa 2.19",
+    items: [
+      "⬆️ Medusa 后端、Admin SDK、Dashboard、Storefront SDK、UI Preset、Icons、Types、Test Utils 和 ESLint Plugin 统一升级到 2.19.0 系列。",
+      "🧱 Medusa UI 升级到 4.2.1，React Router DOM 升级到 7.18.2，Vite 升级到 7.3.6，并同步刷新 pnpm 锁文件。",
+      "🟢 Node.js 运行要求更新为 ^20.19.0 或 >=22.12.0，与新版 Medusa 和 Vite 的运行环境保持一致。",
+      "💳 Stripe 结账由单一 Card Element 升级为 Payment Element，可展示 Stripe 会话中启用的支付方式。",
+      "🔁 Stripe 提交改用 confirmPayment，并配置站内 /api/payment-return 回跳地址及 if_required 重定向策略。",
+      "🛡️ 新增支付回跳 API，按 cart_id、Payment Intent 和 client secret 校验 Medusa 支付会话后再完成订单。",
+      "🌍 支付回跳保留 countryCode 路由前缀；支付失败返回结账支付步骤，订单完成失败返回购物车错误状态。",
+      "🍪 登录令牌和购物车 Cookie 的 SameSite 策略由 strict 调整为 lax，支持第三方支付页面安全返回站内。",
+      "🧪 后端集成测试启动时清理 MikroORM MetadataStorage，减少测试套件之间的元数据污染。",
+    ],
+    fixes: [
+      "🐛 修复 Stripe Card Element 仅适用于银行卡输入、无法承载 Payment Element 多支付方式和重定向支付流程的问题。",
+      "🐛 修复 SameSite=strict 可能导致用户从 Stripe 返回时认证令牌或购物车 Cookie 不随顶级导航发送的问题。",
+      "🐛 修复支付回跳直接信任 URL 参数的风险，新增购物车支付会话、Payment Intent 和 client secret 三重匹配校验。",
+      "🐛 修复 Stripe 返回错误或非成功状态后提交按钮可能持续处于 loading 的问题，补充 submitting 状态复位。",
+      "🐛 修复支付表单完成状态与银行卡专用 cardComplete/cardBrand 耦合的问题，改为通用 paymentComplete 状态。",
+      "🐛 修复 Payment Element 加载失败时缺少可恢复错误反馈的问题，显示 Stripe 返回信息或通用加载错误。",
+      "🐛 修复集成测试重复注册 MikroORM 元数据可能造成实体定义冲突的问题，在测试初始化阶段显式清理。",
+      "🐛 修复订单配送方式不存在时直接读取 total 可能抛出异常的问题，为 shipping_methods[0] 增加可选链保护。",
+    ],
+  },
+  {
     version: "v1.0.16",
     date: "2026-09-02 07:05:12 EDT",
     title: "🖼️ PetBoxNest brand assets and product gallery",

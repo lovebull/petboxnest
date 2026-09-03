@@ -1,13 +1,12 @@
 import { Radio as RadioGroupOption } from "@headlessui/react"
 import { Text, clx } from "@modules/common/components/ui"
-import React, { useContext, useMemo, type JSX } from "react"
+import React, { useContext, type JSX } from "react"
 
 import Radio from "@modules/common/components/radio"
 
 import { isManual } from "@lib/constants"
 import SkeletonCardDetails from "@modules/skeletons/components/skeleton-card-details"
-import { CardElement } from "@stripe/react-stripe-js"
-import { StripeCardElementOptions } from "@stripe/stripe-js"
+import { PaymentElement } from "@stripe/react-stripe-js"
 import PaymentTest from "../payment-test"
 import { StripeContext } from "../payment-wrapper/stripe-wrapper"
 
@@ -39,7 +38,7 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
           "!border-brand bg-cream/60 ring-2 ring-brand/10":
             selectedPaymentOptionId === paymentProviderId,
           "cursor-not-allowed opacity-50": disabled,
-        }
+        },
       )}
     >
       <div className="flex items-center justify-between ">
@@ -66,37 +65,18 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
 
 export default PaymentContainer
 
-export const StripeCardContainer = ({
+export const StripePaymentContainer = ({
   paymentProviderId,
   selectedPaymentOptionId,
   paymentInfoMap,
   disabled = false,
-  setCardBrand,
   setError,
-  setCardComplete,
+  setPaymentComplete,
 }: Omit<PaymentContainerProps, "children"> & {
-  setCardBrand: (brand: string) => void
   setError: (error: string | null) => void
-  setCardComplete: (complete: boolean) => void
+  setPaymentComplete: (complete: boolean) => void
 }) => {
   const stripeReady = useContext(StripeContext)
-
-  const useOptions: StripeCardElementOptions = useMemo(() => {
-    return {
-      style: {
-        base: {
-          fontFamily: "Inter, sans-serif",
-          color: "#424270",
-          "::placeholder": {
-            color: "rgb(107 114 128)",
-          },
-        },
-      },
-      classes: {
-        base: "mt-0 block h-12 w-full appearance-none rounded-[14px] border border-[#E6E8EC] bg-white px-4 pb-1 pt-3 transition-all duration-200 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15",
-      },
-    }
-  }, [])
 
   return (
     <PaymentContainer
@@ -109,16 +89,19 @@ export const StripeCardContainer = ({
         (stripeReady ? (
           <div className="my-4 transition-all duration-150 ease-in-out">
             <Text className="mb-2 text-sm font-bold text-ink">
-              Enter your card details:
+              Enter your payment details:
             </Text>
-            <CardElement
-              options={useOptions as StripeCardElementOptions}
+            <PaymentElement
+              options={{ layout: "accordion" }}
               onChange={(e) => {
-                setCardBrand(
-                  e.brand && e.brand.charAt(0).toUpperCase() + e.brand.slice(1)
+                setError(null)
+                setPaymentComplete(e.complete)
+              }}
+              onLoadError={(e) => {
+                setPaymentComplete(false)
+                setError(
+                  e.error?.message ?? "Could not load the payment methods.",
                 )
-                setError(e.error?.message || null)
-                setCardComplete(e.complete)
               }}
             />
           </div>

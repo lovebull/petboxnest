@@ -5,7 +5,7 @@ import { initiatePaymentSession } from "@lib/data/cart"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
-  StripeCardContainer,
+  StripePaymentContainer,
 } from "@modules/checkout/components/payment-container"
 import {
   Button,
@@ -26,15 +26,14 @@ const Payment = ({
   availablePaymentMethods: { id: string }[]
 }) => {
   const activeSession = cart.payment_collection?.payment_sessions?.find(
-    (paymentSession) => paymentSession.status === "pending"
+    (paymentSession) => paymentSession.status === "pending",
   )
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [cardBrand, setCardBrand] = useState<string | null>(null)
-  const [cardComplete, setCardComplete] = useState(false)
+  const [paymentComplete, setPaymentComplete] = useState(false)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
-    activeSession?.provider_id ?? ""
+    activeSession?.provider_id ?? "",
   )
 
   const searchParams = useSearchParams()
@@ -74,7 +73,7 @@ const Payment = ({
 
       return params.toString()
     },
-    [searchParams]
+    [searchParams],
   )
 
   const handleEdit = () => {
@@ -89,11 +88,11 @@ const Payment = ({
       if (paidWithoutProvider) {
         return router.push(
           pathname + "?" + createQueryString("step", "review"),
-          { scroll: false }
+          { scroll: false },
         )
       }
 
-      const shouldInputCard =
+      const shouldInputPaymentDetails =
         isStripeLike(selectedPaymentMethod) && !activeSession
 
       const checkActiveSession =
@@ -105,12 +104,12 @@ const Payment = ({
         })
       }
 
-      if (!shouldInputCard) {
+      if (!shouldInputPaymentDetails) {
         return router.push(
           pathname + "?" + createQueryString("step", "review"),
           {
             scroll: false,
-          }
+          },
         )
       }
     } catch (err) {
@@ -140,7 +139,7 @@ const Payment = ({
             {
               "opacity-45 pointer-events-none select-none":
                 !isOpen && !paymentReady,
-            }
+            },
           )}
         >
           <span
@@ -148,8 +147,8 @@ const Payment = ({
               isOpen
                 ? "bg-brand text-white"
                 : paymentReady
-                ? "bg-mint text-ink"
-                : "bg-mist text-muted"
+                  ? "bg-mint text-ink"
+                  : "bg-mist text-muted"
             }`}
             aria-hidden="true"
           >
@@ -185,13 +184,12 @@ const Payment = ({
                 {availablePaymentMethods.map((paymentMethod) => (
                   <div key={paymentMethod.id}>
                     {isStripeLike(paymentMethod.id) ? (
-                      <StripeCardContainer
+                      <StripePaymentContainer
                         paymentProviderId={paymentMethod.id}
                         selectedPaymentOptionId={selectedPaymentMethod}
                         paymentInfoMap={paymentInfoMap}
-                        setCardBrand={setCardBrand}
                         setError={setError}
-                        setCardComplete={setCardComplete}
+                        setPaymentComplete={setPaymentComplete}
                       />
                     ) : (
                       <PaymentContainer
@@ -231,13 +229,13 @@ const Payment = ({
             onClick={handleSubmit}
             isLoading={isLoading}
             disabled={
-              (isStripeLike(selectedPaymentMethod) && !cardComplete) ||
+              (isStripeLike(selectedPaymentMethod) && !paymentComplete) ||
               (!selectedPaymentMethod && !paidWithoutProvider)
             }
             data-testid="submit-payment-button"
           >
             {!activeSession && isStripeLike(selectedPaymentMethod)
-              ? " Enter card details"
+              ? "Enter payment details"
               : "Continue to review"}
           </Button>
         </div>
@@ -270,11 +268,7 @@ const Payment = ({
                       <CreditCard />
                     )}
                   </Container>
-                  <Text>
-                    {isStripeLike(selectedPaymentMethod) && cardBrand
-                      ? cardBrand
-                      : "Another step will appear"}
-                  </Text>
+                  <Text>Another step will appear</Text>
                 </div>
               </div>
             </div>

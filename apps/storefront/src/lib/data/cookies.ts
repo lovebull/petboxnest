@@ -34,7 +34,7 @@ export const getCacheTag = async (tag: string): Promise<string> => {
 }
 
 export const getCacheOptions = async (
-  tag: string
+  tag: string,
 ): Promise<{ tags: string[] } | Record<string, never>> => {
   if (typeof window !== "undefined") {
     return {}
@@ -54,7 +54,7 @@ export const setAuthToken = async (token: string) => {
   cookies.set("_medusa_jwt", token, {
     maxAge: 60 * 60 * 24 * 7,
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
   })
 }
@@ -119,7 +119,7 @@ export const setCartId = async (cartId: string) => {
   cookies.set("_medusa_cart_id", cartId, {
     maxAge: 60 * 60 * 24 * 7,
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
   })
 }

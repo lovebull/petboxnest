@@ -36,17 +36,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Unauthorized." }, { status: 401 })
   }
 
-  for (const tag of CACHE_TAGS) {
+  const body = (await request.json().catch(() => ({}))) as {
+    tags?: string[]
+    paths?: string[]
+  }
+  const hasExplicitSelection = Array.isArray(body.tags) || Array.isArray(body.paths)
+  const tags = hasExplicitSelection ? body.tags ?? [] : CACHE_TAGS
+  const paths = hasExplicitSelection ? body.paths ?? [] : CACHE_PATHS
+
+  for (const tag of tags) {
     revalidateTag(tag)
   }
 
-  for (const path of CACHE_PATHS) {
+  for (const path of paths) {
     revalidatePath(path)
   }
 
   return NextResponse.json({
     revalidated: true,
-    tags: CACHE_TAGS,
-    paths: CACHE_PATHS,
+    tags,
+    paths,
   })
 }

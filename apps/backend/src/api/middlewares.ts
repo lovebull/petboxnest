@@ -86,6 +86,36 @@ export const BindReferralSchema = z.strictObject({
 
 export type BindReferralSchema = z.infer<typeof BindReferralSchema>
 
+const ReviewStatusSchema = z.enum(["pending", "approved", "flagged"])
+const ReviewListSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  rating: z.coerce.number().int().min(1).max(5).optional(),
+  status: ReviewStatusSchema.optional(),
+  statuses: z.string().transform((value) => value.split(",").filter(Boolean).map((status) => ReviewStatusSchema.parse(status))).optional(),
+  ratings: z.string().transform((value) => value.split(",").filter(Boolean).map((rating) => z.coerce.number().int().min(1).max(5).parse(rating))).optional(),
+  product_id: z.string().min(1).optional(),
+  q: z.string().trim().max(120).optional(),
+  sort: z.enum(["newest", "oldest", "highest", "lowest"]).default("newest"),
+  date_from: z.iso.datetime().optional(),
+  date_to: z.iso.datetime().optional(),
+  has_reply: z.enum(["true", "false"]).transform((value) => value === "true").optional(),
+})
+const SubmitReviewSchema = z.strictObject({
+  product_id: z.string().min(1),
+  rating: z.number().int().min(1).max(5),
+  title: z.string().trim().max(120).optional(),
+  content: z.string().trim().min(10).max(2000),
+})
+const ModerateReviewSchema = z.strictObject({
+  status: ReviewStatusSchema,
+  reason: z.string().trim().min(2).max(500).nullable().optional(),
+})
+const BatchModerateReviewsSchema = ModerateReviewSchema.extend({
+  ids: z.array(z.string().min(1)).min(1).max(100),
+})
+const ReviewReplySchema = z.strictObject({ content: z.string().trim().min(2).max(2000) })
+
 export const GetReferralConversionsSchema = z.object({
   status: z
     .enum(["pending", "paid", "partially_reversed", "reversed", "cancelled"])
@@ -126,6 +156,41 @@ export default defineMiddlewares({
       matcher: "/store/carts/:id/referral",
       method: "POST",
       middlewares: [validateAndTransformBody(BindReferralSchema)],
+    },
+    {
+      matcher: "/store/products/:id/reviews",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(ReviewListSchema.omit({ status: true, statuses: true, ratings: true, product_id: true, has_reply: true }).extend({ limit: z.coerce.number().int().min(1).max(100).default(10) }), {})],
+    },
+    {
+      matcher: "/store/customers/me/product-reviews",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(ReviewListSchema.pick({ page: true, limit: true }), {})],
+    },
+    {
+      matcher: "/store/customers/me/product-reviews",
+      method: "POST",
+      middlewares: [validateAndTransformBody(SubmitReviewSchema)],
+    },
+    {
+      matcher: "/admin/product-reviews",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(ReviewListSchema, {})],
+    },
+    {
+      matcher: "/admin/product-reviews/:id/status",
+      method: "POST",
+      middlewares: [validateAndTransformBody(ModerateReviewSchema)],
+    },
+    {
+      matcher: "/admin/product-reviews/batch-status",
+      method: "POST",
+      middlewares: [validateAndTransformBody(BatchModerateReviewsSchema)],
+    },
+    {
+      matcher: "/admin/product-reviews/:id/reply",
+      method: "POST",
+      middlewares: [validateAndTransformBody(ReviewReplySchema)],
     },
   ],
 })

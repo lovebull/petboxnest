@@ -4,6 +4,22 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.1.1",
+    date: "2026-09-03 21:24:32 EDT",
+    title: "🛡️ Payload CMS 3.88 stability update",
+    items: [
+      "⬆️ Payload CMS 核心从 3.87.1 升级到 3.88.0，并同步更新 Next.js 集成、PostgreSQL 数据库适配器和管理界面依赖。",
+      "📝 @payloadcms/richtext-lexical、translations 与 UI 统一升级到 3.88.0，保持编辑器、翻译和管理组件版本一致。",
+      "☁️ @payloadcms/storage-s3 升级到 3.88.0，并同步刷新 pnpm 锁文件中的 Payload、Drizzle、GraphQL 和 Cloud Storage 依赖解析。",
+    ],
+    fixes: [
+      "🐛 合入 Payload 3.88.0 对 multipart content-type 解析回溯问题的修复，降低异常上传请求触发高开销匹配的风险。",
+      "🐛 合入 Payload Admin UI 剪贴板前缀匹配修复，避免复制和粘贴操作错误关联相邻行数据。",
+      "🐛 修复 Payload 核心包与 db-postgres、next、richtext-lexical、storage-s3、translations、ui 可能出现版本不同步的问题。",
+      "🐛 修复 pnpm 锁文件仍解析 Payload 3.87.1 依赖树的问题，确保全新安装稳定使用 3.88.0。",
+    ],
+  },
+  {
     version: "v1.1.0",
     date: "2026-09-02 20:23:28 EDT",
     title: "💳 Stripe payment return flow and Medusa 2.19",

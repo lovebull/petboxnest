@@ -13,13 +13,12 @@ import sharp from "sharp"
 
 import { Articles } from "./collections/Articles"
 import { Media } from "./collections/Media"
+import { NewsletterSubscribers } from "./collections/NewsletterSubscribers"
 import { OnlineImages } from "./collections/OnlineImages"
 import { ProductEnhancements } from "./collections/ProductEnhancements"
 import { Users } from "./collections/Users"
 
-function loadLocalEnv() {
-  const envPath = path.resolve(process.cwd(), ".env.local")
-
+function loadEnvFile(envPath: string) {
   if (!fs.existsSync(envPath)) {
     return
   }
@@ -42,7 +41,14 @@ function loadLocalEnv() {
   }
 }
 
-loadLocalEnv()
+loadEnvFile(path.resolve(process.cwd(), ".env.local"))
+
+// Local monorepo development already keeps the Resend credentials in the
+// Medusa app. Reuse only missing values without copying secrets into another
+// file. Production deployments must provide the CMS variables explicitly.
+if (process.env.NODE_ENV !== "production") {
+  loadEnvFile(path.resolve(process.cwd(), "../backend/.env"))
+}
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -92,7 +98,14 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, OnlineImages, ProductEnhancements, Articles],
+  collections: [
+    Users,
+    Media,
+    OnlineImages,
+    ProductEnhancements,
+    Articles,
+    NewsletterSubscribers,
+  ],
   plugins: [
     s3Storage({
       enabled: Boolean(

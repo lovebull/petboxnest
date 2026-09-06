@@ -7,10 +7,17 @@ type MedusaError = {
   request?: unknown
   message?: string
   config?: { url: string; baseURL: string }
+  status?: number
+  statusText?: string
 }
 
 export default function medusaError(error: unknown): never {
   const err = error as MedusaError
+  // Medusa JS SDK uses FetchError rather than Axios' response/request shape.
+  if (typeof err.status === "number") {
+    const message = err.message || err.statusText || "Request failed"
+    throw new Error(message.charAt(0).toUpperCase() + message.slice(1) + ".")
+  }
   if (err.response) {
     const u = new URL(err.config?.url ?? "", err.config?.baseURL ?? "")
     console.error("Resource:", u.toString())

@@ -86,6 +86,24 @@ export const BindReferralSchema = z.strictObject({
 
 export type BindReferralSchema = z.infer<typeof BindReferralSchema>
 
+export const UpdateCustomerEmailSchema = z.strictObject({
+  email: z.email().max(320),
+  current_password: z.string().min(1).max(200),
+})
+
+export type UpdateCustomerEmailSchema = z.infer<
+  typeof UpdateCustomerEmailSchema
+>
+
+export const UpdateCustomerPasswordSchema = z.strictObject({
+  current_password: z.string().min(1).max(200),
+  password: z.string().min(8).max(200),
+})
+
+export type UpdateCustomerPasswordSchema = z.infer<
+  typeof UpdateCustomerPasswordSchema
+>
+
 const ReviewStatusSchema = z.enum(["pending", "approved", "flagged"])
 const ReviewListSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -156,6 +174,16 @@ export default defineMiddlewares({
       matcher: "/store/carts/:id/referral",
       method: "POST",
       middlewares: [validateAndTransformBody(BindReferralSchema)],
+    },
+    {
+      matcher: "/store/customers/me/account/email",
+      method: "POST",
+      middlewares: [validateAndTransformBody(UpdateCustomerEmailSchema)],
+    },
+    {
+      matcher: "/store/customers/me/account/password",
+      method: "POST",
+      middlewares: [validateAndTransformBody(UpdateCustomerPasswordSchema)],
     },
     {
       matcher: "/store/products/:id/reviews",

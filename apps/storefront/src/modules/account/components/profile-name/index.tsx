@@ -1,12 +1,12 @@
 "use client"
 
-import React, { useEffect, useActionState } from "react";
+import React, { useActionState, useEffect } from "react"
 
 import Input from "@modules/common/components/input"
 
 import AccountInfo from "../account-info"
 import { HttpTypes } from "@medusajs/types"
-import { updateCustomer } from "@lib/data/customer"
+import { updateCustomerName } from "@lib/data/customer"
 
 type MyInformationProps = {
   customer: HttpTypes.StoreCustomer
@@ -14,23 +14,7 @@ type MyInformationProps = {
 
 const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
   const [successState, setSuccessState] = React.useState(false)
-
-  const updateCustomerName = async (
-    _currentState: Record<string, unknown>,
-    formData: FormData
-  ) => {
-    const customer = {
-      first_name: formData.get("first_name") as string,
-      last_name: formData.get("last_name") as string,
-    }
-
-    try {
-      await updateCustomer(customer)
-      return { success: true, error: null }
-    } catch (error) {
-      return { success: false, error: String(error) }
-    }
-  }
+  const [showResult, setShowResult] = React.useState(false)
 
   const [state, formAction] = useActionState(updateCustomerName, {
     error: null as string | null,
@@ -39,10 +23,12 @@ const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
 
   const clearState = () => {
     setSuccessState(false)
+    setShowResult(false)
   }
 
   useEffect(() => {
     setSuccessState(state.success)
+    setShowResult(true)
   }, [state])
 
   return (
@@ -50,16 +36,19 @@ const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
       <AccountInfo
         label="Name"
         currentInfo={`${customer.first_name} ${customer.last_name}`}
-        isSuccess={successState}
-        isError={!!state?.error}
+        isSuccess={showResult && successState}
+        isError={showResult && !!state.error}
+        errorMessage={state.error || undefined}
         clearState={clearState}
         data-testid="account-name-editor"
       >
-        <div className="grid grid-cols-2 gap-x-4">
+        <div className="grid grid-cols-1 gap-4 small:grid-cols-2">
           <Input
             label="First name"
             name="first_name"
             required
+            maxLength={255}
+            autoComplete="given-name"
             defaultValue={customer.first_name ?? ""}
             data-testid="first-name-input"
           />
@@ -67,6 +56,8 @@ const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
             label="Last name"
             name="last_name"
             required
+            maxLength={255}
+            autoComplete="family-name"
             defaultValue={customer.last_name ?? ""}
             data-testid="last-name-input"
           />

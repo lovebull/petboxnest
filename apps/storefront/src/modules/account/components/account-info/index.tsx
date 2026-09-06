@@ -1,5 +1,4 @@
-import { Disclosure } from "@headlessui/react"
-import { Badge, Button, clx } from "@modules/common/components/ui"
+import { Badge, Button } from "@modules/common/components/ui"
 import { useEffect } from "react"
 
 import useToggleState from "@lib/hooks/use-toggle-state"
@@ -30,9 +29,10 @@ const AccountInfo = ({
 
   const { pending } = useFormStatus()
 
-  const handleToggle = () => {
+  const handleToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
     clearState()
-    setTimeout(() => toggle(), 100)
+    toggle()
   }
 
   useEffect(() => {
@@ -64,67 +64,38 @@ const AccountInfo = ({
             )}
           </div>
         </div>
-        <Button
-          variant="secondary"
-          className="min-h-11 w-full rounded-[14px] border-[#E6E8EC] px-5 text-sm font-bold hover:border-brand hover:bg-cream xsmall:w-[118px]"
+        <button
+          className="inline-flex min-h-11 w-full items-center justify-center rounded-[14px] border border-[#E6E8EC] bg-white px-5 text-sm font-bold text-ink transition-colors hover:border-brand hover:bg-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 xsmall:w-[118px]"
           onClick={handleToggle}
-          type={state ? "reset" : "button"}
+          type="button"
           data-testid="edit-button"
           data-active={state}
+          aria-expanded={state}
         >
           {state ? "Cancel" : "Edit"}
-        </Button>
+        </button>
       </div>
 
       {/* Success state */}
-      <Disclosure>
-        <Disclosure.Panel
-          static
-          className={clx(
-            "transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden",
-            {
-              "max-h-[1000px] opacity-100": isSuccess,
-              "max-h-0 opacity-0": !isSuccess,
-            }
-          )}
-          data-testid="success-message"
-        >
+      {isSuccess && (
+        <div className="overflow-hidden" data-testid="success-message">
           <Badge className="my-4 bg-mint px-3 py-2 text-ink" color="green">
             <span>{label} updated successfully</span>
           </Badge>
-        </Disclosure.Panel>
-      </Disclosure>
+        </div>
+      )}
 
       {/* Error state  */}
-      <Disclosure>
-        <Disclosure.Panel
-          static
-          className={clx(
-            "transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden",
-            {
-              "max-h-[1000px] opacity-100": isError,
-              "max-h-0 opacity-0": !isError,
-            }
-          )}
-          data-testid="error-message"
-        >
+      {isError && (
+        <div className="overflow-hidden" data-testid="error-message">
           <Badge className="my-4 px-3 py-2" color="red">
             <span>{errorMessage}</span>
           </Badge>
-        </Disclosure.Panel>
-      </Disclosure>
+        </div>
+      )}
 
-      <Disclosure>
-        <Disclosure.Panel
-          static
-          className={clx(
-            "transition-[max-height,opacity] duration-300 ease-in-out overflow-visible",
-            {
-              "max-h-[1000px] opacity-100": state,
-              "max-h-0 opacity-0": !state,
-            }
-          )}
-        >
+      {state && (
+        <div className="overflow-visible" data-testid="edit-panel">
           <div className="mt-5 rounded-[18px] bg-cream p-4">
             <div>{children}</div>
             <div className="mt-4 flex items-center justify-end">
@@ -138,8 +109,8 @@ const AccountInfo = ({
               </Button>
             </div>
           </div>
-        </Disclosure.Panel>
-      </Disclosure>
+        </div>
+      )}
     </div>
   )
 }

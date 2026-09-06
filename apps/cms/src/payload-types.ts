@@ -72,6 +72,7 @@ export interface Config {
     'online-images': OnlineImage;
     'product-enhancements': ProductEnhancement;
     articles: Article;
+    'newsletter-subscribers': NewsletterSubscriber;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
     'online-images': OnlineImagesSelect<false> | OnlineImagesSelect<true>;
     'product-enhancements': ProductEnhancementsSelect<false> | ProductEnhancementsSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    'newsletter-subscribers': NewsletterSubscribersSelect<false> | NewsletterSubscribersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -326,6 +328,28 @@ export interface Article {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter-subscribers".
+ */
+export interface NewsletterSubscriber {
+  id: number;
+  email: string;
+  status: 'pending' | 'subscribed' | 'unsubscribed';
+  source: string;
+  consentAt: string;
+  confirmedAt?: string | null;
+  unsubscribedAt?: string | null;
+  confirmationExpiresAt?: string | null;
+  confirmationTokenHash?: string | null;
+  unsubscribeTokenHash?: string | null;
+  lastEmailSentAt?: string | null;
+  resendMessageId?: string | null;
+  lastDeliveryError?: string | null;
+  requestFingerprint?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -367,6 +391,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'articles';
         value: number | Article;
+      } | null)
+    | ({
+        relationTo: 'newsletter-subscribers';
+        value: number | NewsletterSubscriber;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -562,6 +590,27 @@ export interface ArticlesSelect<T extends boolean = true> {
         meta_description?: T;
         og_image?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter-subscribers_select".
+ */
+export interface NewsletterSubscribersSelect<T extends boolean = true> {
+  email?: T;
+  status?: T;
+  source?: T;
+  consentAt?: T;
+  confirmedAt?: T;
+  unsubscribedAt?: T;
+  confirmationExpiresAt?: T;
+  confirmationTokenHash?: T;
+  unsubscribeTokenHash?: T;
+  lastEmailSentAt?: T;
+  resendMessageId?: T;
+  lastDeliveryError?: T;
+  requestFingerprint?: T;
   updatedAt?: T;
   createdAt?: T;
 }

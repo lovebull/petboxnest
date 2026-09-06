@@ -8,7 +8,6 @@ import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import {
   getAuthHeaders,
-  getCacheOptions,
   getCacheTag,
   getCartId,
   getPendingCustomer,
@@ -50,10 +49,6 @@ export const retrieveCustomer =
       ...authHeaders,
     }
 
-    const next = {
-      ...(await getCacheOptions("customers")),
-    }
-
     return await sdk.client
       .fetch<{ customer: HttpTypes.StoreCustomer }>(`/store/customers/me`, {
         method: "GET",
@@ -61,8 +56,10 @@ export const retrieveCustomer =
           fields: "*orders",
         },
         headers,
-        next,
-        cache: "force-cache",
+        // Authentication state must never be served from a stale cache. An
+        // expired JWT otherwise leaves the account UI visible while every
+        // mutation correctly fails with 401.
+        cache: "no-store",
       })
       .then(({ customer }) => customer)
       .catch(() => null)
@@ -73,15 +70,163 @@ export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
     ...(await getAuthHeaders()),
   }
 
-  const updateRes = await sdk.store.customer
-    .update(body, {}, headers)
-    .then(({ customer }) => customer)
-    .catch(medusaError)
+  let updateRes: HttpTypes.StoreCustomer
+  try {
+    const { customer } = await sdk.store.customer.update(body, {}, headers)
+    updateRes = customer
+  } catch (error) {
+    if (error instanceof FetchError && error.status === 401) {
+      await removeAuthToken()
+      throw new Error(
+        "Your session has expired. Please sign in again, then retry the update."
+      )
+    }
+    medusaError(error)
+  }
 
   const cacheTag = await getCacheTag("customers")
   revalidateTag(cacheTag)
 
   return updateRes
+}
+
+export type AccountCredentialState = {
+  success: boolean
+  error: string | null
+}
+
+const accountErrorMessage = (error: unknown) => {
+  if (error instanceof FetchError) {
+    return error.message || "Unable to update your account. Please try again."
+  }
+  return error instanceof Error
+    ? error.message
+    : "Unable to update your account. Please try again."
+}
+
+export async function updateCustomerName(
+  _currentState: AccountCredentialState,
+  formData: FormData
+): Promise<AccountCredentialState> {
+  const firstName = String(formData.get("first_name") || "").trim()
+  const lastName = String(formData.get("last_name") || "").trim()
+
+  if (!firstName || !lastName) {
+    return { success: false, error: "Please enter your first and last name." }
+  }
+
+  if (firstName.length > 255 || lastName.length > 255) {
+    return {
+      success: false,
+      error: "First and last names must be 255 characters or fewer.",
+    }
+  }
+
+  try {
+    await updateCustomer({ first_name: firstName, last_name: lastName })
+    return { success: true, error: null }
+  } catch (error) {
+    return { success: false, error: accountErrorMessage(error) }
+  }
+}
+
+export async function updateCustomerPhone(
+  _currentState: AccountCredentialState,
+  formData: FormData
+): Promise<AccountCredentialState> {
+  const phone = String(formData.get("phone") || "").trim()
+
+  if (!phone) {
+    return { success: false, error: "Please enter your phone number." }
+  }
+
+  if (phone.length > 30) {
+    return {
+      success: false,
+      error: "The phone number must be 30 characters or fewer.",
+    }
+  }
+
+  try {
+    await updateCustomer({ phone })
+    return { success: true, error: null }
+  } catch (error) {
+    return { success: false, error: accountErrorMessage(error) }
+  }
+}
+
+const refreshCustomerSession = async (email: string, password: string) => {
+  const token = await sdk.auth.login("customer", "emailpass", {
+    email,
+    password,
+  })
+
+  if (typeof token !== "string") {
+    throw new Error("Your account was updated, but a new session could not be created.")
+  }
+
+  await setAuthToken(token)
+  const cacheTag = await getCacheTag("customers")
+  revalidateTag(cacheTag)
+}
+
+export async function updateCustomerEmail(
+  _currentState: AccountCredentialState,
+  formData: FormData
+): Promise<AccountCredentialState> {
+  const email = String(formData.get("email") || "").trim().toLowerCase()
+  const currentPassword = String(formData.get("current_password") || "")
+
+  try {
+    const headers = await getAuthHeaders()
+    const result = await sdk.client.fetch<{ email: string }>(
+      "/store/customers/me/account/email",
+      {
+        method: "POST",
+        headers,
+        body: { email, current_password: currentPassword },
+      }
+    )
+    await refreshCustomerSession(result.email, currentPassword)
+    return { success: true, error: null }
+  } catch (error) {
+    return { success: false, error: accountErrorMessage(error) }
+  }
+}
+
+export async function updateCustomerPassword(
+  _currentState: AccountCredentialState,
+  formData: FormData
+): Promise<AccountCredentialState> {
+  const currentPassword = String(formData.get("current_password") || "")
+  const password = String(formData.get("password") || "")
+  const confirmPassword = String(formData.get("confirm_password") || "")
+
+  if (password !== confirmPassword) {
+    return { success: false, error: "The new passwords do not match." }
+  }
+  if (password === currentPassword) {
+    return {
+      success: false,
+      error: "The new password must be different from your current password.",
+    }
+  }
+
+  try {
+    const headers = await getAuthHeaders()
+    const result = await sdk.client.fetch<{ email: string }>(
+      "/store/customers/me/account/password",
+      {
+        method: "POST",
+        headers,
+        body: { current_password: currentPassword, password },
+      }
+    )
+    await refreshCustomerSession(result.email, password)
+    return { success: true, error: null }
+  } catch (error) {
+    return { success: false, error: accountErrorMessage(error) }
+  }
 }
 
 export async function signup(

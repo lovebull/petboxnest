@@ -1,32 +1,31 @@
 "use client"
 
-import React from "react"
+import React, { useActionState, useEffect } from "react"
 import Input from "@modules/common/components/input"
 import AccountInfo from "../account-info"
 import { HttpTypes } from "@medusajs/types"
-// TODO: Re-add toast notifications when Toaster component is implemented
+import { updateCustomerPassword } from "@lib/data/customer"
 
 type MyInformationProps = {
   customer: HttpTypes.StoreCustomer
 }
 
 const ProfilePassword: React.FC<MyInformationProps> = ({ customer: _customer }) => {
-  const [successState, setSuccessState] = React.useState(false)
-
-  // TODO: Add support for password updates
-  const updatePassword = async () => {
-    // TODO: Re-add toast notification when Toaster component is implemented
-    console.info("Password update is not implemented")
-  }
+  const [showResult, setShowResult] = React.useState(false)
+  const [state, formAction] = useActionState(updateCustomerPassword, {
+    error: null as string | null,
+    success: false,
+  })
 
   const clearState = () => {
-    setSuccessState(false)
+    setShowResult(false)
   }
+
+  useEffect(() => setShowResult(true), [state])
 
   return (
     <form
-      action={updatePassword}
-      onReset={() => clearState()}
+      action={formAction}
       className="w-full"
     >
       <AccountInfo
@@ -34,25 +33,28 @@ const ProfilePassword: React.FC<MyInformationProps> = ({ customer: _customer }) 
         currentInfo={
           <span>The password is not shown for security reasons</span>
         }
-        isSuccess={successState}
-        isError={false}
-        errorMessage={undefined}
+        isSuccess={showResult && state.success}
+        isError={showResult && !!state.error}
+        errorMessage={state.error || undefined}
         clearState={clearState}
         data-testid="account-password-editor"
       >
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 small:grid-cols-2">
           <Input
             label="Old password"
-            name="old_password"
+            name="current_password"
             required
             type="password"
+            autoComplete="current-password"
             data-testid="old-password-input"
           />
           <Input
             label="New password"
             type="password"
-            name="new_password"
+            name="password"
             required
+            minLength={8}
+            autoComplete="new-password"
             data-testid="new-password-input"
           />
           <Input
@@ -60,6 +62,8 @@ const ProfilePassword: React.FC<MyInformationProps> = ({ customer: _customer }) 
             type="password"
             name="confirm_password"
             required
+            minLength={8}
+            autoComplete="new-password"
             data-testid="confirm-password-input"
           />
         </div>

@@ -15,3 +15,6 @@ allowBuilds:
   protobufjs: true
   sharp: true
   unrs-resolver: true
+
+patchedDependencies:
+  '@medusajs/loyalty-plugin@2.19.0': patches/@medusajs__loyalty-plugin@2.19.0.patch

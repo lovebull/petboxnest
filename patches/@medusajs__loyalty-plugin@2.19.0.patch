@@ -1,0 +1,423 @@
+diff --git a/.medusa/server/src/admin/index.mjs b/.medusa/server/src/admin/index.mjs
+index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc35c86a428 100644
+--- a/.medusa/server/src/admin/index.mjs
++++ b/.medusa/server/src/admin/index.mjs
+@@ -5796,6 +5796,10 @@ const GiftCardIcon = (props) => {
+     }
+   );
+ };
++const bilingualLabel = (zh, en) => /* @__PURE__ */ jsxs("span", { className: "flex flex-col leading-tight", children: [
++  /* @__PURE__ */ jsx("span", { children: zh }),
++  /* @__PURE__ */ jsx("span", { className: "text-ui-fg-subtle text-xs font-normal", children: en })
++] });
+ const GiftCardProductsSection = () => {
+   const { products: giftCardProducts, count: count2 = 0 } = useProducts({
+     is_giftcard: true
+@@ -5803,13 +5807,13 @@ const GiftCardProductsSection = () => {
+   const slicedProducts = giftCardProducts?.slice(0, 3) ?? [];
+   return /* @__PURE__ */ jsxs(Container$1, { className: "p-0", children: [
+     /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+-      /* @__PURE__ */ jsx(Header$5, { title: "Gift Card Products" }),
++      /* @__PURE__ */ jsx(Header$5, { title: bilingualLabel("礼品卡商品", "Gift Card Products") }),
+       /* @__PURE__ */ jsx(
+         Link,
+         {
+           to: `/gift-cards/gift-card-products/create`,
+           className: "text-ui-fg-muted text-sm px-6",
+-          children: "Create"
++          children: bilingualLabel("创建", "Create")
+         }
+       )
+     ] }),
+@@ -5817,11 +5821,11 @@ const GiftCardProductsSection = () => {
+       NoRecords,
+       {
+         className: "px-10 py-4 h-[200px]",
+-        title: "No gift card products",
+-        message: "There are no gift card products to show. Create one to get started.",
++        title: bilingualLabel("暂无礼品卡商品", "No gift card products"),
++        message: bilingualLabel("当前没有可显示的礼品卡商品，请先创建一个。", "There are no gift card products to show. Create one to get started."),
+         action: {
+           to: "/gift-cards/gift-card-products/create",
+-          label: "Create gift card product"
++          label: bilingualLabel("创建礼品卡商品", "Create gift card product")
+         }
+       }
+     ),
+@@ -5839,7 +5843,7 @@ const GiftCardProductsSection = () => {
+       {
+         to: "/gift-cards/gift-card-products",
+         className: "text-ui-fg-muted text-sm px-6 py-4 flex items-center justify-center",
+-        children: "View more"
++        children: bilingualLabel("查看更多", "View more")
+       }
+     )
+   ] });
+@@ -5939,23 +5943,23 @@ const useGiftCardTableColumns = () => {
+   return useMemo(() => {
+     return [
+       columnHelper$a.accessor("code", {
+-        header: "Code",
++        header: bilingualLabel("礼品卡码", "Code"),
+         cell: ({ row }) => {
+           return row.original.code;
+         }
+       }),
+       columnHelper$a.accessor("line_item.product.title", {
+-        header: "Product",
++        header: bilingualLabel("商品", "Product"),
+         cell: ({ row }) => {
+-          return row.original.line_item?.product?.title || "Custom Gift Card";
++          return row.original.line_item?.product?.title || bilingualLabel("自定义礼品卡", "Custom Gift Card");
+         }
+       }),
+       columnHelper$a.accessor("created_at", {
+-        header: "Date issued",
++        header: bilingualLabel("发行日期", "Date issued"),
+         cell: ({ row }) => getRelativeDate(row.original.created_at)
+       }),
+       columnHelper$a.accessor("value", {
+-        header: "Value",
++        header: bilingualLabel("面值", "Value"),
+         cell: ({ row }) => {
+           return formatAmount(row.original.value, row.original.currency_code);
+         }
+@@ -5999,7 +6003,7 @@ const useCustomerFilters = () => {
+     return [
+       filterHelper$2.accessor("customer_id", {
+         type: "select",
+-        label: "Customer",
++        label: bilingualLabel("客户", "Customer"),
+         options: customerFilterOptions ?? []
+       })
+     ];
+@@ -6058,21 +6062,21 @@ function GiftCardsTable() {
+         isLoading: isPending,
+         pageSize: PAGE_SIZE$6,
+         rowCount: count2,
+-        heading: "Gift Cards",
++        heading: bilingualLabel("礼品卡", "Gift Cards"),
+         rowHref: (row) => `${row.id}`,
+         emptyState: {
+           empty: {
+-            heading: "No gift cards found",
+-            description: "Create a gift card to get started."
++            heading: bilingualLabel("暂无礼品卡", "No gift cards found"),
++            description: bilingualLabel("创建一张礼品卡即可开始使用。", "Create a gift card to get started.")
+           },
+           filtered: {
+-            heading: "No results found",
+-            description: "No gift cards match your filter criteria."
++            heading: bilingualLabel("未找到结果", "No results found"),
++            description: bilingualLabel("没有符合当前筛选条件的礼品卡。", "No gift cards match your filter criteria.")
+           }
+         },
+         actions: [
+           {
+-            label: "Create",
++            label: bilingualLabel("创建", "Create"),
+             to: "create"
+           }
+         ]
+@@ -6098,7 +6102,7 @@ const GiftCardsPage = () => {
+   ] });
+ };
+ const config$3 = defineRouteConfig({
+-  label: "Gift Cards",
++  label: "礼品卡 Gift Cards",
+   icon: GiftCardIcon
+ });
+ function setRef$2(ref, value) {
+@@ -22934,14 +22938,14 @@ const GiftCardCreateForm = ({
+     return currencies[selectedCurrency.toUpperCase()];
+   }, [selectedCurrency, currencies]);
+   if (!currentCurrency) {
+-    return /* @__PURE__ */ jsx("div", { children: "Loading..." });
++    return /* @__PURE__ */ jsx("div", { children: bilingualLabel("加载中…", "Loading...") });
+   }
+   return /* @__PURE__ */ jsxs(RouteFocusModal.Form, { form, children: [
+     /* @__PURE__ */ jsx(RouteFocusModal.Header, { children: /* @__PURE__ */ jsx("div", { className: "-my-2 w-full border-l" }) }),
+     /* @__PURE__ */ jsx(RouteFocusModal.Body, { className: "size-full overflow-hidden", children: /* @__PURE__ */ jsx("div", { className: "flex flex-col items-center p-16", children: /* @__PURE__ */ jsxs("div", { className: "flex w-full max-w-[720px] flex-col gap-y-8", children: [
+       /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
+-        /* @__PURE__ */ jsx(Heading, { level: "h1", children: "Create Gift Card" }),
+-        /* @__PURE__ */ jsx(Text, { className: "text-ui-fg-subtle", size: "small", children: "Create a new gift card" })
++        /* @__PURE__ */ jsx(Heading, { level: "h1", children: bilingualLabel("创建礼品卡", "Create Gift Card") }),
++        /* @__PURE__ */ jsx(Text, { className: "text-ui-fg-subtle", size: "small", children: bilingualLabel("创建一张新礼品卡", "Create a new gift card") })
+       ] }),
+       /* @__PURE__ */ jsx(Divider, { variant: "dashed" }),
+       /* @__PURE__ */ jsxs(
+@@ -22951,8 +22955,8 @@ const GiftCardCreateForm = ({
+           className: "grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2",
+           children: [
+             /* @__PURE__ */ jsxs("div", { children: [
+-              /* @__PURE__ */ jsx(Text, { className: "txt-small-plus text-ui-fg-base", weight: "plus", children: "General details" }),
+-              /* @__PURE__ */ jsx(Text, { className: "txt-small text-ui-fg-muted", children: "Provide details about the gift card" })
++              /* @__PURE__ */ jsx(Text, { className: "txt-small-plus text-ui-fg-base", weight: "plus", children: bilingualLabel("基本信息", "General details") }),
++              /* @__PURE__ */ jsx(Text, { className: "txt-small text-ui-fg-muted", children: bilingualLabel("填写礼品卡的详细信息", "Provide details about the gift card") })
+             ] }),
+             /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-y-4", children: [
+               /* @__PURE__ */ jsx(
+@@ -22962,7 +22966,7 @@ const GiftCardCreateForm = ({
+                   name: "currency_code",
+                   render: ({ field }) => {
+                     return /* @__PURE__ */ jsxs(Form$2.Item, { className: "w-full", children: [
+-                      /* @__PURE__ */ jsx(Form$2.Label, { className: "font-normal", children: "Currency" }),
++                      /* @__PURE__ */ jsx(Form$2.Label, { className: "font-normal", children: bilingualLabel("币种", "Currency") }),
+                       /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
+                         Combobox,
+                         {
+@@ -22971,7 +22975,7 @@ const GiftCardCreateForm = ({
+                           searchValue: currencySearchValue,
+                           onSearchValueChange: setCurrencySearchValue,
+                           options: currencyOptions,
+-                          placeholder: "Search for a currency..."
++                          placeholder: "搜索币种 / Search for a currency..."
+                         }
+                       ) }),
+                       /* @__PURE__ */ jsx(Form$2.ErrorMessage, {})
+@@ -22986,7 +22990,7 @@ const GiftCardCreateForm = ({
+                   name: "value",
+                   render: ({ field }) => {
+                     return /* @__PURE__ */ jsxs(Form$2.Item, { className: "w-full", children: [
+-                      /* @__PURE__ */ jsx(Form$2.Label, { className: "font-normal", children: "Value" }),
++                      /* @__PURE__ */ jsx(Form$2.Label, { className: "font-normal", children: bilingualLabel("面值", "Value") }),
+                       /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
+                         CurrencyInput$1,
+                         {
+@@ -23017,7 +23021,7 @@ const GiftCardCreateForm = ({
+                   name: "expires_at",
+                   render: ({ field }) => {
+                     return /* @__PURE__ */ jsxs(Form$2.Item, { children: [
+-                      /* @__PURE__ */ jsx(Form$2.Label, { children: "Expires at" }),
++                      /* @__PURE__ */ jsx(Form$2.Label, { children: bilingualLabel("到期时间", "Expires at") }),
+                       /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
+                         DatePicker,
+                         {
+@@ -23039,11 +23043,11 @@ const GiftCardCreateForm = ({
+                   name: "note",
+                   render: ({ field }) => {
+                     return /* @__PURE__ */ jsxs(Form$2.Item, { className: "w-full", children: [
+-                      /* @__PURE__ */ jsx(Form$2.Label, { className: "font-normal", children: "Note" }),
++                      /* @__PURE__ */ jsx(Form$2.Label, { className: "font-normal", children: bilingualLabel("备注", "Note") }),
+                       /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
+                         Textarea,
+                         {
+-                          placeholder: "Add a note about this gift card",
++                          placeholder: "添加礼品卡备注 / Add a note about this gift card",
+                           ...field
+                         }
+                       ) }),
+@@ -23058,7 +23062,7 @@ const GiftCardCreateForm = ({
+       )
+     ] }) }) }),
+     /* @__PURE__ */ jsxs(RouteFocusModal.Footer, { children: [
+-      /* @__PURE__ */ jsx(RouteFocusModal.Close, { asChild: true, disabled: isPending, children: /* @__PURE__ */ jsx(Button, { variant: "secondary", size: "small", disabled: isPending, children: "Cancel" }) }),
++      /* @__PURE__ */ jsx(RouteFocusModal.Close, { asChild: true, disabled: isPending, children: /* @__PURE__ */ jsx(Button, { variant: "secondary", size: "small", disabled: isPending, children: bilingualLabel("取消", "Cancel") }) }),
+       /* @__PURE__ */ jsx(
+         Button,
+         {
+@@ -23066,7 +23070,7 @@ const GiftCardCreateForm = ({
+           size: "small",
+           onClick: handleSubmit,
+           disabled: isPending,
+-          children: "Create"
++          children: bilingualLabel("创建", "Create")
+         }
+       )
+     ] })
+@@ -23075,8 +23079,8 @@ const GiftCardCreateForm = ({
+ const GiftCardCreate = () => {
+   const { store, isLoading } = useStore$2({});
+   return /* @__PURE__ */ jsxs(RouteFocusModal, { children: [
+-    /* @__PURE__ */ jsx(RouteFocusModal.Title, { asChild: true, children: /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Create Gift Card" }) }),
+-    /* @__PURE__ */ jsx(RouteFocusModal.Description, { asChild: true, children: /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Create a new gift card" }) }),
++    /* @__PURE__ */ jsx(RouteFocusModal.Title, { asChild: true, children: /* @__PURE__ */ jsx("span", { className: "sr-only", children: "创建礼品卡 Create Gift Card" }) }),
++    /* @__PURE__ */ jsx(RouteFocusModal.Description, { asChild: true, children: /* @__PURE__ */ jsx("span", { className: "sr-only", children: "创建一张新礼品卡 Create a new gift card" }) }),
+     !isLoading && /* @__PURE__ */ jsx(GiftCardCreateForm, { store })
+   ] });
+ };
+@@ -23139,19 +23143,19 @@ const useStoreCreditAccountTableColumns = () => {
+   return useMemo(() => {
+     return [
+       columnHelper$9.accessor("currency_code", {
+-        header: "Currency",
++        header: bilingualLabel("币种", "Currency"),
+         cell: ({ row }) => {
+           return /* @__PURE__ */ jsx(Badge, { size: "2xsmall", children: row.original.currency_code.toUpperCase() });
+         }
+       }),
+       columnHelper$9.accessor("customer.email", {
+-        header: "Customer",
++        header: bilingualLabel("客户", "Customer"),
+         cell: ({ row }) => {
+           return row.original.customer?.email ?? "N/A";
+         }
+       }),
+       columnHelper$9.accessor("balance", {
+-        header: "Balance",
++        header: bilingualLabel("余额", "Balance"),
+         cell: ({ row }) => {
+           return formatAmount(
+             row.original.balance,
+@@ -23160,7 +23164,7 @@ const useStoreCreditAccountTableColumns = () => {
+         }
+       }),
+       columnHelper$9.accessor("credits", {
+-        header: "Credits",
++        header: bilingualLabel("入账金额", "Credits"),
+         cell: ({ row }) => {
+           return formatAmount(
+             row.original.credits,
+@@ -23169,7 +23173,7 @@ const useStoreCreditAccountTableColumns = () => {
+         }
+       }),
+       columnHelper$9.accessor("debits", {
+-        header: "Debits",
++        header: bilingualLabel("扣减金额", "Debits"),
+         cell: ({ row }) => {
+           return formatAmount(
+             row.original.debits,
+@@ -23178,7 +23182,7 @@ const useStoreCreditAccountTableColumns = () => {
+         }
+       }),
+       columnHelper$9.accessor("created_at", {
+-        header: "Created at",
++        header: bilingualLabel("创建时间", "Created at"),
+         cell: ({ row }) => getRelativeDate(row.original.created_at)
+       })
+     ];
+@@ -23245,21 +23249,21 @@ function StoreCreditAccountsTable() {
+         pageSize: PAGE_SIZE$5,
+         rowCount: count2,
+         enableSearch: false,
+-        heading: "Store Credit Accounts",
++        heading: bilingualLabel("商店信用账户", "Store Credit Accounts"),
+         rowHref: (row) => `${row.id}`,
+         emptyState: {
+           empty: {
+-            heading: "No store credit accounts found",
+-            description: "Create a new store credit account to get started."
++            heading: bilingualLabel("暂无商店信用账户", "No store credit accounts found"),
++            description: bilingualLabel("创建一个新的商店信用账户即可开始使用。", "Create a new store credit account to get started.")
+           },
+           filtered: {
+-            heading: "No results found",
+-            description: "No store credit accounts match your filter criteria."
++            heading: bilingualLabel("未找到结果", "No results found"),
++            description: bilingualLabel("没有符合当前筛选条件的商店信用账户。", "No store credit accounts match your filter criteria.")
+           }
+         },
+         actions: [
+           {
+-            label: "Create",
++            label: bilingualLabel("创建", "Create"),
+             to: "/store-credit-accounts/create"
+           }
+         ]
+@@ -23284,7 +23288,7 @@ const StoreCreditAccountsPage = () => {
+   ] });
+ };
+ const config$1 = defineRouteConfig({
+-  label: "Store Credits",
++  label: "商店信用 Store Credits",
+   icon: StoreCreditIcon
+ });
+ var isObject_1;
+@@ -23651,7 +23655,7 @@ const useComboboxData = ({
+   };
+ };
+ const formSchema = z.object({
+-  currency_code: z.string().min(1, "Please select a currency"),
++  currency_code: z.string().min(1, "请选择币种 / Please select a currency"),
+   customer_id: z.string().optional()
+ });
+ const StoreCreditAccountCreateForm = () => {
+@@ -23670,7 +23674,7 @@ const StoreCreditAccountCreateForm = () => {
+     }
+     await createStoreCreditAccount(data, {
+       onSuccess: (data2) => {
+-        toast.success(`Store credit account was successfully created.`);
++        toast.success(`商店信用账户创建成功 / Store credit account was successfully created.`);
+         handleSuccess(`../${data2.store_credit_account.id}`);
+       },
+       onError: (error) => {
+@@ -23718,8 +23722,8 @@ const StoreCreditAccountCreateForm = () => {
+     /* @__PURE__ */ jsx(RouteFocusModal.Header, { children: /* @__PURE__ */ jsx("div", { className: "-my-2 w-full border-l" }) }),
+     /* @__PURE__ */ jsx(RouteFocusModal.Body, { className: "size-full overflow-hidden", children: /* @__PURE__ */ jsx("div", { className: "flex flex-col items-center p-16", children: /* @__PURE__ */ jsxs("div", { className: "flex w-full max-w-[720px] flex-col gap-y-8", children: [
+       /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
+-        /* @__PURE__ */ jsx(Heading, { level: "h1", children: "Create Store Credit Account" }),
+-        /* @__PURE__ */ jsx(Text, { className: "text-ui-fg-subtle", size: "small", children: "Create a new store credit account for a customer" })
++        /* @__PURE__ */ jsx(Heading, { level: "h1", children: bilingualLabel("创建商店信用账户", "Create Store Credit Account") }),
++        /* @__PURE__ */ jsx(Text, { className: "text-ui-fg-subtle", size: "small", children: bilingualLabel("为客户创建一个新的商店信用账户", "Create a new store credit account for a customer") })
+       ] }),
+       /* @__PURE__ */ jsxs("div", { className: "flex gap-x-4", children: [
+         /* @__PURE__ */ jsx(
+@@ -23729,7 +23733,7 @@ const StoreCreditAccountCreateForm = () => {
+             name: "currency_code",
+             render: ({ field }) => {
+               return /* @__PURE__ */ jsxs(Form$2.Item, { className: "w-full", children: [
+-                /* @__PURE__ */ jsx(Form$2.Label, { className: "font-normal", children: "Currency" }),
++                /* @__PURE__ */ jsx(Form$2.Label, { className: "font-normal", children: bilingualLabel("币种", "Currency") }),
+                 /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
+                   Combobox,
+                   {
+@@ -23738,7 +23742,7 @@ const StoreCreditAccountCreateForm = () => {
+                     searchValue: currencySearchValue,
+                     onSearchValueChange: setCurrencySearchValue,
+                     options: currencyOptions,
+-                    placeholder: "Search for a currency..."
++                    placeholder: "搜索币种 / Search for a currency..."
+                   }
+                 ) }),
+                 /* @__PURE__ */ jsx(Form$2.ErrorMessage, {})
+@@ -23753,7 +23757,7 @@ const StoreCreditAccountCreateForm = () => {
+             name: "customer_id",
+             render: ({ field }) => {
+               return /* @__PURE__ */ jsxs(Form$2.Item, { className: "w-full", children: [
+-                /* @__PURE__ */ jsx(Form$2.Label, { className: "font-normal", children: "Customer" }),
++                /* @__PURE__ */ jsx(Form$2.Label, { className: "font-normal", children: bilingualLabel("客户", "Customer") }),
+                 /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
+                   Combobox,
+                   {
+@@ -23762,10 +23766,10 @@ const StoreCreditAccountCreateForm = () => {
+                     searchValue,
+                     onSearchValueChange,
+                     options: customerOptions,
+-                    placeholder: "Search for a customer...",
++                    placeholder: "搜索客户 / Search for a customer...",
+                     fetchNextPage,
+                     isFetchingNextPage,
+-                    noResultsPlaceholder: isLoading ? "Loading customers..." : "No customers found"
++                    noResultsPlaceholder: isLoading ? "正在加载客户 / Loading customers..." : "未找到客户 / No customers found"
+                   }
+                 ) }),
+                 /* @__PURE__ */ jsx(Form$2.ErrorMessage, {})
+@@ -23776,7 +23780,7 @@ const StoreCreditAccountCreateForm = () => {
+       ] })
+     ] }) }) }),
+     /* @__PURE__ */ jsxs(RouteFocusModal.Footer, { children: [
+-      /* @__PURE__ */ jsx(RouteFocusModal.Close, { asChild: true, disabled: isPending, children: /* @__PURE__ */ jsx(Button, { variant: "secondary", size: "small", disabled: isPending, children: "Cancel" }) }),
++      /* @__PURE__ */ jsx(RouteFocusModal.Close, { asChild: true, disabled: isPending, children: /* @__PURE__ */ jsx(Button, { variant: "secondary", size: "small", disabled: isPending, children: bilingualLabel("取消", "Cancel") }) }),
+       /* @__PURE__ */ jsx(
+         Button,
+         {
+@@ -23784,7 +23788,7 @@ const StoreCreditAccountCreateForm = () => {
+           size: "small",
+           onClick: handleSubmit,
+           disabled: isPending,
+-          children: "Create"
++          children: bilingualLabel("创建", "Create")
+         }
+       )
+     ] })
+@@ -23792,8 +23796,8 @@ const StoreCreditAccountCreateForm = () => {
+ };
+ const StoreCreditAccountCreate = () => {
+   return /* @__PURE__ */ jsxs(RouteFocusModal, { children: [
+-    /* @__PURE__ */ jsx(RouteFocusModal.Title, { asChild: true, children: /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Create Store Credit Account" }) }),
+-    /* @__PURE__ */ jsx(RouteFocusModal.Description, { asChild: true, children: /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Create a new store credit account" }) }),
++    /* @__PURE__ */ jsx(RouteFocusModal.Title, { asChild: true, children: /* @__PURE__ */ jsx("span", { className: "sr-only", children: "创建商店信用账户 / Create Store Credit Account" }) }),
++    /* @__PURE__ */ jsx(RouteFocusModal.Description, { asChild: true, children: /* @__PURE__ */ jsx("span", { className: "sr-only", children: "为客户创建一个新的商店信用账户 / Create a new store credit account" }) }),
+     /* @__PURE__ */ jsx(StoreCreditAccountCreateForm, {})
+   ] });
+ };

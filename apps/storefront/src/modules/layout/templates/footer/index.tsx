@@ -1,5 +1,6 @@
 import { ArrowRight } from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import CookieSettingsButton from "@modules/layout/components/cookie-settings-button"
 import Image from "next/image"
 
 const supportLinks = [
@@ -127,6 +128,9 @@ export default function Footer() {
                     </LocalizedClientLink>
                   </li>
                 ))}
+                <li>
+                  <CookieSettingsButton />
+                </li>
               </ul>
             </div>
           </nav>

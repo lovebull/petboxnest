@@ -10,13 +10,24 @@ export const metadata: Metadata = createPrivateMetadata(
   "Review the items in your PetBoxNest shopping cart.",
 )
 
-export default async function Cart() {
+export default async function Cart({
+  searchParams,
+}: {
+  searchParams: Promise<{ checkout_notice?: string }>
+}) {
   const cart = await retrieveCart().catch((error) => {
     console.error(error)
     return notFound()
   })
 
   const customer = await retrieveCustomer()
+  const { checkout_notice: checkoutNotice } = await searchParams
 
-  return <CartTemplate cart={cart} customer={customer} />
+  return (
+    <CartTemplate
+      cart={cart}
+      customer={customer}
+      showEmptyCheckoutNotice={checkoutNotice === "empty-cart"}
+    />
+  )
 }

@@ -1,7 +1,10 @@
 "use client"
 
+import { XMark } from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+
+import { COOKIE_SETTINGS_EVENT } from "../cookie-settings-button"
 
 type ConsentPreferences = {
   necessary: true
@@ -9,8 +12,15 @@ type ConsentPreferences = {
   marketing: boolean
 }
 
+type StoredConsent = {
+  version: number
+  preferences: ConsentPreferences
+  saved_at: string
+}
+
 const CONSENT_STORAGE_KEY = "petboxnest_cookie_consent_v1"
 const CONSENT_COOKIE_NAME = "petboxnest_cookie_consent"
+const CONSENT_SESSION_DISMISS_KEY = "petboxnest_cookie_consent_dismissed"
 const CONSENT_MAX_AGE = 60 * 60 * 24 * 180
 
 const defaultPreferences: ConsentPreferences = {
@@ -25,21 +35,44 @@ const allPreferences: ConsentPreferences = {
   marketing: true,
 }
 
+const readConsent = (): ConsentPreferences | null => {
+  try {
+    const stored = window.localStorage.getItem(CONSENT_STORAGE_KEY)
+
+    if (!stored) {
+      return null
+    }
+
+    const parsed = JSON.parse(stored) as StoredConsent
+    const preferences = parsed.preferences
+
+    if (
+      parsed.version !== 1 ||
+      preferences?.necessary !== true ||
+      typeof preferences.analytics !== "boolean" ||
+      typeof preferences.marketing !== "boolean"
+    ) {
+      return null
+    }
+
+    return preferences
+  } catch {
+    return null
+  }
+}
+
 const saveConsent = (preferences: ConsentPreferences) => {
-  const payload = {
+  const payload: StoredConsent = {
     version: 1,
     preferences,
     saved_at: new Date().toISOString(),
   }
 
   window.localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(payload))
+  window.sessionStorage.removeItem(CONSENT_SESSION_DISMISS_KEY)
   document.cookie = `${CONSENT_COOKIE_NAME}=${encodeURIComponent(
     JSON.stringify(payload)
   )}; Max-Age=${CONSENT_MAX_AGE}; Path=/; SameSite=Lax`
-}
-
-const hasSavedConsent = () => {
-  return Boolean(window.localStorage.getItem(CONSENT_STORAGE_KEY))
 }
 
 const CookieConsentBanner = () => {
@@ -47,16 +80,66 @@ const CookieConsentBanner = () => {
   const [isManaging, setIsManaging] = useState(false)
   const [preferences, setPreferences] =
     useState<ConsentPreferences>(defaultPreferences)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const returnFocusRef = useRef<HTMLElement | null>(null)
+
+  const openSettings = useCallback(() => {
+    returnFocusRef.current = document.activeElement as HTMLElement | null
+    setPreferences(readConsent() ?? defaultPreferences)
+    setIsManaging(true)
+    setIsVisible(true)
+  }, [])
+
+  const closePanel = useCallback((rememberForSession = false) => {
+    if (rememberForSession) {
+      window.sessionStorage.setItem(CONSENT_SESSION_DISMISS_KEY, "true")
+    }
+
+    setIsVisible(false)
+    setIsManaging(false)
+    window.requestAnimationFrame(() => returnFocusRef.current?.focus())
+  }, [])
 
   useEffect(() => {
-    setIsVisible(!hasSavedConsent())
-  }, [])
+    const storedPreferences = readConsent()
+    const wasDismissed = Boolean(
+      window.sessionStorage.getItem(CONSENT_SESSION_DISMISS_KEY)
+    )
+
+    if (storedPreferences) {
+      setPreferences(storedPreferences)
+    } else if (!wasDismissed) {
+      setIsVisible(true)
+    }
+
+    window.addEventListener(COOKIE_SETTINGS_EVENT, openSettings)
+    return () => window.removeEventListener(COOKIE_SETTINGS_EVENT, openSettings)
+  }, [openSettings])
+
+  useEffect(() => {
+    if (!isVisible) {
+      return
+    }
+
+    const focusTimer = window.requestAnimationFrame(() => panelRef.current?.focus())
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault()
+        closePanel(!readConsent())
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.cancelAnimationFrame(focusTimer)
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [closePanel, isVisible])
 
   const handleSave = (nextPreferences: ConsentPreferences) => {
     saveConsent(nextPreferences)
     setPreferences(nextPreferences)
-    setIsVisible(false)
-    setIsManaging(false)
+    closePanel()
   }
 
   const togglePreference = (key: "analytics" | "marketing") => {
@@ -71,132 +154,142 @@ const CookieConsentBanner = () => {
   }
 
   return (
-    <div
-      className="fixed inset-x-0 bottom-0 z-[100] px-4 pb-4 small:px-6 small:pb-6"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="cookie-consent-title"
-    >
-      <div className="mx-auto max-w-5xl border border-ui-border-base bg-ui-bg-base p-5 shadow-elevation-modal small:p-6">
-        <div className="grid gap-5 medium:grid-cols-[minmax(0,1fr)_auto] medium:items-end">
-          <div>
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[100] p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] xsmall:p-4 xsmall:pb-[calc(1rem+env(safe-area-inset-bottom))] small:left-auto small:w-full small:max-w-[460px] small:p-6">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-labelledby="cookie-consent-title"
+        aria-describedby="cookie-consent-description"
+        tabIndex={-1}
+        className="pointer-events-auto max-h-[min(70vh,560px)] overflow-y-auto rounded-[20px] border border-ui-border-base bg-white p-4 text-ink shadow-elevation-modal outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 xsmall:p-5"
+      >
+        <div className="flex items-start gap-3">
+          <div className="min-w-0 flex-1">
             <p
               id="cookie-consent-title"
-              className="text-base-semi text-ui-fg-base"
+              className="font-display text-lg font-extrabold tracking-[-0.02em]"
             >
-              Cookie preferences
+              Your cookie choices
             </p>
-            <p className="mt-2 max-w-3xl text-small-regular text-ui-fg-subtle">
-              We use necessary cookies to keep the storefront working. With your
-              consent, we also use analytics and marketing cookies to improve
-              the shopping experience. You can change your choice at any time.
+            <p
+              id="cookie-consent-description"
+              className="mt-1 text-sm leading-5 text-muted"
+            >
+              Necessary cookies keep your cart and checkout working. You choose
+              whether analytics and marketing cookies are used.
             </p>
-            <LocalizedClientLink
-              href="/privacy-policy"
-              className="mt-3 inline-flex text-small-semi text-ui-fg-base underline underline-offset-4"
-            >
-              Privacy Policy
-            </LocalizedClientLink>
           </div>
-
-          <div className="flex flex-col gap-2 small:flex-row medium:justify-end">
-            <button
-              type="button"
-              className="min-h-11 border border-ui-border-base bg-ui-bg-base px-5 text-small-semi text-ui-fg-base transition-colors hover:bg-ui-bg-subtle"
-              onClick={() => setIsManaging(true)}
-            >
-              Manage choices
-            </button>
-            <button
-              type="button"
-              className="min-h-11 border border-ui-border-base bg-ui-bg-base px-5 text-small-semi text-ui-fg-base transition-colors hover:bg-ui-bg-subtle"
-              onClick={() => handleSave(defaultPreferences)}
-            >
-              Reject non-essential
-            </button>
-            <button
-              type="button"
-              className="min-h-11 bg-ui-fg-base px-5 text-small-semi text-ui-bg-base transition-colors hover:bg-ui-fg-subtle"
-              onClick={() => handleSave(allPreferences)}
-            >
-              Accept all
-            </button>
-          </div>
+          <button
+            type="button"
+            className="pbn-focus -mr-2 -mt-2 flex size-11 shrink-0 items-center justify-center rounded-[12px] text-muted transition-colors hover:bg-mist hover:text-ink"
+            onClick={() => closePanel(!readConsent())}
+            aria-label="Decide later and close cookie preferences"
+          >
+            <XMark aria-hidden="true" />
+          </button>
         </div>
 
         {isManaging && (
-          <div className="mt-5 border-t border-ui-border-base pt-5">
-            <div className="grid gap-3 medium:grid-cols-3">
-              <div className="border border-ui-border-base p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-small-semi text-ui-fg-base">
-                      Necessary
-                    </p>
-                    <p className="mt-1 text-small-regular text-ui-fg-subtle">
-                      Required for cart, checkout, security, and account
-                      sessions.
-                    </p>
-                  </div>
-                  <span className="text-small-semi text-ui-fg-subtle">
-                    Always on
-                  </span>
-                </div>
+          <div className="mt-4 space-y-2 border-t border-ui-border-base pt-4">
+            <div className="rounded-[14px] bg-cream p-3">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-sm font-bold">Necessary</span>
+                <span className="text-xs font-bold text-muted">Always on</span>
               </div>
-
-              <label className="border border-ui-border-base p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <span className="text-small-semi text-ui-fg-base">
-                      Analytics
-                    </span>
-                    <p className="mt-1 text-small-regular text-ui-fg-subtle">
-                      Helps us understand page performance and shopping flows.
-                    </p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    className="mt-1 h-4 w-4 accent-ui-fg-base"
-                    checked={preferences.analytics}
-                    onChange={() => togglePreference("analytics")}
-                  />
-                </div>
-              </label>
-
-              <label className="border border-ui-border-base p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <span className="text-small-semi text-ui-fg-base">
-                      Marketing
-                    </span>
-                    <p className="mt-1 text-small-regular text-ui-fg-subtle">
-                      Allows personalized offers and campaign measurement.
-                    </p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    className="mt-1 h-4 w-4 accent-ui-fg-base"
-                    checked={preferences.marketing}
-                    onChange={() => togglePreference("marketing")}
-                  />
-                </div>
-              </label>
+              <p className="mt-1 text-xs leading-5 text-muted">
+                Required for security, account sessions, cart, and checkout.
+              </p>
             </div>
 
-            <div className="mt-4 flex justify-end">
-              <button
-                type="button"
-                className="min-h-11 bg-ui-fg-base px-5 text-small-semi text-ui-bg-base transition-colors hover:bg-ui-fg-subtle"
-                onClick={() => handleSave(preferences)}
-              >
-                Save choices
-              </button>
-            </div>
+            <PreferenceToggle
+              label="Analytics"
+              description="Helps us understand site performance and shopping flows."
+              checked={preferences.analytics}
+              onChange={() => togglePreference("analytics")}
+            />
+            <PreferenceToggle
+              label="Marketing"
+              description="Allows relevant offers and campaign measurement."
+              checked={preferences.marketing}
+              onChange={() => togglePreference("marketing")}
+            />
           </div>
         )}
+
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            className="pbn-focus min-h-11 rounded-[14px] border border-ui-border-base bg-white px-3 text-sm font-bold transition-colors hover:border-brand hover:text-brand"
+            onClick={() => handleSave(defaultPreferences)}
+          >
+            Essential only
+          </button>
+          <button
+            type="button"
+            className="pbn-focus min-h-11 rounded-[14px] bg-brand px-3 text-sm font-bold text-white transition-colors hover:bg-brand-dark"
+            onClick={() => handleSave(allPreferences)}
+          >
+            Accept all
+          </button>
+        </div>
+
+        <div className="mt-2 flex min-h-11 flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs font-bold">
+          <button
+            type="button"
+            className="pbn-focus min-h-11 rounded-lg text-brand underline decoration-2 underline-offset-4 hover:text-brand-dark"
+            onClick={() =>
+              isManaging ? handleSave(preferences) : setIsManaging(true)
+            }
+            aria-expanded={isManaging}
+          >
+            {isManaging ? "Save custom choices" : "Customize"}
+          </button>
+          <button
+            type="button"
+            className="pbn-focus min-h-11 rounded-lg text-muted underline underline-offset-4 hover:text-ink"
+            onClick={() => closePanel(true)}
+          >
+            Decide later
+          </button>
+          <LocalizedClientLink
+            href="/privacy-policy"
+            className="pbn-focus flex min-h-11 items-center rounded-lg text-muted underline underline-offset-4 hover:text-ink"
+          >
+            Privacy Policy
+          </LocalizedClientLink>
+        </div>
       </div>
     </div>
   )
 }
+
+type PreferenceToggleProps = {
+  label: string
+  description: string
+  checked: boolean
+  onChange: () => void
+}
+
+const PreferenceToggle = ({
+  label,
+  description,
+  checked,
+  onChange,
+}: PreferenceToggleProps) => (
+  <label className="flex min-h-11 cursor-pointer items-start justify-between gap-4 rounded-[14px] border border-ui-border-base p-3 transition-colors hover:border-brand/50">
+    <span>
+      <span className="block text-sm font-bold">{label}</span>
+      <span className="mt-1 block text-xs leading-5 text-muted">
+        {description}
+      </span>
+    </span>
+    <input
+      type="checkbox"
+      className="mt-1 size-5 shrink-0 accent-brand"
+      checked={checked}
+      onChange={onChange}
+    />
+  </label>
+)
 
 export default CookieConsentBanner

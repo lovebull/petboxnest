@@ -5,7 +5,7 @@ import CheckoutForm from "@modules/checkout/templates/checkout-form"
 import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
 import CheckoutProgress from "@modules/checkout/components/checkout-progress"
 import { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { redirect } from "next/navigation"
 import { createPrivateMetadata } from "@lib/util/seo-metadata"
 
 export const metadata: Metadata = createPrivateMetadata(
@@ -13,11 +13,16 @@ export const metadata: Metadata = createPrivateMetadata(
   "Confirm delivery and payment details for your PetBoxNest order.",
 )
 
-export default async function Checkout() {
+export default async function Checkout({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
   const cart = await retrieveCart()
 
-  if (!cart) {
-    return notFound()
+  if (!cart?.items?.length) {
+    const { countryCode } = await params
+    redirect(`/${countryCode}/cart?checkout_notice=empty-cart`)
   }
 
   const customer = await retrieveCustomer()

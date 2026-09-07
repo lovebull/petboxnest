@@ -2,18 +2,22 @@ import ItemsTemplate from "./items"
 import Summary from "./summary"
 import EmptyCartMessage from "../components/empty-cart-message"
 import SignInPrompt from "../components/sign-in-prompt"
+import CheckoutRedirectNotice from "../components/checkout-redirect-notice"
 import { HttpTypes } from "@medusajs/types"
 
 const CartTemplate = ({
   cart,
   customer,
+  showEmptyCheckoutNotice = false,
 }: {
   cart: HttpTypes.StoreCart | null
   customer: HttpTypes.StoreCustomer | null
+  showEmptyCheckoutNotice?: boolean
 }) => {
   return (
     <main className="overflow-x-clip bg-cream text-ink">
       <div className="pbn-container py-10 small:py-16" data-testid="cart-container">
+        {showEmptyCheckoutNotice && <CheckoutRedirectNotice />}
         {cart?.items?.length ? (
           <div className="grid gap-8 small:grid-cols-[minmax(0,1fr)_380px] small:items-start medium:grid-cols-[minmax(0,1fr)_420px]">
             <section className="min-w-0 space-y-5">

@@ -2,7 +2,7 @@
 
 import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
-import { getAuthHeaders, getCacheOptions } from "./cookies"
+import { getAuthHeaders, getSessionCacheOptions } from "./cookies"
 import { HttpTypes } from "@medusajs/types"
 
 export const retrieveOrder = async (id: string) => {
@@ -11,7 +11,7 @@ export const retrieveOrder = async (id: string) => {
   }
 
   const next = {
-    ...(await getCacheOptions("orders")),
+    ...(await getSessionCacheOptions("orders")),
   }
 
   return sdk.client
@@ -39,7 +39,7 @@ export const listOrders = async (
   }
 
   const next = {
-    ...(await getCacheOptions("orders")),
+    ...(await getSessionCacheOptions("orders")),
   }
 
   return sdk.client

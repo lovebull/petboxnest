@@ -20,12 +20,14 @@ export const listProducts = async ({
   countryCode,
   regionId,
   cache = "force-cache",
+  authenticated = false,
 }: {
   pageParam?: number
   queryParams?: ProductListQueryParams
   countryCode?: string
   regionId?: string
   cache?: RequestCache
+  authenticated?: boolean
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
@@ -54,9 +56,7 @@ export const listProducts = async ({
     }
   }
 
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
+  const headers = authenticated ? await getAuthHeaders() : undefined
 
   const next =
     cache === "no-store"

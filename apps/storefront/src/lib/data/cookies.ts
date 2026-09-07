@@ -33,7 +33,40 @@ export const getCacheTag = async (tag: string): Promise<string> => {
   }
 }
 
+export const ensureSessionCacheId = async (): Promise<string> => {
+  const cookies = await nextCookies()
+  const current = cookies.get("_medusa_cache_id")?.value
+
+  if (current) {
+    return current
+  }
+
+  const cacheId = crypto.randomUUID()
+  cookies.set("_medusa_cache_id", cacheId, {
+    maxAge: 60 * 60 * 24,
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  })
+  return cacheId
+}
+
 export const getCacheOptions = async (
+  tag: string,
+): Promise<{ tags: string[] } | Record<string, never>> => {
+  if (typeof window !== "undefined") {
+    return {}
+  }
+
+  return { tags: [tag] }
+}
+
+/**
+ * Adds the visitor-specific cache tag to authenticated or cart-scoped data.
+ * Public catalog requests intentionally use getCacheOptions so they don't read
+ * cookies and force otherwise cacheable pages into dynamic rendering.
+ */
+export const getSessionCacheOptions = async (
   tag: string,
 ): Promise<{ tags: string[] } | Record<string, never>> => {
   if (typeof window !== "undefined") {

@@ -8,6 +8,7 @@ import { redirect } from "next/navigation"
 import {
   getAuthHeaders,
   getCacheOptions,
+  getSessionCacheOptions,
   getCacheTag,
   getCartId,
   removeCartId,
@@ -36,7 +37,7 @@ export async function retrieveCart(cartId?: string, fields?: string) {
   }
 
   const next = {
-    ...(await getCacheOptions("carts")),
+    ...(await getSessionCacheOptions("carts")),
   }
 
   return await sdk.client

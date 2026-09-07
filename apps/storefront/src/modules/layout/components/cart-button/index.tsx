@@ -1,8 +1,10 @@
-import { retrieveCart } from "@lib/data/cart"
-import CartDropdown from "../cart-dropdown"
+"use client"
 
-export default async function CartButton() {
-  const cart = await retrieveCart().catch(() => null)
+import CartDropdown from "../cart-dropdown"
+import { useLayoutSession } from "../layout-session-provider"
+
+export default function CartButton() {
+  const { cart } = useLayoutSession()
 
   return <CartDropdown cart={cart} />
 }

@@ -6,8 +6,6 @@ import { getRegion, listRegions } from "@lib/data/regions"
 import { getPayloadServerUrl } from "@lib/util/public-url"
 import ProductTemplate from "@modules/products/templates"
 import { HttpTypes } from "@medusajs/types"
-import { getProductReviews } from "@lib/data/product-reviews"
-import { retrieveCustomer } from "@lib/data/customer"
 
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>
@@ -157,27 +155,21 @@ export default async function ProductPage(props: Props) {
     productHandle: params.handle,
     productId: pricedProduct.id,
   })
-  const [reviews, customer] = await Promise.all([
-    getProductReviews(pricedProduct.id, {
-      page: Math.max(1, Number(searchParams.review_page) || 1),
-      rating: searchParams.review_rating ? Number(searchParams.review_rating) : undefined,
-      q: searchParams.review_q,
-      sort: searchParams.review_sort,
-    }),
-    retrieveCustomer(),
-  ])
-  const reviewSchema = reviews.count > 0 ? {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: pricedProduct.title,
-    ...(pricedProduct.thumbnail ? { image: pricedProduct.thumbnail } : {}),
-    aggregateRating: { "@type": "AggregateRating", ratingValue: reviews.average_rating, reviewCount: reviews.count, bestRating: 5, worstRating: 1 },
-  } : null
-
   return (
-    <>
-      {reviewSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema).replace(/</g, "\\u003c") }} />}
-      <ProductTemplate product={pricedProduct} region={region} countryCode={params.countryCode} images={images ?? []} enhancement={enhancement} reviews={reviews} canReview={Boolean(customer)} />
-    </>
+    <ProductTemplate
+      product={pricedProduct}
+      region={region}
+      countryCode={params.countryCode}
+      images={images ?? []}
+      enhancement={enhancement}
+      reviewQuery={{
+        page: Math.max(1, Number(searchParams.review_page) || 1),
+        rating: searchParams.review_rating
+          ? Number(searchParams.review_rating)
+          : undefined,
+        q: searchParams.review_q,
+        sort: searchParams.review_sort,
+      }}
+    />
   )
 }

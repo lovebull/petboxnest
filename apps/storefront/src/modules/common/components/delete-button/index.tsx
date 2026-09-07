@@ -2,6 +2,7 @@ import { deleteLineItem } from "@lib/data/cart"
 import { Spinner, Trash } from "@medusajs/icons"
 import { clx } from "@modules/common/components/ui"
 import { useState } from "react"
+import { notifyLayoutSessionChanged } from "@modules/layout/components/layout-session-provider"
 
 const DeleteButton = ({
   id,
@@ -18,9 +19,11 @@ const DeleteButton = ({
 
   const handleDelete = async (id: string) => {
     setIsDeleting(true)
-    await deleteLineItem(id).catch((_err) => {
-      setIsDeleting(false)
-    })
+    await deleteLineItem(id)
+      .then(() => notifyLayoutSessionChanged())
+      .catch((_err) => {
+        setIsDeleting(false)
+      })
   }
 
   return (

@@ -5,7 +5,10 @@ import ProductActions from "@modules/products/components/product-actions"
 import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
 import ProductEnhancement from "@modules/products/components/product-enhancement"
 import ProductTabs from "@modules/products/components/product-tabs"
-import ProductReviews from "@modules/products/components/product-reviews"
+import ProductReviewsSection, {
+  ProductReviewsFallback,
+  type ProductReviewQuery,
+} from "@modules/products/components/product-reviews-section"
 import RelatedProducts from "@modules/products/components/related-products"
 import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
@@ -16,7 +19,6 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { CheckCircle, ShieldCheck, TruckFast } from "@medusajs/icons"
 
 import ProductActionsWrapper from "./product-actions-wrapper"
-import type { ProductReviewsResponse } from "@lib/data/product-reviews"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -24,8 +26,7 @@ type ProductTemplateProps = {
   countryCode: string
   images: HttpTypes.StoreProductImage[]
   enhancement: ProductEnhancementType | null
-  reviews: ProductReviewsResponse
-  canReview: boolean
+  reviewQuery: ProductReviewQuery
 }
 
 const ProductTemplate: React.FC<ProductTemplateProps> = ({
@@ -34,8 +35,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   countryCode,
   images,
   enhancement,
-  reviews,
-  canReview,
+  reviewQuery,
 }) => {
   if (!product || !product.id) {
     return notFound()
@@ -101,7 +101,14 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
       </section>
       <ProductEnhancement enhancement={enhancement} />
-      <ProductReviews productId={product.id} data={reviews} canReview={canReview} />
+      <Suspense fallback={<ProductReviewsFallback />}>
+        <ProductReviewsSection
+          productId={product.id}
+          productTitle={product.title}
+          productThumbnail={product.thumbnail}
+          query={reviewQuery}
+        />
+      </Suspense>
       <section
         className="border-t border-grey-20 bg-mist py-16 small:py-24"
         data-testid="related-products-container"

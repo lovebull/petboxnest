@@ -14,7 +14,7 @@ const regionMapCache = {
   regionMapUpdated: Date.now(),
 }
 
-async function getRegionMap(cacheId: string) {
+async function getRegionMap() {
   const { regionMap, regionMapUpdated } = regionMapCache
 
   if (!BACKEND_URL) {
@@ -35,7 +35,7 @@ async function getRegionMap(cacheId: string) {
       },
       next: {
         revalidate: 3600,
-        tags: [`regions-${cacheId}`],
+        tags: ["regions"],
       },
       cache: "force-cache",
     })
@@ -109,10 +109,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const cacheIdCookie = request.cookies.get("_medusa_cache_id")
-  const cacheId = cacheIdCookie?.value || crypto.randomUUID()
-
-  const regionMap = await getRegionMap(cacheId)
+  const regionMap = await getRegionMap()
   const countryCode = await getCountryCode(request, regionMap)
 
   // if the country code is available, use it, otherwise use the default region
@@ -130,24 +127,10 @@ export async function middleware(request: NextRequest) {
     )
 
     if (isProtectedAccountPage && !hasCustomerSession) {
-      const response = NextResponse.redirect(
+      return NextResponse.redirect(
         new URL(accountRoot, request.url),
         307
       )
-      if (!cacheIdCookie) {
-        response.cookies.set("_medusa_cache_id", cacheId, {
-          maxAge: 60 * 60 * 24,
-        })
-      }
-      return response
-    }
-
-    if (!cacheIdCookie) {
-      const response = NextResponse.next()
-      response.cookies.set("_medusa_cache_id", cacheId, {
-        maxAge: 60 * 60 * 24,
-      })
-      return response
     }
     return NextResponse.next()
   }

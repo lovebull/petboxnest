@@ -4,11 +4,14 @@ import { submitProductReview, type ProductReviewsResponse, type ReviewFormState 
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import { FormEvent, useActionState, useMemo, useState } from "react"
+import { useLayoutSession } from "@modules/layout/components/layout-session-provider"
 
-type Props = { productId: string; data: ProductReviewsResponse; canReview: boolean }
+type Props = { productId: string; data: ProductReviewsResponse }
 const initialState: ReviewFormState = {}
 
-export default function ProductReviews({ productId, data, canReview }: Props) {
+export default function ProductReviews({ productId, data }: Props) {
+  const { customer } = useLayoutSession()
+  const canReview = Boolean(customer)
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [state, action, pending] = useActionState(submitProductReview, initialState)

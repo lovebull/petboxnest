@@ -26,10 +26,11 @@ export type ProductReviewsResponse = {
 export async function getProductReviews(productId: string, query?: { page?: number; rating?: number; q?: string; sort?: string }) {
   return sdk.client.fetch<ProductReviewsResponse>(`/store/products/${productId}/reviews`, {
     query: { page: query?.page || 1, limit: 10, rating: query?.rating, q: query?.q, sort: query?.sort || "newest" },
-    // Moderation changes must be visible immediately. Keep tags so the backend can
-    // also invalidate any parent route caches without serving stale review data.
-    cache: "no-store",
-    next: { tags: ["product-reviews", `product-reviews-${productId}`] },
+    cache: "force-cache",
+    next: {
+      revalidate: 60,
+      tags: ["product-reviews", `product-reviews-${productId}`],
+    },
   }).catch(() => ({ reviews: [], count: 0, page: 1, page_size: 10, page_count: 1, average_rating: 0, rating_distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } }))
 }
 

@@ -13,6 +13,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { useState } from "react"
+import { notifyLayoutSessionChanged } from "@modules/layout/components/layout-session-provider"
 
 type ItemProps = {
   item: HttpTypes.StoreCartLineItem
@@ -32,6 +33,7 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
       lineId: item.id,
       quantity,
     })
+      .then(() => notifyLayoutSessionChanged())
       .catch((err) => {
         setError(err.message)
       })

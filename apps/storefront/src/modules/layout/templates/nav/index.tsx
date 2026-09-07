@@ -1,22 +1,18 @@
 import { Suspense } from "react"
 
-import { getLocale } from "@lib/data/locale-actions"
 import { listRegions } from "@lib/data/regions"
-import { HttpTypes, StoreRegion } from "@medusajs/types"
+import { StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import User from "@modules/common/icons/user"
+import AccountButton, {
+  AccountButtonFallback,
+} from "@modules/layout/components/account-button"
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
 
-type NavProps = {
-  customer: HttpTypes.StoreCustomer | null
-}
-
-export default async function Nav({ customer }: NavProps) {
-  const [regions, currentLocale] = await Promise.all([
-    listRegions().then((regions: StoreRegion[]) => regions),
-    getLocale(),
-  ])
+export default async function Nav() {
+  const regions = await listRegions().then(
+    (availableRegions: StoreRegion[]) => availableRegions
+  )
 
   const locales = null
 
@@ -32,7 +28,7 @@ export default async function Nav({ customer }: NavProps) {
               <SideMenu
                 regions={regions}
                 locales={locales}
-                currentLocale={currentLocale}
+                currentLocale={null}
               />
             </div>
           </div>
@@ -88,21 +84,9 @@ export default async function Nav({ customer }: NavProps) {
             >
               <CartButton />
             </Suspense>
-            <LocalizedClientLink
-              href="/account"
-              className="pbn-focus flex min-h-11 min-w-11 items-center justify-center rounded-lg hover:bg-mist hover:text-brand"
-              data-testid="nav-account-link"
-              aria-label={customer ? "Account" : "Sign in to account"}
-            >
-              {customer ? (
-                <span>Account</span>
-              ) : (
-                <>
-                  <User size="18" aria-hidden="true" />
-                  <span className="sr-only">Sign in to account</span>
-                </>
-              )}
-            </LocalizedClientLink>
+            <Suspense fallback={<AccountButtonFallback />}>
+              <AccountButton />
+            </Suspense>
           </div>
         </nav>
       </header>

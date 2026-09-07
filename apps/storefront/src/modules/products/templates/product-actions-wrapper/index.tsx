@@ -16,6 +16,7 @@ export default async function ProductActionsWrapper({
     queryParams: { id: [id] },
     regionId: region.id,
     cache: "force-cache",
+    authenticated: true,
   }).then(({ response }) => response.products[0])
 
   if (!product) {

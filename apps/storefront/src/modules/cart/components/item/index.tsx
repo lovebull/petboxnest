@@ -3,7 +3,6 @@
 import { Table, Text } from "@modules/common/components/ui"
 import { updateLineItem } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
-import CartItemSelect from "@modules/cart/components/cart-item-select"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import DeleteButton from "@modules/common/components/delete-button"
 import LineItemOptions from "@modules/common/components/line-item-options"
@@ -27,6 +26,25 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
 
   const changeQuantity = async (quantity: number) => {
     setError(null)
+
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      setError("Quantity must be at least 1.")
+      return
+    }
+
+    if (maxQuantity !== undefined && quantity > maxQuantity) {
+      setError(
+        maxQuantity > 0
+          ? `Only ${maxQuantity} available.`
+          : "This item is currently out of stock."
+      )
+      return
+    }
+
+    if (quantity === item.quantity) {
+      return
+    }
+
     setUpdating(true)
 
     await updateLineItem({
@@ -42,9 +60,13 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
       })
   }
 
-  // TODO: Update this to grab the actual max inventory
-  const maxQtyFromInventory = 10
-  const maxQuantity = item.variant?.manage_inventory ? 10 : maxQtyFromInventory
+  const inventoryLimited = Boolean(
+    item.variant?.manage_inventory && !item.variant.allow_backorder
+  )
+  const maxQuantity = inventoryLimited
+    ? Math.max(0, Math.floor(item.variant?.inventory_quantity ?? 0))
+    : undefined
+  const quantityUnavailable = maxQuantity === 0
 
   if (type === "full") {
     return (
@@ -83,27 +105,77 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
                 <span className="text-xs font-bold uppercase tracking-[0.12em] text-muted">
                   Qty
                 </span>
-                <CartItemSelect
-                  value={item.quantity}
-                  onChange={(value) =>
-                    changeQuantity(parseInt(value.target.value))
-                  }
-                  className="h-10 w-16 border-0 bg-white"
-                  data-testid="product-select-button"
-                >
-                  {Array.from(
-                    {
-                      length: Math.min(maxQuantity, 10),
-                    },
-                    (_, i) => (
-                      <option value={i + 1} key={i}>
-                        {i + 1}
-                      </option>
-                    )
-                  )}
-                </CartItemSelect>
+                <div className="flex items-center overflow-hidden rounded-xl border border-[#E6E8EC] bg-white">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      void changeQuantity(
+                        Math.min(
+                          item.quantity - 1,
+                          maxQuantity ?? item.quantity - 1
+                        )
+                      )
+                    }
+                    disabled={updating || item.quantity <= 1}
+                    className="pbn-focus grid min-h-10 min-w-10 place-items-center text-lg font-bold text-ink disabled:cursor-not-allowed disabled:opacity-35"
+                    aria-label={`Decrease quantity of ${item.product_title}`}
+                  >
+                    −
+                  </button>
+                  <input
+                    key={item.quantity}
+                    type="number"
+                    min={1}
+                    max={maxQuantity}
+                    defaultValue={item.quantity}
+                    disabled={updating || quantityUnavailable}
+                    onBlur={(event) => {
+                      const requestedQuantity = Number(event.currentTarget.value)
+
+                      if (
+                        !Number.isInteger(requestedQuantity) ||
+                        requestedQuantity < 1 ||
+                        (maxQuantity !== undefined &&
+                          requestedQuantity > maxQuantity)
+                      ) {
+                        event.currentTarget.value = String(item.quantity)
+                      }
+
+                      void changeQuantity(requestedQuantity)
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        event.currentTarget.blur()
+                      }
+                    }}
+                    className="h-10 w-12 border-x border-y-0 border-[#E6E8EC] bg-white px-1 text-center font-bold text-ink outline-none [appearance:textfield] focus:ring-2 focus:ring-brand/40 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    data-testid="product-select-button"
+                    aria-label={`Quantity of ${item.product_title}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => void changeQuantity(item.quantity + 1)}
+                    disabled={
+                      updating ||
+                      quantityUnavailable ||
+                      (maxQuantity !== undefined &&
+                        item.quantity >= maxQuantity)
+                    }
+                    className="pbn-focus grid min-h-10 min-w-10 place-items-center text-lg font-bold text-ink disabled:cursor-not-allowed disabled:opacity-35"
+                    aria-label={`Increase quantity of ${item.product_title}`}
+                  >
+                    +
+                  </button>
+                </div>
                 {updating && <Spinner />}
               </div>
+              {inventoryLimited && (
+                <p className="text-xs font-semibold text-muted">
+                  {maxQuantity !== undefined && maxQuantity > 0
+                    ? `${maxQuantity} currently available`
+                    : "Currently out of stock"}
+                </p>
+              )}
               <DeleteButton
                 id={item.id}
                 className="min-h-11 rounded-[14px] border border-[#E6E8EC] bg-white px-3 text-muted transition-colors hover:border-brand hover:text-brand"

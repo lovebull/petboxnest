@@ -37,12 +37,22 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: {
+      canonical: `/${params.countryCode}/articles/${params.slug}`,
+    },
     openGraph: {
       type: "article",
       title,
       description,
+      url: `/${params.countryCode}/articles/${params.slug}`,
       images: image ? [image] : [],
       publishedTime: article.published_at || undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: image ? [image] : ["/twitter-image.jpg"],
     },
   }
 }
@@ -59,7 +69,7 @@ export default async function ArticlePage(props: Props) {
   }
 
   const currentArticleIndex = articles.findIndex(
-    (item) => item.slug === article.slug
+    (item) => item.slug === article.slug,
   )
   const previousArticle =
     currentArticleIndex >= 0 ? articles[currentArticleIndex + 1] : undefined

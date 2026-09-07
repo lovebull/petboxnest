@@ -1,5 +1,5 @@
-import { Metadata } from "next"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { createMarketingMetadata } from "@lib/util/seo-metadata"
 import {
   ArrowPath,
   ArrowRight,
@@ -9,10 +9,18 @@ import {
   ShoppingBag,
 } from "@medusajs/icons"
 
-export const metadata: Metadata = {
-  title: "Refund Policy | Petboxnest",
-  description:
-    "Review Petboxnest's final-sale policy, guidance for defective or incorrect items, order discrepancies, and Amazon purchases.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
+  return createMarketingMetadata({
+    countryCode: (await params).countryCode,
+    path: "refund-policy",
+    title: "Refund Policy | PetBoxNest",
+    description:
+      "Review PetBoxNest's final-sale policy and guidance for defective items, incorrect items, and order discrepancies.",
+  })
 }
 
 const policyItems = [

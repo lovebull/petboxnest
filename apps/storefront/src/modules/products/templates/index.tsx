@@ -26,6 +26,7 @@ type ProductTemplateProps = {
   countryCode: string
   images: HttpTypes.StoreProductImage[]
   enhancement: ProductEnhancementType | null
+  productSchemaId: string
   reviewQuery: ProductReviewQuery
 }
 
@@ -35,6 +36,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   countryCode,
   images,
   enhancement,
+  productSchemaId,
   reviewQuery,
 }) => {
   if (!product || !product.id) {
@@ -104,8 +106,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       <Suspense fallback={<ProductReviewsFallback />}>
         <ProductReviewsSection
           productId={product.id}
-          productTitle={product.title}
-          productThumbnail={product.thumbnail}
+          productSchemaId={productSchemaId}
           query={reviewQuery}
         />
       </Suspense>

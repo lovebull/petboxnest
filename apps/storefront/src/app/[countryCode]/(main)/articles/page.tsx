@@ -1,5 +1,5 @@
-import { Metadata } from "next"
 import { getLatestArticles } from "@lib/data/payload-articles"
+import { createMarketingMetadata } from "@lib/util/seo-metadata"
 import ArticleCard, {
   formatArticleDate,
   getArticleImage,
@@ -8,10 +8,18 @@ import ArticleCard, {
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { ArrowRight, Heart, Sparkles } from "@medusajs/icons"
 
-export const metadata: Metadata = {
-  title: "The Nest Journal | PetBoxNest",
-  description:
-    "Read PetBoxNest pet care ideas, home-friendly guides, and stories for happier pets and calmer homes.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
+  return createMarketingMetadata({
+    countryCode: (await params).countryCode,
+    path: "articles",
+    title: "The Nest Journal | PetBoxNest",
+    description:
+      "Read PetBoxNest pet care ideas, home-friendly guides, and stories for happier pets and calmer homes.",
+  })
 }
 
 export default async function ArticlesPage() {

@@ -1,5 +1,5 @@
-import { Metadata } from "next"
 import type { ReactNode } from "react"
+import { createMarketingMetadata } from "@lib/util/seo-metadata"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import {
   ArrowRight,
@@ -8,10 +8,18 @@ import {
   ShieldCheck,
 } from "@medusajs/icons"
 
-export const metadata: Metadata = {
-  title: "Privacy Policy | Petboxnest",
-  description:
-    "Understand what personal information Petboxnest collects, how it is used and shared, and the privacy choices available to U.S. customers.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
+  return createMarketingMetadata({
+    countryCode: (await params).countryCode,
+    path: "privacy-policy",
+    title: "Privacy Policy | PetBoxNest",
+    description:
+      "Understand what personal information PetBoxNest collects, how it is used and shared, and the privacy choices available to U.S. customers.",
+  })
 }
 
 const policyLinks = [

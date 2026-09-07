@@ -1,5 +1,5 @@
-import { Metadata } from "next"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { createMarketingMetadata } from "@lib/util/seo-metadata"
 import {
   ArrowPath,
   ArrowRight,
@@ -10,10 +10,18 @@ import {
   TruckFast,
 } from "@medusajs/icons"
 
-export const metadata: Metadata = {
-  title: "FAQ | Petboxnest",
-  description:
-    "Find answers about Petboxnest orders, payments, shipping, returns, product availability, warranties, and Amazon purchases.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
+  return createMarketingMetadata({
+    countryCode: (await params).countryCode,
+    path: "faq",
+    title: "FAQ | PetBoxNest",
+    description:
+      "Find answers about PetBoxNest orders, payments, shipping, returns, product availability, and warranties.",
+  })
 }
 
 const faqGroups = [
@@ -119,7 +127,7 @@ const faqJsonLd = {
         "@type": "Answer",
         text: item.answer,
       },
-    }))
+    })),
   ),
 }
 

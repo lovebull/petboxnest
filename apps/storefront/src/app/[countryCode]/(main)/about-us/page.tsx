@@ -1,5 +1,5 @@
-import { Metadata } from "next"
 import Image from "next/image"
+import { createMarketingMetadata } from "@lib/util/seo-metadata"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import {
   ArrowRight,
@@ -9,10 +9,18 @@ import {
   Sparkles,
 } from "@medusajs/icons"
 
-export const metadata: Metadata = {
-  title: "About Us | Petboxnest",
-  description:
-    "Meet Petboxnest, a pet-first home brand creating practical products for happier pets, calmer homes, and everyday care routines.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
+  return createMarketingMetadata({
+    countryCode: (await params).countryCode,
+    path: "about-us",
+    title: "About Us | PetBoxNest",
+    description:
+      "Meet PetBoxNest, a pet-first home brand creating practical products for happier pets, calmer homes, and everyday care routines.",
+  })
 }
 
 const storyHighlights = [

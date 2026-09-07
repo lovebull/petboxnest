@@ -4,6 +4,30 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.5.0",
+    date: "2026-09-07 05:38:22 EDT",
+    title: "🔎 Storefront SEO、图片与库存体验升级",
+    items: [
+      "🔎 新增统一 SEO Metadata 工具，为首页、商店、文章、分类、集合、品牌介绍、FAQ、联系及政策页面生成 canonical、Open Graph 和 Twitter 分享信息。",
+      "🗺️ 新增动态 sitemap.xml，按国家地区收录公共页面、商品、分类、集合和文章，并提供更新时间、抓取频率、优先级及可用图片。",
+      "🤖 新增 robots.txt，声明站点地图和主机地址，同时禁止抓取 API、账户、购物车、结账、订单和账户验证等私有路径。",
+      "🏷️ 商品详情页为所有商品输出 Product 结构化数据，包含品牌、描述、图片、SKU、URL及各变体价格、币种、库存状态、新品状态和卖家。",
+      "⭐ 商品评论结构化数据通过统一 @id 合并到主 Product Schema，使评分信息与商品报价属于同一搜索实体。",
+      "🔒 账户、购物车、结账、订单详情和账户验证页面统一设置 noindex、nofollow 与 noimageindex，避免私有内容进入搜索结果。",
+      "🖼️ 恢复 Next Image 优化，启用 AVIF/WebP、响应式设备尺寸和 31 天缓存，并校准首页 Hero 与宠物分类图片的 sizes。",
+      "🛒 购物车读取真实变体库存，数量控件升级为减号、可编辑数字和加号操作，并显示库存上限或缺货状态。",
+      "📋 Storefront 审计文档同步标记账户、订阅、公共缓存、图片、库存、Product Schema、站点地图和 Metadata 等已修复项目。",
+    ],
+    fixes: [
+      "🐛 修复商品结构化数据仅在存在评论时输出，且缺少报价、价格币种、库存、SKU、品牌和商品 URL 的问题。",
+      "🐛 修复主要公开页面 canonical、Open Graph URL、Twitter Card 和品牌命名不一致，搜索与分享信息不完整的问题。",
+      "🐛 修复项目存在未启用的旧站点地图配置，却没有 App Router sitemap 与 robots 路由的问题。",
+      "🐛 修复账户、购物车、结账、订单和验证页面可被搜索引擎索引，可能暴露低价值或私有页面入口的问题。",
+      "🐛 修复全局关闭 Next Image 优化导致首页大图无法自动转换现代格式、响应式裁切和长期缓存的问题。",
+      "🐛 修复购物车数量上限固定为 10、无法反映真实库存，并可能允许用户选择超过可售数量的问题。",
+    ],
+  },
+  {
     version: "v1.4.0",
     date: "2026-09-07 01:35:11 EDT",
     title: "⚡ Storefront 公共页面缓存与会话架构优化",

@@ -6,10 +6,12 @@ import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
 import CheckoutProgress from "@modules/checkout/components/checkout-progress"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { createPrivateMetadata } from "@lib/util/seo-metadata"
 
-export const metadata: Metadata = {
-  title: "Checkout",
-}
+export const metadata: Metadata = createPrivateMetadata(
+  "Secure Checkout | PetBoxNest",
+  "Confirm delivery and payment details for your PetBoxNest order.",
+)
 
 export default async function Checkout() {
   const cart = await retrieveCart()

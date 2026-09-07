@@ -1,5 +1,5 @@
-import { Metadata } from "next"
 import type { ReactNode } from "react"
+import { createMarketingMetadata } from "@lib/util/seo-metadata"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import {
   ArrowRight,
@@ -8,10 +8,18 @@ import {
   DocumentText,
 } from "@medusajs/icons"
 
-export const metadata: Metadata = {
-  title: "Terms of Service | Petboxnest",
-  description:
-    "Read the terms governing use of the Petboxnest website, product purchases, payments, shipping, returns, and account activity.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
+  return createMarketingMetadata({
+    countryCode: (await params).countryCode,
+    path: "terms-of-service",
+    title: "Terms of Service | PetBoxNest",
+    description:
+      "Read the terms governing use of the PetBoxNest website, product purchases, payments, shipping, returns, and account activity.",
+  })
 }
 
 const policyLinks = [

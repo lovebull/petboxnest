@@ -52,7 +52,7 @@ const Hero = () => {
               alt="A cat beside a modern litter box and a dog relaxing in a pet bed at home"
               fill
               priority
-              sizes="(max-width: 1023px) 100vw, 55vw"
+              sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1023px) calc(55vw - 28px), 704px"
               className="object-cover object-[58%_center]"
             />
           </div>

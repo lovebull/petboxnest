@@ -10,13 +10,11 @@ export type ProductReviewQuery = {
 
 export default async function ProductReviewsSection({
   productId,
-  productTitle,
-  productThumbnail,
+  productSchemaId,
   query,
 }: {
   productId: string
-  productTitle: string
-  productThumbnail?: string | null
+  productSchemaId: string
   query: ProductReviewQuery
 }) {
   const reviews = await getProductReviews(productId, query)
@@ -26,8 +24,7 @@ export default async function ProductReviewsSection({
       ? {
           "@context": "https://schema.org",
           "@type": "Product",
-          name: productTitle,
-          ...(productThumbnail ? { image: productThumbnail } : {}),
+          "@id": productSchemaId,
           aggregateRating: {
             "@type": "AggregateRating",
             ratingValue: reviews.average_rating,

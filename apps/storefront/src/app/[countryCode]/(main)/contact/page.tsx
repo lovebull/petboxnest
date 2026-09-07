@@ -1,5 +1,5 @@
-import { Metadata } from "next"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { createMarketingMetadata } from "@lib/util/seo-metadata"
 import {
   ArrowRight,
   ChatBubbleLeftRight,
@@ -8,10 +8,18 @@ import {
   QuestionMarkCircle,
 } from "@medusajs/icons"
 
-export const metadata: Metadata = {
-  title: "Contact Us | Petboxnest",
-  description:
-    "Contact Petboxnest customer care for help with orders, shipping, returns, warranty questions, and product information.",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
+  return createMarketingMetadata({
+    countryCode: (await params).countryCode,
+    path: "contact",
+    title: "Contact Us | PetBoxNest",
+    description:
+      "Contact PetBoxNest customer care for help with orders, shipping, returns, warranty questions, and product information.",
+  })
 }
 
 const inputClasses =

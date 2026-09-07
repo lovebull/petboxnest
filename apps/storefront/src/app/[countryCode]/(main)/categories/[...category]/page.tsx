@@ -7,6 +7,7 @@ import { HttpTypes, StoreRegion } from "@medusajs/types"
 import CategoryTemplate from "@modules/categories/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { parseOptionValueIds } from "@lib/util/product-option-filters"
+import { createMarketingMetadata } from "@lib/util/seo-metadata"
 
 type Props = {
   params: Promise<{ category: string[]; countryCode: string }>
@@ -27,11 +28,11 @@ export async function generateStaticParams() {
   }
 
   const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
-    regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
+    regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat(),
   )
 
   const categoryHandles = product_categories.map(
-    (category: HttpTypes.StoreProductCategory) => category.handle
+    (category: HttpTypes.StoreProductCategory) => category.handle,
   )
 
   const staticParams = countryCodes
@@ -39,7 +40,7 @@ export async function generateStaticParams() {
       categoryHandles.map((handle: string) => ({
         countryCode,
         category: [handle],
-      }))
+      })),
     )
     .flat()
 
@@ -51,17 +52,16 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   try {
     const productCategory = await getCategoryByHandle(params.category)
 
-    const title = productCategory.name + " | Medusa Store"
+    const title = productCategory.name + " | PetBoxNest"
 
     const description = productCategory.description ?? `${title} category.`
 
-    return {
-      title: `${title} | Medusa Store`,
+    return createMarketingMetadata({
+      countryCode: params.countryCode,
+      path: `categories/${params.category.join("/")}`,
+      title,
       description,
-      alternates: {
-        canonical: `${params.category.join("/")}`,
-      },
-    }
+    })
   } catch {
     notFound()
   }

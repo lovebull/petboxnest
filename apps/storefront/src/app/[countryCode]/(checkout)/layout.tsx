@@ -2,6 +2,12 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import ChevronDown from "@modules/common/icons/chevron-down"
 import MedusaCTA from "@modules/layout/components/medusa-cta"
 import { ShieldCheck } from "@medusajs/icons"
+import { createPrivateMetadata } from "@lib/util/seo-metadata"
+
+export const metadata = createPrivateMetadata(
+  "Secure Checkout | PetBoxNest",
+  "Complete your PetBoxNest order securely.",
+)
 
 export default function CheckoutLayout({
   children,

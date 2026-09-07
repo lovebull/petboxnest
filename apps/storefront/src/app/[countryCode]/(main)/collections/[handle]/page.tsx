@@ -7,6 +7,7 @@ import { StoreCollection, StoreRegion } from "@medusajs/types"
 import CollectionTemplate from "@modules/collections/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { parseOptionValueIds } from "@lib/util/product-option-filters"
+import { createMarketingMetadata } from "@lib/util/seo-metadata"
 
 type Props = {
   params: Promise<{ handle: string; countryCode: string }>
@@ -35,11 +36,11 @@ export async function generateStaticParams() {
       regions
         ?.map((r) => r.countries?.map((c) => c.iso_2))
         .flat()
-        .filter(Boolean) as string[]
+        .filter(Boolean) as string[],
   )
 
   const collectionHandles = collections.map(
-    (collection: StoreCollection) => collection.handle
+    (collection: StoreCollection) => collection.handle,
   )
 
   const staticParams = countryCodes
@@ -47,7 +48,7 @@ export async function generateStaticParams() {
       collectionHandles.map((handle: string | undefined) => ({
         countryCode,
         handle,
-      }))
+      })),
     )
     .flat()
 
@@ -62,12 +63,12 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
 
-  const metadata = {
-    title: `${collection.title} | Medusa Store`,
-    description: `${collection.title} collection`,
-  } as Metadata
-
-  return metadata
+  return createMarketingMetadata({
+    countryCode: params.countryCode,
+    path: `collections/${params.handle}`,
+    title: `${collection.title} | PetBoxNest`,
+    description: `${collection.title} collection from PetBoxNest.`,
+  })
 }
 
 export default async function CollectionPage(props: Props) {
@@ -77,7 +78,7 @@ export default async function CollectionPage(props: Props) {
   const optionValueIds = parseOptionValueIds(searchParams)
 
   const collection = await getCollectionByHandle(params.handle).then(
-    (collection) => collection
+    (collection) => collection,
   )
 
   if (!collection) {

@@ -41,7 +41,7 @@ const ShopByPet = () => (
               alt={card.alt}
               fill
               loading="lazy"
-              sizes="(max-width: 1023px) 100vw, 50vw"
+              sizes="(max-width: 767px) calc(100vw - 32px), 620px"
               className="object-cover transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none"
             />
             <div className="absolute inset-x-4 bottom-4 rounded-[22px] bg-white/95 p-6 shadow-[0_8px_24px_rgba(32,36,51,0.08)] backdrop-blur-sm xsmall:inset-x-6 xsmall:bottom-6">

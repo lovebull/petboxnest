@@ -1,4 +1,5 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import ContactForm from "@modules/contact/components/contact-form"
 import { createMarketingMetadata } from "@lib/util/seo-metadata"
 import {
   ArrowRight,
@@ -22,10 +23,13 @@ export async function generateMetadata({
   })
 }
 
-const inputClasses =
-  "pbn-focus min-h-[52px] w-full rounded-[14px] border border-[#E6E8EC] bg-white px-4 text-base text-ink outline-none transition-colors placeholder:text-muted focus:border-brand"
+export default async function ContactPage({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
+  const { countryCode } = await params
 
-export default function ContactPage() {
   return (
     <main className="overflow-hidden bg-cream text-ink">
       <header className="border-b border-[#E6E8EC] bg-cream">
@@ -116,78 +120,12 @@ export default function ContactPage() {
               id="contact-form-description"
               className="mt-3 max-w-[680px] text-base leading-7 text-muted"
             >
-              Submitting this form opens your email application with the details
-              ready to send.
+              Send the details securely and our customer care team will follow up
+              by email.
             </p>
-
-            <form
-              action="mailto:support@Petboxnest.com"
-              method="post"
-              encType="text/plain"
-              aria-describedby="contact-form-description"
-              className="mt-8 grid gap-6"
-            >
-              <div className="grid gap-6 xsmall:grid-cols-2">
-                <label className="grid gap-2 text-sm font-bold text-ink">
-                  Name <span className="sr-only">required</span>
-                  <input
-                    className={inputClasses}
-                    name="name"
-                    autoComplete="name"
-                    required
-                  />
-                </label>
-                <label className="grid gap-2 text-sm font-bold text-ink">
-                  Email <span className="sr-only">required</span>
-                  <input
-                    className={inputClasses}
-                    name="email"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    required
-                  />
-                </label>
-              </div>
-
-              <div className="grid gap-6 xsmall:grid-cols-2">
-                <label className="grid gap-2 text-sm font-bold text-ink">
-                  Topic
-                  <select
-                    className={inputClasses}
-                    name="topic"
-                    defaultValue="Order support"
-                  >
-                    <option>Order support</option>
-                    <option>Shipping or return</option>
-                    <option>Product question</option>
-                    <option>Warranty claim</option>
-                    <option>Other</option>
-                  </select>
-                </label>
-                <label className="grid gap-2 text-sm font-bold text-ink">
-                  Order number
-                  <span className="font-normal text-muted">(optional)</span>
-                  <input className={inputClasses} name="order-number" />
-                </label>
-              </div>
-
-              <label className="grid gap-2 text-sm font-bold text-ink">
-                Message <span className="sr-only">required</span>
-                <textarea
-                  className={`${inputClasses} min-h-40 resize-y py-4`}
-                  name="message"
-                  required
-                />
-              </label>
-
-              <button
-                type="submit"
-                className="pbn-primary-button w-full gap-2 xsmall:w-auto xsmall:justify-self-start"
-              >
-                Prepare email <ArrowRight aria-hidden="true" />
-              </button>
-            </form>
+            <div aria-describedby="contact-form-description">
+              <ContactForm countryCode={countryCode} />
+            </div>
           </section>
         </div>
       </section>

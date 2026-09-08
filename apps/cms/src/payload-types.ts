@@ -73,6 +73,7 @@ export interface Config {
     'product-enhancements': ProductEnhancement;
     articles: Article;
     'newsletter-subscribers': NewsletterSubscriber;
+    'contact-submissions': ContactSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     'product-enhancements': ProductEnhancementsSelect<false> | ProductEnhancementsSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'newsletter-subscribers': NewsletterSubscribersSelect<false> | NewsletterSubscribersSelect<true>;
+    'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -350,6 +352,29 @@ export interface NewsletterSubscriber {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions".
+ */
+export interface ContactSubmission {
+  id: number;
+  status: 'new' | 'in_progress' | 'resolved' | 'spam';
+  name: string;
+  email: string;
+  topic: 'order_support' | 'shipping_or_return' | 'product_question' | 'warranty_claim' | 'other';
+  orderNumber?: string | null;
+  message: string;
+  /**
+   * Internal notes. These are never shown to the customer.
+   */
+  adminNotes?: string | null;
+  source: string;
+  countryCode?: string | null;
+  requestFingerprint?: string | null;
+  userAgent?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -395,6 +420,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'newsletter-subscribers';
         value: number | NewsletterSubscriber;
+      } | null)
+    | ({
+        relationTo: 'contact-submissions';
+        value: number | ContactSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -611,6 +640,25 @@ export interface NewsletterSubscribersSelect<T extends boolean = true> {
   resendMessageId?: T;
   lastDeliveryError?: T;
   requestFingerprint?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions_select".
+ */
+export interface ContactSubmissionsSelect<T extends boolean = true> {
+  status?: T;
+  name?: T;
+  email?: T;
+  topic?: T;
+  orderNumber?: T;
+  message?: T;
+  adminNotes?: T;
+  source?: T;
+  countryCode?: T;
+  requestFingerprint?: T;
+  userAgent?: T;
   updatedAt?: T;
   createdAt?: T;
 }

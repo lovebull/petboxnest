@@ -23,6 +23,8 @@ import { RelationshipFeatureClient as RelationshipFeatureClient_e70f5e05f09f93e0
 import { BlockquoteFeatureClient as BlockquoteFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { InlineToolbarFeatureClient as InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { ContactSubmissionActionsCell as ContactSubmissionActionsCell_73ecc835f719ee8003c9c471ba73c54d } from '../../../admin/components/ContactSubmissionActions'
+import { ContactSubmissionActionsField as ContactSubmissionActionsField_73ecc835f719ee8003c9c471ba73c54d } from '../../../admin/components/ContactSubmissionActions'
 import { WhatsNewNavLink as WhatsNewNavLink_0ea4c6b38bdf58c4b1c95fee3f2dc334 } from '../../../admin/components/WhatsNewNavLink'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { WhatsNewView as WhatsNewView_9fb96533aeee27d19eea7a730016cbb7 } from '../../../admin/views/WhatsNew'
@@ -55,6 +57,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BlockquoteFeatureClient": BlockquoteFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#InlineToolbarFeatureClient": InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "/admin/components/ContactSubmissionActions#ContactSubmissionActionsCell": ContactSubmissionActionsCell_73ecc835f719ee8003c9c471ba73c54d,
+  "/admin/components/ContactSubmissionActions#ContactSubmissionActionsField": ContactSubmissionActionsField_73ecc835f719ee8003c9c471ba73c54d,
   "/admin/components/WhatsNewNavLink#WhatsNewNavLink": WhatsNewNavLink_0ea4c6b38bdf58c4b1c95fee3f2dc334,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "/admin/views/WhatsNew#WhatsNewView": WhatsNewView_9fb96533aeee27d19eea7a730016cbb7,

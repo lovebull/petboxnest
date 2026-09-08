@@ -12,6 +12,7 @@ import { buildConfig } from "payload"
 import sharp from "sharp"
 
 import { Articles } from "./collections/Articles"
+import { ContactSubmissions } from "./collections/ContactSubmissions"
 import { Media } from "./collections/Media"
 import { NewsletterSubscribers } from "./collections/NewsletterSubscribers"
 import { OnlineImages } from "./collections/OnlineImages"
@@ -105,6 +106,7 @@ export default buildConfig({
     ProductEnhancements,
     Articles,
     NewsletterSubscribers,
+    ContactSubmissions,
   ],
   plugins: [
     s3Storage({

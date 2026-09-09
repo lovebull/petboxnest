@@ -291,6 +291,10 @@ export interface Article {
   status: 'draft' | 'published';
   title: string;
   /**
+   * Public byline displayed with the article. Do not enter a private account email.
+   */
+  author: string;
+  /**
    * URL-friendly article identifier, for example training-guide.
    */
   slug: string;
@@ -605,6 +609,7 @@ export interface ProductEnhancementsSelect<T extends boolean = true> {
 export interface ArticlesSelect<T extends boolean = true> {
   status?: T;
   title?: T;
+  author?: T;
   slug?: T;
   excerpt?: T;
   hero_image?: T;

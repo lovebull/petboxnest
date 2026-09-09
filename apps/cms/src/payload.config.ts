@@ -46,10 +46,14 @@ loadEnvFile(path.resolve(process.cwd(), ".env.local"))
 
 // Local monorepo development already keeps the Resend credentials in the
 // Medusa app. Reuse only missing values without copying secrets into another
-// file. Production deployments must provide the CMS variables explicitly.
+// file.
 if (process.env.NODE_ENV !== "production") {
   loadEnvFile(path.resolve(process.cwd(), "../backend/.env"))
 }
+
+// The CMS and Storefront use the same signing secret for on-demand cache
+// revalidation. Explicit process/CMS variables still take precedence.
+loadEnvFile(path.resolve(process.cwd(), "../storefront/.env.local"))
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)

@@ -8,6 +8,11 @@ type PayloadMedia = {
   alt?: string
   alt_text?: string
   image_url?: string
+  sizes?: {
+    thumbnail?: {
+      url?: string
+    }
+  }
   url?: string
 }
 
@@ -33,6 +38,7 @@ export type PayloadRichText = {
 export type PayloadArticle = {
   id: string | number
   title: string
+  author?: string | null
   slug: string
   excerpt?: string | null
   hero_image?: PayloadMedia
@@ -50,6 +56,8 @@ export type PayloadArticle = {
 
 type PayloadListResponse<T> = {
   docs: T[]
+  hasNextPage?: boolean
+  nextPage?: number | null
 }
 
 const PAYLOAD_SERVER_URL = getPayloadServerUrl()
@@ -88,6 +96,19 @@ function normalizeArticle(article: PayloadArticle): PayloadArticle {
       ? {
           ...article.hero_image,
           image_url: withPayloadUrl(article.hero_image.image_url),
+          sizes: article.hero_image.sizes
+            ? {
+                ...article.hero_image.sizes,
+                thumbnail: article.hero_image.sizes.thumbnail
+                  ? {
+                      ...article.hero_image.sizes.thumbnail,
+                      url: withPayloadUrl(
+                        article.hero_image.sizes.thumbnail.url
+                      ),
+                    }
+                  : undefined,
+              }
+            : undefined,
           url: withPayloadUrl(article.hero_image.url),
         }
       : undefined,
@@ -143,6 +164,48 @@ export async function getLatestArticles({
     return data.docs.map(normalizeArticle)
   } catch {
     return []
+  }
+}
+
+export async function getAllPublishedArticles(): Promise<PayloadArticle[]> {
+  const articles: PayloadArticle[] = []
+  let page = 1
+
+  while (true) {
+    const query = new URLSearchParams()
+    query.set("limit", "100")
+    query.set("page", String(page))
+    query.set("depth", "1")
+    query.set("sort", "-published_at")
+    query.set("where[status][equals]", "published")
+
+    try {
+      const response = await fetch(
+        `${PAYLOAD_SERVER_URL}/api/articles?${query.toString()}`,
+        {
+          cache: "force-cache",
+          next: {
+            revalidate: PAYLOAD_REVALIDATE_SECONDS,
+            tags: ["payload-articles"],
+          },
+        }
+      )
+
+      if (!response.ok) {
+        return articles
+      }
+
+      const data = (await response.json()) as PayloadListResponse<PayloadArticle>
+      articles.push(...data.docs.map(normalizeArticle))
+
+      if (!data.hasNextPage || !data.nextPage) {
+        return articles
+      }
+
+      page = data.nextPage
+    } catch {
+      return articles
+    }
   }
 }
 

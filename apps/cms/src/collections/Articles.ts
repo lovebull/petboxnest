@@ -1,5 +1,76 @@
 import { FixedToolbarFeature, lexicalEditor } from "@payloadcms/richtext-lexical"
-import type { Access, CollectionConfig } from "payload"
+import type { Access, CollectionConfig, PayloadRequest } from "payload"
+
+const getStorefrontRevalidationUrl = () => {
+  const configuredUrl = process.env.STOREFRONT_REVALIDATE_URL?.trim()
+
+  if (configuredUrl) {
+    return configuredUrl
+  }
+
+  const protocol = process.env.PUBLIC_PROTOCOL || "http"
+  const host = process.env.PUBLIC_HOST || "127.0.0.1"
+
+  return `${protocol}://${host}:8010/api/revalidate`
+}
+
+const revalidateArticlePages = async ({
+  currentSlug,
+  previousSlug,
+  payload,
+}: {
+  currentSlug?: string | null
+  previousSlug?: string | null
+  payload: PayloadRequest["payload"]
+}) => {
+  const secret = process.env.REVALIDATE_SECRET?.trim()
+
+  if (!secret) {
+    payload.logger.warn(
+      "Skipping Storefront article cache revalidation because REVALIDATE_SECRET is not configured in the CMS environment."
+    )
+    return
+  }
+
+  const slugs = Array.from(
+    new Set([currentSlug, previousSlug].filter((slug): slug is string => Boolean(slug)))
+  )
+  const paths = [
+    "/us",
+    "/us/articles",
+    "/sitemap.xml",
+    ...slugs.map((slug) => `/us/articles/${slug}`),
+  ]
+
+  try {
+    const response = await fetch(getStorefrontRevalidationUrl(), {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${secret}`,
+        "Content-Type": "application/json",
+      },
+      signal: AbortSignal.timeout(5000),
+      body: JSON.stringify({
+        tags: [
+          "payload-articles",
+          ...slugs.map((slug) => `payload-article-${slug}`),
+        ],
+        paths,
+      }),
+    })
+
+    if (!response.ok) {
+      payload.logger.warn(
+        `Storefront article cache revalidation failed with HTTP ${response.status}.`
+      )
+    }
+  } catch (error) {
+    payload.logger.warn({
+      err: error,
+      msg: "Storefront article cache revalidation request failed.",
+    })
+  }
+}
 
 const publishedOrAuthenticated: Access = ({ req }) => {
   if (req.user) {
@@ -18,8 +89,31 @@ export const Articles: CollectionConfig = {
   access: {
     read: publishedOrAuthenticated,
   },
+  hooks: {
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        await revalidateArticlePages({
+          currentSlug: doc.slug,
+          previousSlug: previousDoc?.slug,
+          payload: req.payload,
+        })
+
+        return doc
+      },
+    ],
+    afterDelete: [
+      async ({ doc, req }) => {
+        await revalidateArticlePages({
+          previousSlug: doc.slug,
+          payload: req.payload,
+        })
+
+        return doc
+      },
+    ],
+  },
   admin: {
-    defaultColumns: ["title", "status", "published_at", "updatedAt"],
+    defaultColumns: ["title", "author", "status", "published_at", "updatedAt"],
     group: {
       en: "Content",
       zh: "内容",
@@ -76,6 +170,24 @@ export const Articles: CollectionConfig = {
         en: "Title",
         zh: "标题",
         "zh-TW": "標題",
+      },
+      required: true,
+    },
+    {
+      name: "author",
+      type: "text",
+      admin: {
+        description: {
+          en: "Public byline displayed with the article. Do not enter a private account email.",
+          zh: "文章公开显示的作者署名，请勿填写后台账号邮箱。",
+          "zh-TW": "文章公開顯示的作者署名，請勿填寫後台帳號電子郵件。",
+        },
+      },
+      defaultValue: "PetBoxNest Editorial Team",
+      label: {
+        en: "Author",
+        zh: "作者",
+        "zh-TW": "作者",
       },
       required: true,
     },

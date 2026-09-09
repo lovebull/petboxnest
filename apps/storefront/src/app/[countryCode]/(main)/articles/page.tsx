@@ -1,5 +1,6 @@
 import { getLatestArticles } from "@lib/data/payload-articles"
 import { createMarketingMetadata } from "@lib/util/seo-metadata"
+import { getBaseURL } from "@lib/util/env"
 import ArticleCard, {
   formatArticleDate,
   getArticleImage,
@@ -13,17 +14,29 @@ export async function generateMetadata({
 }: {
   params: Promise<{ countryCode: string }>
 }) {
+  const [latestArticle] = await getLatestArticles({ limit: 1 })
+
   return createMarketingMetadata({
     countryCode: (await params).countryCode,
     path: "articles",
     title: "The Nest Journal | PetBoxNest",
     description:
       "Read PetBoxNest pet care ideas, home-friendly guides, and stories for happier pets and calmer homes.",
+    image:
+      latestArticle?.seo?.og_image?.url ||
+      latestArticle?.hero_image_url ||
+      latestArticle?.hero_image?.url,
   })
 }
 
-export default async function ArticlesPage() {
+export default async function ArticlesPage({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
+  const { countryCode } = await params
   const articles = await getLatestArticles({ limit: 24 })
+  const baseUrl = getBaseURL().replace(/\/$/, "")
   const [featuredArticle, ...remainingArticles] = articles
   const featuredImage = featuredArticle
     ? getArticleImage(featuredArticle)
@@ -34,9 +47,58 @@ export default async function ArticlesPage() {
       featuredArticle.updatedAt
     : undefined
   const featuredDate = formatArticleDate(featuredDateValue)
+  const collectionUrl = `${baseUrl}/${countryCode}/articles`
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${collectionUrl}#collection`,
+        name: "The Nest Journal",
+        description:
+          "PetBoxNest pet care ideas, home-friendly guides, and stories for happier pets and calmer homes.",
+        url: collectionUrl,
+        mainEntity: { "@id": `${collectionUrl}#blog` },
+      },
+      {
+        "@type": "Blog",
+        "@id": `${collectionUrl}#blog`,
+        name: "The Nest Journal",
+        url: collectionUrl,
+        publisher: {
+          "@type": "Organization",
+          name: "PetBoxNest",
+          url: baseUrl,
+        },
+        blogPost: articles.map((article) => ({
+          "@type": "BlogPosting",
+          headline: article.title,
+          url: `${collectionUrl}/${encodeURIComponent(article.slug)}`,
+          ...(article.published_at
+            ? { datePublished: article.published_at }
+            : {}),
+          ...(article.author
+            ? {
+                author: {
+                  "@type": "Organization",
+                  name: article.author,
+                },
+              }
+            : {}),
+        })),
+      },
+    ],
+  }
 
   return (
-    <main className="overflow-x-clip bg-cream text-ink">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+        }}
+      />
+      <main className="overflow-x-clip bg-cream text-ink">
       <header className="relative overflow-hidden border-b border-[#E6E8EC]">
         <div
           className="absolute -right-24 -top-20 h-72 w-72 rounded-full bg-yellow/70 small:right-12 small:h-96 small:w-96"
@@ -107,17 +169,17 @@ export default async function ArticlesPage() {
               <article className="group grid overflow-hidden rounded-[24px] border border-[#E6E8EC] bg-white shadow-[0_8px_24px_rgba(32,36,51,0.08)] small:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] small:rounded-[32px]">
                 <LocalizedClientLink
                   href={`/articles/${featuredArticle.slug}`}
-                  className="pbn-focus block min-h-[240px] overflow-hidden bg-mist xsmall:min-h-[320px] small:min-h-[500px]"
+                  className="pbn-focus relative block min-h-[240px] overflow-hidden bg-mist xsmall:min-h-[320px] small:min-h-[500px]"
                 >
                   {featuredImage ? (
                     <img
                       src={featuredImage}
                       alt={getArticleImageAlt(featuredArticle)}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none"
                       loading="eager"
                     />
                   ) : (
-                    <div className="flex h-full min-h-[240px] items-center justify-center bg-mint text-brand">
+                    <div className="absolute inset-0 flex items-center justify-center bg-mint text-brand">
                       <Sparkles className="h-10 w-10" aria-hidden="true" />
                     </div>
                   )}
@@ -217,6 +279,7 @@ export default async function ArticlesPage() {
           </LocalizedClientLink>
         </div>
       </aside>
-    </main>
+      </main>
+    </>
   )
 }

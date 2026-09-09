@@ -5,6 +5,7 @@ type MarketingMetadataInput = {
   path?: string
   title: string
   description: string
+  image?: string
 }
 
 export function createMarketingMetadata({
@@ -12,6 +13,7 @@ export function createMarketingMetadata({
   path = "",
   title,
   description,
+  image,
 }: MarketingMetadataInput): Metadata {
   const normalizedPath = path ? `/${path.replace(/^\/+|\/+$/g, "")}` : ""
   const canonical = `/${countryCode}${normalizedPath}`
@@ -26,13 +28,13 @@ export function createMarketingMetadata({
       title,
       description,
       url: canonical,
-      images: ["/opengraph-image.jpg"],
+      images: [image || "/opengraph-image.jpg"],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/twitter-image.jpg"],
+      images: [image || "/twitter-image.jpg"],
     },
   }
 }

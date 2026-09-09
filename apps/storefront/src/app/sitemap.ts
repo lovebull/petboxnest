@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next"
 
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
-import { getLatestArticles } from "@lib/data/payload-articles"
+import { getAllPublishedArticles } from "@lib/data/payload-articles"
 import { listProducts } from "@lib/data/products"
 import { listRegions } from "@lib/data/regions"
 import { getBaseURL } from "@lib/util/env"
@@ -71,7 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       listCollections({ limit: "100" })
         .then(({ collections }) => collections)
         .catch(() => []),
-      getLatestArticles({ limit: 100 }),
+      getAllPublishedArticles(),
       Promise.all(
         countries.map(async (countryCode) => ({
           countryCode,

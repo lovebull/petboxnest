@@ -10,6 +10,10 @@ export function getArticleImage(article: PayloadArticle) {
   )
 }
 
+export function getArticleThumbnailImage(article: PayloadArticle) {
+  return article.hero_image?.sizes?.thumbnail?.url || getArticleImage(article)
+}
+
 export function getArticleImageAlt(article: PayloadArticle) {
   return (
     article.hero_image?.alt_text || article.hero_image?.alt || article.title
@@ -36,7 +40,7 @@ export function formatArticleDate(date?: string | null) {
 }
 
 export default function ArticleCard({ article }: { article: PayloadArticle }) {
-  const imageUrl = getArticleImage(article)
+  const imageUrl = getArticleThumbnailImage(article)
   const imageAlt = getArticleImageAlt(article)
   const date = formatArticleDate(
     article.published_at || article.createdAt || article.updatedAt

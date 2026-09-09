@@ -1,6 +1,7 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { getArticleBySlug, getLatestArticles } from "@lib/data/payload-articles"
+import { getBaseURL } from "@lib/util/env"
 import {
   formatArticleDate,
   getArticleImage,
@@ -42,11 +43,14 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     },
     openGraph: {
       type: "article",
+      siteName: "PetBoxNest",
       title,
       description,
       url: `/${params.countryCode}/articles/${params.slug}`,
       images: image ? [image] : [],
       publishedTime: article.published_at || undefined,
+      modifiedTime: article.updatedAt || undefined,
+      authors: article.author ? [article.author] : undefined,
     },
     twitter: {
       card: "summary_large_image",
@@ -81,9 +85,76 @@ export default async function ArticlePage(props: Props) {
   const articleDate =
     article.published_at || article.createdAt || article.updatedAt
   const date = formatArticleDate(articleDate)
+  const baseUrl = getBaseURL().replace(/\/$/, "")
+  const articleUrl = `${baseUrl}/${params.countryCode}/articles/${encodeURIComponent(article.slug)}`
+  const articleDescription =
+    article.seo?.meta_description ||
+    article.excerpt ||
+    "Read the latest from PetBoxNest."
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": `${articleUrl}#article`,
+        headline: article.title,
+        description: articleDescription,
+        url: articleUrl,
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": articleUrl,
+        },
+        ...(imageUrl ? { image: [imageUrl] } : {}),
+        ...(article.published_at
+          ? { datePublished: article.published_at }
+          : {}),
+        ...(article.updatedAt ? { dateModified: article.updatedAt } : {}),
+        author: {
+          "@type": "Organization",
+          name: article.author || "PetBoxNest Editorial Team",
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "PetBoxNest",
+          url: baseUrl,
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${articleUrl}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: `${baseUrl}/${params.countryCode}`,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "The Nest Journal",
+            item: `${baseUrl}/${params.countryCode}/articles`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: article.title,
+            item: articleUrl,
+          },
+        ],
+      },
+    ],
+  }
 
   return (
-    <article className="overflow-hidden bg-cream text-ink">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+        }}
+      />
+      <article className="overflow-hidden bg-cream text-ink">
       <header className="relative border-b border-[#E6E8EC]">
         <div
           className="absolute -right-20 top-20 h-64 w-64 rounded-full bg-yellow/70"
@@ -240,6 +311,7 @@ export default async function ArticlePage(props: Props) {
           </div>
         </div>
       </aside>
-    </article>
+      </article>
+    </>
   )
 }

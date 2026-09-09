@@ -1,7 +1,7 @@
 import { getLatestArticles } from "@lib/data/payload-articles"
 import {
   formatArticleDate,
-  getArticleImage,
+  getArticleThumbnailImage,
 } from "@modules/articles/components/article-card"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
@@ -34,7 +34,7 @@ const ClubhouseNotes = async () => {
 
         <div className="grid gap-x-5 gap-y-12 small:grid-cols-2 medium:grid-cols-3 medium:gap-x-7">
           {articles.map((article) => {
-            const imageUrl = getArticleImage(article)
+            const imageUrl = getArticleThumbnailImage(article)
             const imageAlt = article.hero_image?.alt || article.title
             const date = formatArticleDate(
               article.published_at || article.createdAt || article.updatedAt

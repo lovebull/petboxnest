@@ -4,6 +4,32 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.9.0",
+    date: "2026-09-10 05:58:15 EDT",
+    title: "🔐 账户恢复、邮件验证与通知审计升级",
+    items: [
+      "🔑 Storefront 登录界面新增忘记密码入口、重置邮件申请表单和独立密码更新页面，支持一次性令牌、密码确认及成功或错误反馈。",
+      "✉️ Medusa 新增 auth.password_reset 事件订阅器与 PetBoxNest Resend 邮件模板，按国家地区生成 15 分钟有效的单次重置链接。",
+      "✅ 启用客户 emailpass 邮箱验证要求，注册验证请求显式使用 token code provider，并新增验证事件订阅器与品牌邮件模板。",
+      "🧾 Payload CMS 新增 Password Reset Requests 审计集合，通过共享密钥、恒定时间比较和 HMAC 指纹哈希记录请求来源及邮件投递状态。",
+      "🗃️ 新增 Payload 数据库迁移与 Schema 快照，注册密码重置审计集合并同步生成 Payload 类型。",
+      "📨 Medusa Admin 新增邮件通知管理页，可搜索收件人或资源，查看邮件模板、发送状态、服务商回执、创建时间并分页浏览。",
+      "🌐 Newsletter Subscribers 字段和状态选项统一为中文在上、英文在下的双语标签，并增加 Payload Admin 换行样式。",
+      "⚙️ Backend 与 CMS 环境模板新增审计共享密钥和跨服务地址，并同步校准本地 Storefront、API、Admin、CMS 端口及 CORS 默认值。",
+      "🎨 新增 1672×941 毛球护理文章第二版封面素材，提供更聚焦的猫咪梳毛场景。",
+    ],
+    fixes: [
+      "🐛 修复客户忘记密码时没有前台入口、重置邮件和新密码提交页面，账户无法自助恢复的问题。",
+      "🐛 修复注册验证请求未明确 token code provider，且缺少 auth.verification_requested 邮件订阅处理的问题。",
+      "🐛 修复 Resend 通知 Provider 仅支持订单确认模板，无法渲染密码重置和邮箱验证邮件的问题。",
+      "🐛 修复密码重置申请缺少请求编号、时间、IP、浏览器信息、不可逆指纹及投递回执审计的问题。",
+      "🐛 修复管理员无法集中查看邮件通知发送状态、模板类型和 Resend 服务商回执的问题。",
+      "🐛 修复 Newsletter 管理字段仅显示单语标签，中文管理员难以快速识别订阅时间、令牌和投递信息的问题。",
+      "🐛 修复 README、本地 CORS 与环境示例仍混用 8010、8030 和旧 CMS 端口，导致本地访问来源配置不一致的问题。",
+      "🐛 修复密码重置审计接口缺少独立共享密钥配置、重复请求幂等检查和安全指纹存储的问题。",
+    ],
+  },
+  {
     version: "v1.8.0",
     date: "2026-09-09 05:56:46 EDT",
     title: "📰 文章发布、SEO 与封面体验升级",

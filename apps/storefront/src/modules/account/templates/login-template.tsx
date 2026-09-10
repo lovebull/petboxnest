@@ -4,14 +4,16 @@ import { useState } from "react"
 
 import Register from "@modules/account/components/register"
 import Login from "@modules/account/components/login"
+import ForgotPassword from "@modules/account/components/forgot-password"
 
 export enum LOGIN_VIEW {
   SIGN_IN = "sign-in",
   REGISTER = "register",
+  FORGOT_PASSWORD = "forgot-password",
 }
 
 const LoginTemplate = () => {
-  const [currentView, setCurrentView] = useState("sign-in")
+  const [currentView, setCurrentView] = useState<LOGIN_VIEW>(LOGIN_VIEW.SIGN_IN)
 
   return (
     <div className="grid w-full gap-6 small:grid-cols-[minmax(0,0.95fr)_minmax(320px,0.8fr)] small:items-stretch">
@@ -39,8 +41,10 @@ const LoginTemplate = () => {
         </div>
       </div>
       <div className="flex justify-center rounded-[24px] border border-[#E6E8EC] bg-white p-5 xsmall:p-8">
-        {currentView === "sign-in" ? (
+        {currentView === LOGIN_VIEW.SIGN_IN ? (
           <Login setCurrentView={setCurrentView} />
+        ) : currentView === LOGIN_VIEW.FORGOT_PASSWORD ? (
+          <ForgotPassword setCurrentView={setCurrentView} />
         ) : (
           <Register setCurrentView={setCurrentView} />
         )}

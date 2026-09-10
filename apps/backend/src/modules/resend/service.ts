@@ -11,6 +11,8 @@ import type { ReactNode } from "react"
 import { Resend, type CreateEmailOptions } from "resend"
 
 import OrderPlacedEmail from "./emails/order-placed"
+import PasswordResetEmail from "./emails/password-reset"
+import EmailVerificationEmail from "./emails/email-verification"
 
 type ResendOptions = {
   api_key: string
@@ -30,10 +32,14 @@ type InjectedDependencies = {
 
 enum Templates {
   ORDER_PLACED = "order-placed",
+  PASSWORD_RESET = "password-reset",
+  EMAIL_VERIFICATION = "email-verification",
 }
 
 const templates: Partial<Record<Templates, (props: any) => ReactNode>> = {
   [Templates.ORDER_PLACED]: OrderPlacedEmail,
+  [Templates.PASSWORD_RESET]: PasswordResetEmail,
+  [Templates.EMAIL_VERIFICATION]: EmailVerificationEmail,
 }
 
 class ResendNotificationProviderService extends AbstractNotificationProviderService {
@@ -85,6 +91,10 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
     switch (template) {
       case Templates.ORDER_PLACED:
         return "Your petboxnest order is confirmed"
+      case Templates.PASSWORD_RESET:
+        return "Reset your PetBoxNest password"
+      case Templates.EMAIL_VERIFICATION:
+        return "Verify your PetBoxNest email address"
       default:
         return "petboxnest notification"
     }

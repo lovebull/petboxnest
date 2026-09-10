@@ -56,6 +56,15 @@ const Login = ({ setCurrentView }: Props) => {
           error={message?.state === "error" ? message.error : null}
           data-testid="login-error-message"
         />
+        <div className="mt-3 text-right">
+          <button
+            type="button"
+            onClick={() => setCurrentView(LOGIN_VIEW.FORGOT_PASSWORD)}
+            className="pbn-focus min-h-11 rounded-sm px-1 text-sm font-bold text-brand underline decoration-2 underline-offset-4"
+          >
+            Forgot password?
+          </button>
+        </div>
         <SubmitButton
           data-testid="sign-in-button"
           className="pbn-primary-button mt-6 w-full"

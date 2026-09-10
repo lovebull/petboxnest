@@ -52,9 +52,9 @@ pnpm --filter @dtc/backend exec medusa user \
 pnpm dev
 ```
 
-- Storefront：http://localhost:8010
-- Medusa API：http://localhost:9010
-- Medusa Admin：http://localhost:9010/app
+- Storefront：http://localhost:7000
+- Medusa API：http://localhost:7020
+- Medusa Admin：http://localhost:7020/app
 
 ## Storefront API Key
 

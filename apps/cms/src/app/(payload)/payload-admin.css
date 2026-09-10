@@ -1,0 +1,10 @@
+/* Preserve the deliberate line break in bilingual Payload labels.
+   Chinese is shown as the primary line, with English directly below it. */
+.field-label,
+th {
+  white-space: pre-line;
+}
+
+.field-label {
+  line-height: 1.35;
+}

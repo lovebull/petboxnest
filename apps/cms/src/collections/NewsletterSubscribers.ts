@@ -8,6 +8,12 @@ const validEmail = (email: string) => email.length <= 320 && /^[^\s@]+@[^\s@]+\.
 const baseUrl = (port: number) => `${process.env.PUBLIC_PROTOCOL || "http"}://${process.env.PUBLIC_HOST || "127.0.0.1"}:${port}`
 const redirectToStorefront = (status: string) => Response.redirect(`${(process.env.NEXT_PUBLIC_BASE_URL || baseUrl(7000)).replace(/\/$/, "")}/us?newsletter=${status}#early-access`, 302)
 
+const bilingualLabel = (chinese: string, english: string) => ({
+  en: `${chinese}\n${english}`,
+  zh: `${chinese}\n${english}`,
+  "zh-TW": `${chinese}\n${english}`,
+})
+
 const rateLimited = (req: PayloadRequest) => {
   const address = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown"
   const key = hash(address)
@@ -59,23 +65,23 @@ export const NewsletterSubscribers: CollectionConfig = {
     plural: { en: "Newsletter subscribers", zh: "邮件订阅者", "zh-TW": "郵件訂閱者" },
   },
   fields: [
-    { name: "email", type: "email", required: true, unique: true, index: true },
-    { name: "status", type: "select", required: true, defaultValue: "pending", index: true, options: [
-      { label: { en: "Pending", zh: "待确认", "zh-TW": "待確認" }, value: "pending" },
-      { label: { en: "Subscribed", zh: "已订阅", "zh-TW": "已訂閱" }, value: "subscribed" },
-      { label: { en: "Unsubscribed", zh: "已退订", "zh-TW": "已退訂" }, value: "unsubscribed" },
+    { name: "email", label: bilingualLabel("邮箱地址", "Email address"), type: "email", required: true, unique: true, index: true },
+    { name: "status", label: bilingualLabel("订阅状态", "Subscription status"), type: "select", required: true, defaultValue: "pending", index: true, options: [
+      { label: bilingualLabel("待确认", "Pending"), value: "pending" },
+      { label: bilingualLabel("已订阅", "Subscribed"), value: "subscribed" },
+      { label: bilingualLabel("已退订", "Unsubscribed"), value: "unsubscribed" },
     ] },
-    { name: "source", type: "text", required: true, defaultValue: "homepage" },
-    { name: "consentAt", type: "date", required: true },
-    { name: "confirmedAt", type: "date" },
-    { name: "unsubscribedAt", type: "date" },
-    { name: "confirmationExpiresAt", type: "date", admin: { readOnly: true } },
-    { name: "confirmationTokenHash", type: "text", index: true, admin: { hidden: true } },
-    { name: "unsubscribeTokenHash", type: "text", index: true, admin: { hidden: true } },
-    { name: "lastEmailSentAt", type: "date", admin: { readOnly: true } },
-    { name: "resendMessageId", type: "text", admin: { readOnly: true } },
-    { name: "lastDeliveryError", type: "textarea", admin: { readOnly: true } },
-    { name: "requestFingerprint", type: "text", admin: { hidden: true } },
+    { name: "source", label: bilingualLabel("订阅来源", "Subscription source"), type: "text", required: true, defaultValue: "homepage" },
+    { name: "consentAt", label: bilingualLabel("同意订阅时间", "Consent date"), type: "date", required: true },
+    { name: "confirmedAt", label: bilingualLabel("确认订阅时间", "Confirmation date"), type: "date" },
+    { name: "unsubscribedAt", label: bilingualLabel("退订时间", "Unsubscription date"), type: "date" },
+    { name: "confirmationExpiresAt", label: bilingualLabel("确认链接过期时间", "Confirmation link expires"), type: "date", admin: { readOnly: true } },
+    { name: "confirmationTokenHash", label: bilingualLabel("确认令牌哈希", "Confirmation token hash"), type: "text", index: true, admin: { hidden: true } },
+    { name: "unsubscribeTokenHash", label: bilingualLabel("退订令牌哈希", "Unsubscribe token hash"), type: "text", index: true, admin: { hidden: true } },
+    { name: "lastEmailSentAt", label: bilingualLabel("最近邮件发送时间", "Last email sent"), type: "date", admin: { readOnly: true } },
+    { name: "resendMessageId", label: bilingualLabel("Resend 邮件编号", "Resend message ID"), type: "text", admin: { readOnly: true } },
+    { name: "lastDeliveryError", label: bilingualLabel("最近投递错误", "Last delivery error"), type: "textarea", admin: { readOnly: true } },
+    { name: "requestFingerprint", label: bilingualLabel("请求指纹", "Request fingerprint"), type: "text", admin: { hidden: true } },
   ],
   endpoints: [
     { path: "/subscribe", method: "post", handler: async (req) => {

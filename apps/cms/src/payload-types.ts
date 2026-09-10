@@ -74,6 +74,7 @@ export interface Config {
     articles: Article;
     'newsletter-subscribers': NewsletterSubscriber;
     'contact-submissions': ContactSubmission;
+    'password-reset-requests': PasswordResetRequest;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +89,7 @@ export interface Config {
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'newsletter-subscribers': NewsletterSubscribersSelect<false> | NewsletterSubscribersSelect<true>;
     'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
+    'password-reset-requests': PasswordResetRequestsSelect<false> | PasswordResetRequestsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -379,6 +381,24 @@ export interface ContactSubmission {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "password-reset-requests".
+ */
+export interface PasswordResetRequest {
+  id: number;
+  requestId: string;
+  username: string;
+  requestedAt: string;
+  ipAddress: string;
+  browserFingerprint: string;
+  fingerprintHash: string;
+  userAgent?: string | null;
+  deliveryStatus: 'sent' | 'failed';
+  resendMessageId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -428,6 +448,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'contact-submissions';
         value: number | ContactSubmission;
+      } | null)
+    | ({
+        relationTo: 'password-reset-requests';
+        value: number | PasswordResetRequest;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -664,6 +688,23 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
   countryCode?: T;
   requestFingerprint?: T;
   userAgent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "password-reset-requests_select".
+ */
+export interface PasswordResetRequestsSelect<T extends boolean = true> {
+  requestId?: T;
+  username?: T;
+  requestedAt?: T;
+  ipAddress?: T;
+  browserFingerprint?: T;
+  fingerprintHash?: T;
+  userAgent?: T;
+  deliveryStatus?: T;
+  resendMessageId?: T;
   updatedAt?: T;
   createdAt?: T;
 }

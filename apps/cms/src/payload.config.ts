@@ -16,6 +16,7 @@ import { ContactSubmissions } from "./collections/ContactSubmissions"
 import { Media } from "./collections/Media"
 import { NewsletterSubscribers } from "./collections/NewsletterSubscribers"
 import { OnlineImages } from "./collections/OnlineImages"
+import { PasswordResetRequests } from "./collections/PasswordResetRequests"
 import { ProductEnhancements } from "./collections/ProductEnhancements"
 import { Users } from "./collections/Users"
 
@@ -111,6 +112,7 @@ export default buildConfig({
     Articles,
     NewsletterSubscribers,
     ContactSubmissions,
+    PasswordResetRequests,
   ],
   plugins: [
     s3Storage({

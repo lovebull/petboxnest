@@ -5,7 +5,9 @@ import medusaError from "@lib/util/medusa-error"
 import { HttpTypes } from "@medusajs/types"
 import { FetchError } from "@medusajs/js-sdk"
 import { revalidateTag } from "next/cache"
+import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import { randomUUID } from "node:crypto"
 import {
   getAuthHeaders,
   getCacheTag,
@@ -24,6 +26,65 @@ export type CustomerAuthState =
   | { state: "success" }
   | null
 
+export type PasswordResetState = {
+  state: "idle" | "success" | "error"
+  message: string
+}
+
+export async function requestPasswordReset(
+  _currentState: PasswordResetState,
+  formData: FormData
+): Promise<PasswordResetState> {
+  const email = String(formData.get("email") || "").trim().toLowerCase()
+  const browserFingerprint = String(formData.get("browser_fingerprint") || "").slice(0, 4000)
+
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    return { state: "error", message: "Please enter a valid email address." }
+  }
+
+  try {
+    const requestHeaders = await headers()
+    const ipAddress = requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() || requestHeaders.get("x-real-ip") || "unknown"
+
+    await sdk.auth.resetPassword("customer", "emailpass", {
+      identifier: email,
+      metadata: {
+        request_id: randomUUID(),
+        requested_at: new Date().toISOString(),
+        ip_address: ipAddress.slice(0, 128),
+        user_agent: (requestHeaders.get("user-agent") || "").slice(0, 1000),
+        browser_fingerprint: browserFingerprint || "unavailable",
+        country_code: String(formData.get("country_code") || "us").slice(0, 8),
+      },
+    })
+
+    return { state: "success", message: "If an account exists for this email, we've sent a password reset link." }
+  } catch {
+    return { state: "error", message: "We couldn't send the reset email. Please try again shortly." }
+  }
+}
+
+export async function completePasswordReset(
+  _currentState: PasswordResetState,
+  formData: FormData
+): Promise<PasswordResetState> {
+  const email = String(formData.get("email") || "").trim().toLowerCase()
+  const token = String(formData.get("token") || "")
+  const password = String(formData.get("password") || "")
+  const confirmation = String(formData.get("confirm_password") || "")
+
+  if (!email || !token) return { state: "error", message: "This reset link is invalid." }
+  if (password.length < 8) return { state: "error", message: "Use at least 8 characters for your new password." }
+  if (password !== confirmation) return { state: "error", message: "The passwords do not match." }
+
+  try {
+    await sdk.auth.updateProvider("customer", "emailpass", { password }, token)
+    return { state: "success", message: "Your password has been updated. You can now sign in." }
+  } catch {
+    return { state: "error", message: "This reset link is invalid or has expired. Please request a new one." }
+  }
+}
+
 // Requests a verification email for the given customer. The request must be
 // authenticated with a token tied to the auth identity (the token returned by
 // register or by a login that requires verification).
@@ -32,6 +93,7 @@ async function requestVerificationEmail(email: string, token: string) {
     {
       entity_id: email,
       entity_type: "email",
+      code_provider: "token",
     },
     {
       authorization: `Bearer ${token}`,

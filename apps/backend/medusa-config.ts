@@ -40,20 +40,28 @@ module.exports = defineConfig({
     http: {
       storeCors: expandPublicUrl(
         process.env.STORE_CORS,
-        `http://localhost:8010,${publicUrl(8010)}`
+        `http://localhost:7000,${publicUrl(7000)}`
       ),
       adminCors: expandPublicUrl(
         process.env.ADMIN_CORS,
-        `http://localhost:8030,${publicUrl(8030)}`
+        `http://localhost:7020,${publicUrl(7020)}`
       ),
       authCors: expandPublicUrl(
         process.env.AUTH_CORS,
-        `http://localhost:8010,http://localhost:8030,${publicUrl(
+        `http://localhost:7000,http://localhost:7020,${publicUrl(
           8010
-        )},${publicUrl(8030)}`
+        )},${publicUrl(7020)}`
       ),
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
+      authVerificationsPerActor: {
+        customer: [
+          {
+            entity_type: "email",
+            auth_provider: "emailpass",
+          },
+        ],
+      },
     },
     sessionOptions: {
       name: "petboxnest.sid",

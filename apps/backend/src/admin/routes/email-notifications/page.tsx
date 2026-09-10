@@ -38,6 +38,9 @@ const templateLabels: Record<string, { zh: string; en: string }> = {
   "order-placed": { zh: "订单确认", en: "Order confirmation" },
   "password-reset": { zh: "密码重置", en: "Password reset" },
   "email-verification": { zh: "注册验证", en: "Email verification" },
+  "shipment-created": { zh: "发货通知", en: "Shipment notification" },
+  "payment-refunded": { zh: "退款通知", en: "Refund notification" },
+  "admin-order-placed": { zh: "管理员新订单提醒", en: "Admin new-order alert" },
 }
 
 const EmailNotificationsPage = () => {

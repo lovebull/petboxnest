@@ -70,7 +70,17 @@ const Summary = ({ cart }: SummaryProps) => {
       <div className="mt-5 grid gap-3 text-sm text-muted">
         <TrustItem icon={<CreditCard />} text="Secure checkout" />
         <TrustItem icon={<TruckFast />} text="Shipping calculated at checkout" />
-        <TrustItem icon={<CheckCircleSolid />} text="Easy order review before payment" />
+        <TrustItem
+          icon={<CheckCircleSolid />}
+          text={
+            <LocalizedClientLink
+              href="/refund-policy"
+              className="pbn-focus underline underline-offset-4 hover:text-brand"
+            >
+              Returns &amp; refund policy
+            </LocalizedClientLink>
+          }
+        />
       </div>
     </section>
   )
@@ -81,7 +91,7 @@ const TrustItem = ({
   text,
 }: {
   icon: React.ReactNode
-  text: string
+  text: React.ReactNode
 }) => {
   return (
     <div className="flex items-center gap-3 rounded-[16px] bg-mist px-4 py-3">

@@ -86,7 +86,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
                   <TrustLink
                     href="/refund-policy"
                     icon={<CheckCircle aria-hidden="true" />}
-                    label="Clear returns"
+                    label="Returns & refund policy"
                   />
                   <TrustItem
                     icon={<ShieldCheck aria-hidden="true" />}

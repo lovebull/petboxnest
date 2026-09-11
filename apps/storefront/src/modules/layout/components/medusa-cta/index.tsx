@@ -5,12 +5,12 @@ const MedusaCTA = () => {
     <Text className="flex items-center gap-x-1.5 text-[11px] leading-5">
       Powered by
       <a
-        href="https://www.shopify.com"
+        href="https://www.petboxnest.com"
         target="_blank"
         rel="noreferrer"
         className="hover:text-ui-fg-base"
       >
-        Shopify
+        PetBoxNest
       </a>
     </Text>
   )

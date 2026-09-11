@@ -5,6 +5,7 @@ import { Heading, Text, clx } from "@modules/common/components/ui"
 import PaymentButton from "../payment-button"
 import { useSearchParams } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const Review = ({ cart }: { cart: HttpTypes.StoreCart }) => {
   const searchParams = useSearchParams()
@@ -65,9 +66,28 @@ const Review = ({ cart }: { cart: HttpTypes.StoreCart }) => {
             <div className="w-full">
               <Text className="text-sm font-medium leading-6 text-muted">
                 By clicking the Place Order button, you confirm that you have
-                read, understand and accept our Terms of Use, Terms of Sale and
-                Returns Policy and acknowledge that you have read Medusa
-                Store&apos;s Privacy Policy.
+                read and accept our{" "}
+                <LocalizedClientLink
+                  href="/terms-of-service"
+                  className="pbn-focus font-bold text-brand underline underline-offset-4"
+                >
+                  Terms of Service
+                </LocalizedClientLink>
+                ,{" "}
+                <LocalizedClientLink
+                  href="/refund-policy"
+                  className="pbn-focus font-bold text-brand underline underline-offset-4"
+                >
+                  Returns &amp; Refunds Policy
+                </LocalizedClientLink>
+                , and{" "}
+                <LocalizedClientLink
+                  href="/privacy-policy"
+                  className="pbn-focus font-bold text-brand underline underline-offset-4"
+                >
+                  Privacy Policy
+                </LocalizedClientLink>
+                .
               </Text>
             </div>
           </div>

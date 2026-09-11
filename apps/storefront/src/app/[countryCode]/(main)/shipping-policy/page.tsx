@@ -19,18 +19,18 @@ export async function generateMetadata({
     path: "shipping-policy",
     title: "Shipping Policy | PetBoxNest",
     description:
-      "Review PetBoxNest order processing, U.S. shipping methods, estimated delivery times, tracking, and lost package information.",
+      "Review PetBoxNest order processing, U.S. and eligible international delivery, shipping costs, tracking, and help for missing or damaged packages.",
   })
 }
 
 const policyLinks = [
   { id: "processing-and-delivery", label: "Processing and delivery" },
-  { id: "shipping-costs", label: "Shipping Costs" },
-  { id: "shipping-carriers", label: "Shipping Carriers" },
-  { id: "lost-or-damaged-packages", label: "Lost or Damaged Packages" },
+  { id: "shipping-costs", label: "Shipping costs" },
+  { id: "shipping-carriers", label: "Shipping carriers" },
+  { id: "lost-or-damaged-packages", label: "Missing or damaged packages" },
   {
     id: "incorrect-shipping-information",
-    label: "Incorrect Shipping Information",
+    label: "Incorrect shipping information",
   },
   { id: "tracking-your-order", label: "Tracking your order" },
   {
@@ -38,6 +38,7 @@ const policyLinks = [
     label: "Address changes and delivery issues",
   },
   { id: "shipping-area", label: "Shipping area" },
+  { id: "returns", label: "Returns" },
 ]
 
 function PolicyCard({
@@ -113,7 +114,7 @@ export default function ShippingPolicyPage() {
               Last updated
             </p>
             <p className="mt-2 font-display text-[30px] font-bold leading-tight">
-              August 9, 2026
+              September 11, 2026
             </p>
             <p className="mt-5 border-t border-white/15 pt-5 text-sm leading-6 text-white/70">
               The delivery estimate shown at checkout is the most current
@@ -204,7 +205,9 @@ export default function ShippingPolicyPage() {
                   <tbody className="divide-y divide-[#E6E8EC]">
                     <tr>
                       <td className="px-5 py-4 font-bold">Standard</td>
-                      <td className="px-5 py-4">Calculated at checkout</td>
+                      <td className="px-5 py-4">
+                        $9.99 for U.S. orders under $100
+                      </td>
                       <td className="px-5 py-4">3-7 business days</td>
                     </tr>
                     <tr>
@@ -219,62 +222,87 @@ export default function ShippingPolicyPage() {
                       <td className="px-5 py-4">Orders of $100 or more</td>
                       <td className="px-5 py-4">3-7 business days</td>
                     </tr>
+                    <tr>
+                      <td className="px-5 py-4 font-bold">
+                        Eligible international shipping
+                      </td>
+                      <td className="px-5 py-4">$20 flat rate</td>
+                      <td className="px-5 py-4">
+                        Shown for eligible destinations at checkout
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
             </PolicyCard>
 
-            <PolicyCard id="shipping-costs" title="Shipping Costs" index={1}>
+            <PolicyCard id="shipping-costs" title="Shipping costs" index={1}>
               <p>
-                We offer the following shipping rates for orders placed on
-                Petboxnest:
+                Shipping options and the final charge are displayed before you
+                place an order. Current standard rates are:
               </p>
               <ul className="list-disc space-y-2 pl-5 marker:text-brand">
-                <li>Free Shipping for orders totaling over $100.</li>
+                <li>Free U.S. standard shipping on orders of $100 or more.</li>
                 <li>
-                  A flat rate of $9.99 for orders totaling less than $100.
+                  $9.99 U.S. standard shipping on orders under $100.
                 </li>
-                <li>International Shipping we charge Flat Rate of $20.</li>
+                <li>
+                  $20 flat-rate international shipping where an eligible
+                  destination is available at checkout.
+                </li>
               </ul>
+              <p>
+                Express rates are calculated at checkout. International duties,
+                taxes, customs fees, or brokerage charges are not included
+                unless checkout expressly states otherwise.
+              </p>
             </PolicyCard>
 
             <PolicyCard
               id="shipping-carriers"
-              title="Shipping Carriers"
+              title="Shipping carriers"
               index={2}
             >
               <p>
-                Petboxnest partners with reliable carriers to ensure your order
-                arrives safely and on time. We primarily use FedEx, UPS, and
-                USPS for all shipments.
+                PetBoxNest partners with reliable carriers to help your order
+                arrive safely and on time. We primarily use FedEx, UPS, and USPS
+                for shipments.
               </p>
             </PolicyCard>
 
             <PolicyCard
               id="lost-or-damaged-packages"
-              title="Lost or Damaged Packages"
+              title="Missing, incorrect, or damaged packages"
               index={3}
             >
               <p>
-                Petboxnest is not liable for any products damaged or lost during
-                shipping. If you received your order damaged, please contact the
-                shipment carrier to file a claim. Please save all packaging
-                materials and damaged goods before filing a claim.
+                Contact PetBoxNest first if a package is missing or an item
+                arrives incorrect, incomplete, or damaged. Report the issue
+                within seven calendar days of delivery and include your order
+                number, tracking details, a description, and clear photos when
+                applicable. Please keep the product and original packaging while
+                we review the claim.
+              </p>
+              <p>
+                Our customer care team will coordinate any necessary carrier
+                investigation. For a confirmed shipping issue, PetBoxNest will
+                arrange an appropriate replacement or refund and cover reasonable
+                replacement or return shipping costs.
               </p>
             </PolicyCard>
 
             <PolicyCard
               id="incorrect-shipping-information"
-              title="Incorrect Shipping Information"
+              title="Incorrect shipping information"
               index={4}
             >
               <p>
-                It is the responsibility of the customer to ensure that the
-                shipping address provided is accurate and complete.Petboxnest is
-                not responsible for orders delivered to incorrect addresses
-                supplied by the customer. If an order is returned to us due to
-                an incorrect address, the customer will be responsible for the
-                re-shipping costs.
+                Review the shipping address before placing your order and contact
+                us promptly if it needs to change. We can update an address only
+                before fulfillment begins. Once an order has shipped, an address
+                change is not guaranteed. If a carrier returns an order because
+                of an incorrect customer-provided address, additional shipping
+                charges may apply before it is sent again.
               </p>
             </PolicyCard>
 
@@ -305,12 +333,14 @@ export default function ShippingPolicyPage() {
                   guaranteed.
                 </li>
                 <li>
-                  If tracking shows delivered but the package is missing, check
-                  with household members and neighbors before contacting us.
+                  If tracking shows delivered, check the delivery area,
+                  household members, neighbors, and carrier notices, then allow
+                  up to 48 hours.
                 </li>
                 <li>
-                  Report damaged or lost packages promptly so we can review the
-                  shipment with the carrier.
+                  If the package remains missing, contact PetBoxNest with the
+                  order number and tracking details so we can coordinate the
+                  carrier investigation.
                 </li>
               </ul>
             </PolicyCard>
@@ -322,12 +352,46 @@ export default function ShippingPolicyPage() {
                   className="mt-1 shrink-0 text-brand"
                 />
                 <p>
-                  This policy applies to orders shipped within the United
-                  States. Availability, rates, and delivery times may vary for
+                  <strong className="font-bold text-ink">United States:</strong>{" "}
+                  We ship to eligible U.S. destinations presented at checkout.
+                  Availability, rates, carriers, and delivery times may vary for
                   Alaska, Hawaii, U.S. territories, PO boxes, and military
                   addresses.
                 </p>
               </div>
+              <div className="flex items-start gap-3">
+                <MapPin
+                  aria-hidden="true"
+                  className="mt-1 shrink-0 text-brand"
+                />
+                <p>
+                  <strong className="font-bold text-ink">
+                    International destinations:
+                  </strong>{" "}
+                  International delivery is available only when the destination
+                  country and a shipping option appear at checkout. Availability
+                  and delivery estimates vary by destination, and customs or
+                  import requirements may apply.
+                </p>
+              </div>
+            </PolicyCard>
+
+            <PolicyCard id="returns" title="Returns" index={8}>
+              <p>
+                Eligible unused, clean, and undamaged items may be returned
+                within 15 calendar days of confirmed delivery. Change-of-mind
+                return shipping is paid by the customer; PetBoxNest covers
+                reasonable return or replacement shipping for confirmed
+                incorrect, missing, damaged, or items with manufacturing
+                defects.
+              </p>
+              <LocalizedClientLink
+                href="/refund-policy"
+                className="pbn-focus inline-flex min-h-11 items-center gap-2 font-bold text-brand underline underline-offset-4"
+              >
+                Read the Returns &amp; Refunds Policy
+                <ArrowRight aria-hidden="true" />
+              </LocalizedClientLink>
             </PolicyCard>
           </article>
         </div>

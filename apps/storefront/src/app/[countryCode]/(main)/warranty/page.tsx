@@ -1,4 +1,5 @@
 import { createMarketingMetadata } from "@lib/util/seo-metadata"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import {
   BulletList,
   PolicySection,
@@ -23,16 +24,37 @@ export default function WarrantyPage() {
   return (
     <StaticPageShell
       eyebrow="Help"
-      title="Product warranty"
-      intro="Petboxnest products are covered against manufacturing defects for 90 days from the original delivery date, subject to the terms below."
-      updated="August 9, 2026"
+      title="30-day limited warranty"
+      intro="PetBoxNest products are covered only for qualifying manufacturing defects in materials or workmanship for 30 days from the original delivery date, subject to the terms below."
+      updated="September 11, 2026"
     >
-      <PolicySection title="What is covered">
+      <PolicySection title="Warranty coverage">
         <p>
-          The limited warranty covers defects in materials or workmanship that
-          prevent a product from performing as reasonably intended under normal
-          use.
+          This 30-day limited warranty applies only to qualifying manufacturing
+          defects in materials or workmanship that prevent a product from
+          performing as reasonably intended under normal use. Coverage begins on
+          the original delivery date and requires proof of purchase.
         </p>
+        <p>
+          It does not cover a change of mind, fit or preference, or damage that
+          occurs after delivery for reasons unrelated to a manufacturing defect.
+        </p>
+      </PolicySection>
+
+      <PolicySection title="Warranty and returns are different">
+        <p>
+          The ordinary return policy applies to eligible unused, clean, and
+          undamaged items returned within 15 calendar days of confirmed
+          delivery. The 30-day limited warranty applies only to qualifying
+          manufacturing defects and may still be available after the ordinary
+          return window has ended.
+        </p>
+        <LocalizedClientLink
+          href="/refund-policy"
+          className="pbn-focus inline-flex min-h-11 items-center font-bold text-brand underline underline-offset-4"
+        >
+          Read the Returns &amp; Refunds Policy
+        </LocalizedClientLink>
       </PolicySection>
 
       <PolicySection title="What is not covered">
@@ -55,15 +77,21 @@ export default function WarrantyPage() {
 
       <PolicySection title="Submit a claim">
         <p>
-          Email support@Petboxnest.com with your order number, a description of
+          Email support@petboxnest.com with your order number, a description of
           the issue, and clear photos or video showing the product and defect.
           Please keep the product until the claim is resolved.
         </p>
+      </PolicySection>
+
+      <PolicySection title="Available remedies">
         <p>
-          If approved, Petboxnest may repair the product, replace it with the
+          If approved, PetBoxNest may repair the product, replace it with the
           same or a comparable item, or issue a refund at our discretion. This
-          warranty does not limit rights that cannot be excluded under
-          applicable law.
+          remedy is separate from the ordinary 15-day return process.
+        </p>
+        <p>
+          This limited warranty does not exclude or reduce consumer rights or
+          remedies that cannot legally be excluded or limited.
         </p>
       </PolicySection>
     </StaticPageShell>

@@ -39,7 +39,11 @@ const faqGroups = [
       {
         question: "Can I change or cancel an order?",
         answer:
-          "Contact us as soon as possible. We can try to update an order before fulfillment begins, but changes and cancellations are not guaranteed after processing starts.",
+          "Contact us as soon as possible. We can accept a cancellation or change request only before the order enters fulfillment.",
+        detailLink: {
+          href: "/refund-policy",
+          label: "Read the Returns & Refunds Policy.",
+        },
       },
       {
         question: "What payment methods do you accept?",
@@ -49,7 +53,11 @@ const faqGroups = [
       {
         question: "Can I change the shipping address on my order?",
         answer:
-          "If you notice that your shipping address is incorrect, please log in to your account to cancel your order before it has been fulfilled. If your order has already been fulfilled, it may be too late to cancel the order, but please reach out to support@Petboxnest.com for assistance.",
+          "Contact us promptly. We can update an address only before fulfillment begins.",
+        detailLink: {
+          href: "/refund-policy",
+          label: "Read the Returns & Refunds Policy.",
+        },
       },
     ],
   },
@@ -62,27 +70,47 @@ const faqGroups = [
       {
         question: "When will my order ship?",
         answer:
-          "We are a small but mighty team, and orders typically take 2 business days to process before they are shipped. During peak seasons or promotional periods, order processing times may be extended. You’ll get a shipment notification email with a tracking number as soon as your package ships.\n\nMost orders are processed within one to two business days. You will receive tracking information when the carrier accepts the shipment.",
+          "Most orders are processed within one to two business days. Peak periods may take longer, and we will email tracking information when the carrier accepts your shipment.",
+        detailLink: {
+          href: "/shipping-policy",
+          label: "Read the Shipping Policy.",
+        },
       },
       {
         question: "Do you offer free shipping?",
         answer:
           "Standard shipping is free on qualifying U.S. orders of $100 or more. The checkout page shows the current shipping options and final cost.",
+        detailLink: {
+          href: "/shipping-policy",
+          label: "Read the Shipping Policy.",
+        },
       },
       {
         question: "What should I do if tracking says delivered?",
         answer:
-          "Check the delivery area, household members, neighbors, and any carrier notice. If the package remains missing, contact us with your order number and tracking details.",
+          "Check the delivery area, household members, neighbors, and carrier notices, then allow up to 48 hours. If it is still missing, contact us with your order number and tracking details.",
+        detailLink: {
+          href: "/refund-policy",
+          label: "Read the Returns & Refunds Policy.",
+        },
       },
       {
-        question: "My order was lost, stolen, or damaged. Can you help? ",
+        question: "What if my package is missing or an item is damaged?",
         answer:
-          "Occasionally a carrier will mark a package as delivered early, so we recommend keeping an eye out for your order for the next 48 hours. We also suggest checking all surrounding areas and/or entrances to your home to check that your package is not hiding or jammed, and asking your neighbors if they may have received it for you by mistake.If your package is lost or stolen after being marked as delivered or is damaged during transit, Petboxnest offers a replacement order free of charge or your original order value in store credit. Please email support@Petboxnest.com to start the process. ",
+          "Contact PetBoxNest within seven calendar days of delivery with your order number, a description, and photos when applicable. We will review confirmed missing, incorrect, or damaged items and provide the appropriate resolution.",
+        detailLink: {
+          href: "/refund-policy",
+          label: "Read the Returns & Refunds Policy.",
+        },
       },
       {
         question: "Other shipping issues",
         answer:
-          "While we strive to ensure smooth and timely delivery, unforeseen circumstances such as weather conditions, natural disasters, or shipping carrier delays may affect delivery times. Please email us at support@Petboxnest.com for any other delivery questions, issues, or concerns.",
+          "Weather, carrier disruptions, and other events may affect delivery times. Contact customer care if your shipment needs attention.",
+        detailLink: {
+          href: "/shipping-policy",
+          label: "Read the Shipping Policy.",
+        },
       },
     ],
   },
@@ -95,22 +123,29 @@ const faqGroups = [
       {
         question: "What is your return window?",
         answer:
-          "Eligible unused and unworn items may be returned within 30 days of confirmed delivery. Original tags, accessories, packaging, and proof of purchase are required.",
+          "Eligible unused, clean, and undamaged items may be returned within 15 calendar days of confirmed delivery.",
+        detailLink: {
+          href: "/refund-policy",
+          label: "Read the Returns & Refunds Policy.",
+        },
       },
       {
         question: "How long does a refund take?",
         answer:
-          "Approved returns are generally refunded within five business days after inspection. Your financial institution may need another five to ten business days to post the credit.",
+          "We initiate approved refunds to the original payment method within five business days after inspection. Your payment provider may need another five to ten business days to post the credit.",
+        detailLink: {
+          href: "/refund-policy",
+          label: "Read the Returns & Refunds Policy.",
+        },
       },
       {
         question: "What does the product warranty cover?",
         answer:
-          "Our 90-day limited warranty covers qualifying defects in materials or workmanship. Normal wear, impact damage, misuse, and unauthorized alterations are not covered.",
-      },
-      {
-        question: "What if I purchased through Amazon?",
-        answer:
-          "Orders completed on Amazon are managed under the order, delivery, and return options shown in your Amazon account. Contact Amazon support for marketplace order changes or returns.",
+          "Our 30-day limited warranty covers qualifying defects in materials or workmanship. Normal wear, impact damage, misuse, and unauthorized alterations are not covered.",
+        // detailLink: {
+        //   href: "/warranty",
+        //   label: "Read the Warranty.",
+        // },
       },
     ],
   },
@@ -125,7 +160,7 @@ const faqJsonLd = {
       name: item.question,
       acceptedAnswer: {
         "@type": "Answer",
-        text: item.answer,
+        text: [item.answer, item.detailLink?.label].filter(Boolean).join(" "),
       },
     })),
   ),
@@ -150,7 +185,7 @@ export default function FaqPage() {
               Frequently asked questions
             </h1>
             <p className="mt-6 max-w-[680px] text-lg leading-8 text-muted small:text-xl small:leading-9">
-              Start here for quick answers about shopping with Petboxnest. If
+              Start here for quick answers about shopping with PetBoxNest. If
               you still need help, our customer care team is ready.
             </p>
 
@@ -232,9 +267,17 @@ export default function FaqPage() {
                         </span>
                       </summary>
                       <div className="space-y-4 px-4 pb-5 pr-16 text-base leading-7 text-muted xsmall:px-5 xsmall:pb-6 xsmall:pr-20">
-                        {item.answer.split("\n\n").map((paragraph) => (
-                          <p key={paragraph}>{paragraph}</p>
-                        ))}
+                        <p>
+                          {item.answer}{" "}
+                          {item.detailLink && (
+                            <LocalizedClientLink
+                              href={item.detailLink.href}
+                              className="pbn-focus font-bold text-brand underline underline-offset-4"
+                            >
+                              {item.detailLink.label}
+                            </LocalizedClientLink>
+                          )}
+                        </p>
                       </div>
                     </details>
                   ))}

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import { listOrders } from "@lib/data/orders"
 import Divider from "@modules/common/components/divider"
 import TransferRequestForm from "@modules/account/components/transfer-request-form"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 export const metadata: Metadata = {
   title: "Orders",
@@ -28,8 +29,22 @@ export default async function Orders() {
           Orders
         </h1>
         <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
-          View your previous orders and their status. You can also create
-          returns or exchanges for your orders if needed.
+          View your previous orders and their status. To request an eligible
+          return, please{" "}
+          <LocalizedClientLink
+            href="/contact"
+            className="pbn-focus font-bold text-brand underline underline-offset-4"
+          >
+            contact customer care
+          </LocalizedClientLink>{" "}
+          and review our{" "}
+          <LocalizedClientLink
+            href="/refund-policy"
+            className="pbn-focus font-bold text-brand underline underline-offset-4"
+          >
+            Returns &amp; Refunds Policy
+          </LocalizedClientLink>
+          .
         </p>
       </div>
       <div className="space-y-8">

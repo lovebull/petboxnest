@@ -18,25 +18,23 @@ export async function generateMetadata({
     path: "terms-of-service",
     title: "Terms of Service | PetBoxNest",
     description:
-      "Read the terms governing use of the PetBoxNest website, product purchases, payments, shipping, returns, and account activity.",
+      "Read the terms governing use of PetBoxNest, product purchases, payments, shipping, returns, account activity, recurring plans, and user content.",
   })
 }
 
 const policyLinks = [
-  { id: "store-use-and-eligibility", label: "Store use and eligibility" },
-  {
-    id: "products-prices-and-availability",
-    label: "Products, prices, and availability",
-  },
-  { id: "orders-and-payment", label: "Orders and payment" },
-  {
-    id: "shipping-returns-and-warranty",
-    label: "Shipping, returns, and warranty",
-  },
-  {
-    id: "accounts-and-prohibited-conduct",
-    label: "Accounts and prohibited conduct",
-  },
+  { id: "acceptance", label: "Acceptance of terms" },
+  { id: "scope", label: "Scope of services" },
+  { id: "website-content", label: "Website content" },
+  { id: "accounts-and-sales", label: "Accounts and product sales" },
+  { id: "recurring-orders", label: "Recurring orders" },
+  { id: "billing-and-payments", label: "Billing and payments" },
+  { id: "renewals", label: "Recurring plan renewals" },
+  { id: "shipping-and-risk", label: "Shipping and risk" },
+  { id: "international-access", label: "International access" },
+  { id: "cancellations", label: "Cancellations" },
+  { id: "user-content", label: "Content submitted by users" },
+  { id: "prohibited-content", label: "Prohibited content" },
   { id: "intellectual-property", label: "Intellectual property" },
   { id: "disclaimers-and-liability", label: "Disclaimers and liability" },
   { id: "governing-law-and-changes", label: "Governing law and changes" },
@@ -100,7 +98,7 @@ export default function TermsOfServicePage() {
               Terms of service
             </h1>
             <p className="mt-6 max-w-[680px] text-lg leading-8 text-muted small:text-xl small:leading-9">
-              These terms govern your use of the Petboxnest storefront and
+              These terms govern your use of the PetBoxNest storefront and
               purchases made directly from us. By using the site, you agree to
               these terms.
             </p>
@@ -114,11 +112,11 @@ export default function TermsOfServicePage() {
               Last updated
             </p>
             <p className="mt-2 font-display text-[30px] font-bold leading-tight">
-              August 9, 2026
+              September 11, 2026
             </p>
             <p className="mt-5 border-t border-white/15 pt-5 text-sm leading-6 text-white/70">
               The rules for using our storefront and shopping directly with
-              Petboxnest.
+              PetBoxNest.
             </p>
           </aside>
         </div>
@@ -172,93 +170,287 @@ export default function TermsOfServicePage() {
           </aside>
 
           <article className="min-w-0 space-y-5 small:space-y-6">
-            <PolicyCard
-              id="store-use-and-eligibility"
-              title="Store use and eligibility"
-              index={0}
-            >
+            <section className="rounded-[24px] border-2 border-ink bg-yellow p-5 xsmall:p-7 small:rounded-[32px] small:p-10">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-dark">
+                Effective September 11, 2026
+              </p>
+              <h2 className="mt-3 font-display text-[30px] font-bold leading-[1.1] tracking-[-0.035em] xsmall:text-[34px] small:text-[40px]">
+                Welcome to PetBoxNest
+              </h2>
+              <p className="mt-5 max-w-[820px] text-base leading-7 text-ink/80 small:text-[17px] small:leading-8">
+                These Terms of Service apply when you visit our website, create
+                an account, submit content, or buy products from PetBoxNest.
+                Please read them together with the policies linked below. If you
+                do not agree, do not use the storefront or place an order.
+              </p>
+              <p className="mt-5 rounded-[16px] bg-white p-5 text-sm font-bold uppercase leading-6 tracking-[0.04em] text-ink">
+                Important: these terms include warranty disclaimers and limits
+                on liability. Nothing in these terms limits rights that cannot
+                legally be waived.
+              </p>
+            </section>
+
+            <PolicyCard id="acceptance" title="Acceptance of terms" index={0}>
               <p>
-                You may use the storefront only for lawful personal shopping.
-                You must provide current and accurate information and be legally
-                capable of entering into a binding agreement in your
-                jurisdiction.
+                By accessing or using the PetBoxNest website, purchasing a
+                product, creating an account, or submitting content, you agree
+                to these Terms of Service and the policies incorporated into
+                them. If you use the storefront for an organization, you confirm
+                that you are authorized to bind that organization.
+              </p>
+              <p>
+                You must be legally capable of entering into a binding agreement
+                in your jurisdiction. If you are not, you may use the storefront
+                only with the involvement of a parent or legal guardian.
+              </p>
+            </PolicyCard>
+
+            <PolicyCard id="scope" title="Scope of services" index={1}>
+              <p>
+                PetBoxNest provides an online storefront for browsing and
+                purchasing pet and home products, managing eligible account
+                features, contacting customer care, and interacting with content
+                we make available. Features may change, be suspended, or be
+                discontinued as the storefront develops.
+              </p>
+              <p>
+                We may use service providers for hosting, payments, order
+                fulfillment, shipping, analytics, communications, and other
+                operational functions. Their services may be subject to
+                additional terms and privacy notices.
+              </p>
+            </PolicyCard>
+
+            <PolicyCard id="website-content" title="Website content" index={2}>
+              <p>
+                We work to keep descriptions, photographs, dimensions, prices,
+                availability, and other storefront information accurate.
+                However, colors and details may vary by device, and typographical
+                or technical errors may occur. We may correct errors and update
+                content without prior notice.
+              </p>
+              <p>
+                Storefront content is provided for general product and shopping
+                information. It is not veterinary, medical, legal, or other
+                professional advice. Contact an appropriate professional when
+                your pet has a health or safety concern.
               </p>
             </PolicyCard>
 
             <PolicyCard
-              id="products-prices-and-availability"
-              title="Products, prices, and availability"
-              index={1}
-            >
-              <p>
-                We work to present product descriptions, images, prices, and
-                availability accurately. Colors and details may appear
-                differently depending on your device. We may correct errors,
-                update information, limit quantities, or discontinue products
-                without prior notice.
-              </p>
-            </PolicyCard>
-
-            <PolicyCard
-              id="orders-and-payment"
-              title="Orders and payment"
-              index={2}
-            >
-              <p>
-                An order confirmation acknowledges that we received your order;
-                it does not guarantee acceptance. We may refuse or cancel an
-                order for suspected fraud, payment failure, pricing error,
-                inventory shortage, resale activity, or other legitimate
-                reasons. If payment was captured for a canceled order, it will
-                be refunded.
-              </p>
-              <p>
-                You authorize us and our payment providers to charge the payment
-                method selected at checkout, including applicable taxes and
-                shipping.
-              </p>
-            </PolicyCard>
-
-            <PolicyCard
-              id="shipping-returns-and-warranty"
-              title="Shipping, returns, and warranty"
+              id="accounts-and-sales"
+              title="Registration, accounts, and product sales"
               index={3}
             >
               <p>
-                Delivery estimates are not guaranteed and may be affected by
-                carriers or events outside our reasonable control. Our Shipping
-                Policy, Refund Policy, and Warranty form part of these terms.
+                You agree to provide current, complete, and accurate account,
+                delivery, and billing information. You are responsible for
+                protecting your sign-in credentials and for activity performed
+                through your account. Tell us promptly if you suspect
+                unauthorized access.
+              </p>
+              <p>
+                Placing an order is an offer to purchase. An order confirmation
+                only acknowledges receipt and does not guarantee acceptance. We
+                may limit quantities or refuse or cancel an order for payment
+                failure, suspected fraud, pricing or inventory errors, resale
+                activity, legal restrictions, or another legitimate reason. If
+                we cancel after capturing payment, we will issue the appropriate
+                refund.
               </p>
             </PolicyCard>
 
             <PolicyCard
-              id="accounts-and-prohibited-conduct"
-              title="Accounts and prohibited conduct"
+              id="recurring-orders"
+              title="Recurring orders and scheduled delivery"
               index={4}
             >
               <p>
-                You are responsible for activity under your account and must
-                not:
+                PetBoxNest may make recurring delivery available for eligible
+                products. A paid recurring plan applies only when its price,
+                delivery frequency, renewal terms, and cancellation method are
+                clearly presented at checkout and you affirmatively enroll.
+                Signing up for marketing emails does not create a paid recurring
+                plan.
               </p>
+              <p>
+                Product selection, availability, taxes, shipping charges, and
+                delivery dates may vary as disclosed for the applicable plan.
+                We will not substitute a materially different product without
+                notice or permission where required.
+              </p>
+            </PolicyCard>
+
+            <PolicyCard
+              id="billing-and-payments"
+              title="Billing and payments"
+              index={5}
+            >
+              <p>
+                You authorize PetBoxNest and its payment providers to charge the
+                payment method selected at checkout for the displayed product
+                price, shipping, taxes, and other disclosed charges. You confirm
+                that you are authorized to use that payment method.
+              </p>
+              <p>
+                If a payment is declined, reversed, or otherwise unsuccessful,
+                we may pause fulfillment, request another payment method, or
+                cancel the affected order. Payment information is processed by
+                our payment providers in accordance with their applicable terms
+                and privacy notices.
+              </p>
+            </PolicyCard>
+
+            <PolicyCard
+              id="renewals"
+              title="Recurring plan renewals"
+              index={6}
+            >
+              <p>
+                If you enroll in a recurring plan, it will renew and charge at
+                the price and frequency disclosed when you enroll until it is
+                canceled. Material terms, including renewal charges and how to
+                cancel, must be displayed before enrollment, and your express
+                consent is required before recurring billing begins.
+              </p>
+              <p>
+                You may stop future renewals using the cancellation method shown
+                when you enroll or by contacting customer care. A cancellation
+                received after an order has entered fulfillment applies to
+                future renewals and does not automatically cancel the order
+                already being processed.
+              </p>
+            </PolicyCard>
+
+            <PolicyCard
+              id="shipping-and-risk"
+              title="Shipping, returns, and risk of loss"
+              index={7}
+            >
+              <p>
+                Delivery dates are estimates and may be affected by carriers,
+                weather, address issues, inventory, or events outside our
+                reasonable control. If we cannot ship within the promised time,
+                we will provide the choices and refund required by applicable
+                law.
+              </p>
+              <p>
+                Eligible unused items may be returned within 15 calendar days of
+                confirmed delivery. Details about eligibility, return shipping,
+                damaged or incorrect items, and refund timing appear in our{" "}
+                <LocalizedClientLink
+                  href="/refund-policy"
+                  className="pbn-focus font-bold text-brand underline underline-offset-4"
+                >
+                  Returns &amp; Refunds Policy
+                </LocalizedClientLink>
+                . Delivery terms appear in our{" "}
+                <LocalizedClientLink
+                  href="/shipping-policy"
+                  className="pbn-focus font-bold text-brand underline underline-offset-4"
+                >
+                  Shipping Policy
+                </LocalizedClientLink>
+                , and manufacturing-defect coverage appears in our{" "}
+                <LocalizedClientLink
+                  href="/warranty"
+                  className="pbn-focus font-bold text-brand underline underline-offset-4"
+                >
+                  Warranty
+                </LocalizedClientLink>
+                . These policies form part of these terms.
+              </p>
+            </PolicyCard>
+
+            <PolicyCard
+              id="international-access"
+              title="International access"
+              index={8}
+            >
+              <p>
+                The storefront is operated for the markets and delivery
+                destinations shown at checkout. Access from another country does
+                not mean that every product, feature, price, promotion, or
+                shipping method is available there.
+              </p>
+              <p>
+                You are responsible for complying with local laws that apply to
+                your access and purchase. Duties, taxes, customs charges, and
+                import restrictions apply only as disclosed or required for the
+                destination.
+              </p>
+            </PolicyCard>
+
+            <PolicyCard
+              id="cancellations"
+              title="Order and recurring plan cancellations"
+              index={9}
+            >
+              <p>
+                Contact customer care as soon as possible to request an order
+                cancellation or address change. We can accept the request only
+                before the order enters fulfillment. Once fulfillment begins,
+                the applicable return policy governs.
+              </p>
+              <p>
+                Canceling a recurring plan stops eligible future renewals; it
+                does not retroactively cancel charges or shipments already
+                processed. If PetBoxNest cancels an order after payment has been
+                captured, we will issue the appropriate refund to the original
+                payment method.
+              </p>
+            </PolicyCard>
+
+            <PolicyCard
+              id="user-content"
+              title="Content submitted by users"
+              index={10}
+            >
+              <p>
+                Reviews, photographs, comments, profile information, support
+                messages, and other material you submit remain yours. You grant
+                PetBoxNest a non-exclusive, worldwide, royalty-free license to
+                host, reproduce, format, display, and use that content as needed
+                to operate, improve, and promote the storefront and products,
+                subject to our Privacy Policy and applicable law.
+              </p>
+              <p>
+                You confirm that you own or have permission to submit the
+                content and that our permitted use will not violate another
+                person&apos;s rights. We may moderate, refuse, or remove content
+                that violates these terms, but we are not required to publish
+                every submission.
+              </p>
+            </PolicyCard>
+
+            <PolicyCard
+              id="prohibited-content"
+              title="Prohibited content and conduct"
+              index={11}
+            >
+              <p>You must not submit content or use the storefront to:</p>
               <ul className="list-disc space-y-2 pl-5 marker:text-brand marker:text-lg">
                 <li>
-                  Use the storefront for unlawful, fraudulent, or abusive
-                  activity.
+                  Engage in unlawful, fraudulent, deceptive, threatening,
+                  harassing, hateful, or abusive activity.
                 </li>
                 <li>
-                  Attempt to access accounts, data, or systems without
-                  authorization.
+                  Infringe privacy, publicity, copyright, trademark, or other
+                  rights.
                 </li>
                 <li>
-                  Interfere with storefront security, availability, or
-                  operation.
+                  Upload malware, harmful code, spam, false reviews, or
+                  misleading product claims.
                 </li>
                 <li>
-                  Copy, scrape, resell, or exploit site content without
-                  permission.
+                  Attempt unauthorized access, interfere with security or
+                  availability, scrape data at disruptive scale, or evade access
+                  controls.
                 </li>
                 <li>
-                  Upload malicious code or infringe another person's rights.
+                  Impersonate another person, collect personal information
+                  without permission, or use the storefront for unauthorized
+                  commercial solicitation.
                 </li>
               </ul>
             </PolicyCard>
@@ -266,12 +458,12 @@ export default function TermsOfServicePage() {
             <PolicyCard
               id="intellectual-property"
               title="Intellectual property"
-              index={5}
+              index={12}
             >
               <p>
-                The Petboxnest name, site design, text, graphics, product
+                The PetBoxNest name, site design, text, graphics, product
                 imagery, and other original content are owned by or licensed to
-                Petboxnest and are protected by applicable intellectual-property
+                PetBoxNest and are protected by applicable intellectual-property
                 laws. Personal, noncommercial viewing is permitted; no other
                 license is granted.
               </p>
@@ -280,26 +472,26 @@ export default function TermsOfServicePage() {
             <PolicyCard
               id="disclaimers-and-liability"
               title="Disclaimers and liability"
-              index={6}
+              index={13}
             >
               <p>
                 To the extent permitted by law, the storefront is provided “as
                 is” and “as available.” We do not guarantee uninterrupted or
-                error-free operation. Petboxnest will not be liable for
+                error-free operation. PetBoxNest will not be liable for
                 indirect, incidental, special, or consequential losses arising
                 from use of the storefront or products where such limitations
                 are legally permitted.
               </p>
               <p>
-                Nothing in these terms excludes warranties, remedies, or
-                liability that cannot legally be excluded or limited.
+                Nothing in these terms excludes warranties, remedies, consumer
+                rights, or liability that cannot legally be excluded or limited.
               </p>
             </PolicyCard>
 
             <PolicyCard
               id="governing-law-and-changes"
               title="Governing law and changes"
-              index={7}
+              index={14}
             >
               <p>
                 These terms are governed by applicable U.S. federal and state
@@ -310,7 +502,7 @@ export default function TermsOfServicePage() {
               </p>
               <p>
                 Questions about these terms may be sent to
-                support@Petboxnest.com.
+                support@petboxnest.com.
               </p>
             </PolicyCard>
           </article>

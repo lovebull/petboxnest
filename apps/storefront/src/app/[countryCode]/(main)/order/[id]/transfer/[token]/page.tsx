@@ -1,6 +1,12 @@
+import { createPrivateMetadata } from "@lib/util/seo-metadata"
 import { Heading, Text } from "@modules/common/components/ui"
 import TransferActions from "@modules/order/components/transfer-actions"
 import TransferImage from "@modules/order/components/transfer-image"
+
+export const metadata = createPrivateMetadata(
+  "Confirm Order Transfer | PetBoxNest",
+  "Review and respond to a private PetBoxNest order transfer request.",
+)
 
 export default async function TransferPage({
   params,

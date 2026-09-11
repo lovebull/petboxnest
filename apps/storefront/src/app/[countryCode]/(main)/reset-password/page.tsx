@@ -1,5 +1,11 @@
+import { createPrivateMetadata } from "@lib/util/seo-metadata"
 import ResetPassword from "@modules/account/components/reset-password"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+
+export const metadata = createPrivateMetadata(
+  "Reset Password | PetBoxNest",
+  "Choose a new password for your PetBoxNest account.",
+)
 
 export default async function ResetPasswordPage({ searchParams }: { searchParams: Promise<{ email?: string; token?: string }> }) {
   const { email = "", token = "" } = await searchParams

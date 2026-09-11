@@ -1,6 +1,12 @@
 import { acceptTransferRequest } from "@lib/data/orders"
+import { createPrivateMetadata } from "@lib/util/seo-metadata"
 import { Heading, Text } from "@modules/common/components/ui"
 import TransferImage from "@modules/order/components/transfer-image"
+
+export const metadata = createPrivateMetadata(
+  "Order Transfer Accepted | PetBoxNest",
+  "Confirmation that a private PetBoxNest order transfer was accepted.",
+)
 
 export default async function TransferPage({
   params,

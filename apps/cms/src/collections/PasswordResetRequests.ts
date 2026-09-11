@@ -44,7 +44,7 @@ export const PasswordResetRequests: CollectionConfig = {
   },
   admin: {
     defaultColumns: ["username", "requestedAt", "ipAddress", "fingerprintHash", "deliveryStatus"],
-    group: bilingualLabel("表单", "Forms"),
+    group: bilingualLabel("安全与审计", "Security & Audit"),
     listSearchableFields: ["username", "ipAddress", "fingerprintHash"],
     pagination: { defaultLimit: 25, limits: [10, 25, 50, 100] },
     useAsTitle: "username",

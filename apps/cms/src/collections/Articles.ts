@@ -11,7 +11,7 @@ const getStorefrontRevalidationUrl = () => {
   const protocol = process.env.PUBLIC_PROTOCOL || "http"
   const host = process.env.PUBLIC_HOST || "127.0.0.1"
 
-  return `${protocol}://${host}:8010/api/revalidate`
+  return `${protocol}://${host}:7000/api/revalidate`
 }
 
 const revalidateArticlePages = async ({

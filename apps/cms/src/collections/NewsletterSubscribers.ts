@@ -56,7 +56,7 @@ export const NewsletterSubscribers: CollectionConfig = {
     delete: ({ req }) => Boolean(req.user),
   },
   admin: {
-    defaultColumns: ["email", "status", "source", "confirmedAt", "updatedAt"],
+    defaultColumns: ["email", "status", "source", "resendMessageId", "confirmedAt", "updatedAt"],
     group: { en: "Marketing", zh: "营销", "zh-TW": "行銷" },
     useAsTitle: "email",
   },

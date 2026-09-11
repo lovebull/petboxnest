@@ -49,7 +49,7 @@ module.exports = defineConfig({
       authCors: expandPublicUrl(
         process.env.AUTH_CORS,
         `http://localhost:7000,http://localhost:7020,${publicUrl(
-          8010
+          7000
         )},${publicUrl(7020)}`
       ),
       jwtSecret: process.env.JWT_SECRET,

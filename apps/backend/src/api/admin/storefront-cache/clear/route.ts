@@ -21,7 +21,7 @@ const getStorefrontRevalidateUrl = () => {
   const storefrontUrl =
     process.env.STOREFRONT_URL ||
     process.env.NEXT_PUBLIC_BASE_URL ||
-    "http://127.0.0.1:8010"
+    "http://127.0.0.1:7000"
 
   return `${storefrontUrl.replace(/\/$/, "")}/api/revalidate`
 }

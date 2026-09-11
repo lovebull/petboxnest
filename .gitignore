@@ -61,3 +61,6 @@ Thumbs.db
 
 apps/cms/media/*
 审计结论.md
+
+apps/cms/package.json
+apps/cms/next.config.mjs

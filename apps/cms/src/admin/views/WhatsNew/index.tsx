@@ -4,6 +4,29 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.10.1",
+    date: "2026-09-11 01:52:47 EDT",
+    title: "🔧 Storefront 端口与 CMS 管理体验修复",
+    items: [
+      "🔌 Storefront 开发、启动脚本和公开地址工具统一使用 7000 端口，与项目文档及实际本地服务保持一致。",
+      "🔄 Backend 管理端缓存清理接口与 Payload 文章发布钩子的默认刷新地址统一指向 Storefront 7000 端口。",
+      "🌐 Medusa Store CORS、Auth CORS 和 Storefront URL 默认值同步调整为 7000，覆盖本机与 PUBLIC_HOST 访问场景。",
+      "⚙️ Backend、Storefront 与 CMS 的环境模板和域名部署示例同步更新 Storefront 端口及缓存刷新地址。",
+      "📨 Newsletter Subscribers 默认列表新增 Resend 邮件编号列，管理员可直接核对订阅确认邮件的投递回执。",
+      "🛡️ Password Reset Requests 从表单分组迁移至安全与审计分组，使账户恢复审计记录归类更清晰。",
+      "🙈 Git 忽略规则登记 CMS 本地开发配置文件，并按发布约束将其当前修改排除在本次提交之外。",
+    ],
+    fixes: [
+      "🐛 修复 Storefront 脚本仍运行于 8010，而项目约定和其他服务使用 7000，导致本地访问地址不一致的问题。",
+      "🐛 修复 Backend 管理端清理 Storefront 缓存时默认请求 8010，未配置显式地址时刷新失败的问题。",
+      "🐛 修复 Payload 文章保存或删除后默认向 8010 发送 Revalidation 请求，文章缓存无法及时更新的问题。",
+      "🐛 修复 Medusa Store 与 Auth CORS 默认来源残留 8010，使用 PUBLIC_HOST:7000 访问时可能被跨域策略拦截的问题。",
+      "🐛 修复环境模板和域名部署示例继续生成 8010 地址，复制配置后服务间回调指向错误端口的问题。",
+      "🐛 修复 Newsletter 默认列表未展示 Resend 邮件编号，管理员需要进入详情才能核对邮件投递记录的问题。",
+      "🐛 修复密码重置审计记录归入普通表单栏目，安全相关数据难以集中查找的问题。",
+    ],
+  },
+  {
     version: "v1.10.0",
     date: "2026-09-10 12:49:50 EDT",
     title: "📧 订单发货、退款与运营邮件通知升级",

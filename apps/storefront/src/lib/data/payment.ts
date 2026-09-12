@@ -41,7 +41,7 @@ export const listCartPaymentMethods = async (
   } catch (error) {
     return {
       ok: false,
-      error: reportCheckoutResourceError("payment_providers", error, {
+      error: await reportCheckoutResourceError("payment_providers", error, {
         cartId,
         regionId,
         countryCode,

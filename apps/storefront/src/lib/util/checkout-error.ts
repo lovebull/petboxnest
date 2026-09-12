@@ -2,6 +2,7 @@ import "server-only"
 
 import { createHash, randomUUID } from "node:crypto"
 
+import { sdk } from "@lib/config"
 import type {
   CheckoutResource,
   CheckoutResourceError,
@@ -34,11 +35,11 @@ const redactCartId = (cartId?: string) => {
   return createHash("sha256").update(cartId).digest("hex").slice(0, 12)
 }
 
-export function reportCheckoutResourceError(
+export async function reportCheckoutResourceError(
   resource: CheckoutResource,
   error: unknown,
   context: CheckoutErrorContext = {}
-): CheckoutResourceError {
+): Promise<CheckoutResourceError> {
   const requestError = error as MedusaRequestError
   const status =
     typeof requestError?.status === "number" ? requestError.status : undefined
@@ -47,21 +48,37 @@ export function reportCheckoutResourceError(
   const errorId = `PBN-${randomUUID().slice(0, 8).toUpperCase()}`
   const code = status ? `MEDUSA_${status}` : "MEDUSA_REQUEST_FAILED"
 
+  const payload = {
+    error_id: errorId,
+    resource,
+    code,
+    status_code: status,
+    retryable,
+    cart_id_hash: redactCartId(context.cartId),
+    region_id: context.regionId,
+    country_code: context.countryCode,
+    occurred_at: new Date().toISOString(),
+  }
+
   console.error(
     "[checkout-resource-error]",
-    JSON.stringify({
-      event: "checkout_dependency_failed",
-      error_id: errorId,
-      resource,
-      code,
-      status,
-      retryable,
-      cart_id_hash: redactCartId(context.cartId),
-      region_id: context.regionId,
-      country_code: context.countryCode,
-      occurred_at: new Date().toISOString(),
-    })
+    JSON.stringify({ event: "checkout_dependency_failed", ...payload })
   )
+
+  try {
+    await sdk.client.fetch("/store/checkout-errors", {
+      method: "POST",
+      body: payload,
+      cache: "no-store",
+    })
+  } catch {
+    // The checkout dependency and the logging API can fail together. Keep the
+    // original structured server log as a fallback without exposing raw errors.
+    console.error(
+      "[checkout-error-reporting-failed]",
+      JSON.stringify({ error_id: errorId })
+    )
+  }
 
   return {
     resource,

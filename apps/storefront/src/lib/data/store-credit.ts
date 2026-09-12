@@ -81,7 +81,7 @@ export async function listStoreCreditAccountsForCheckout(
   } catch (error) {
     return {
       ok: false,
-      error: reportCheckoutResourceError("store_credit", error, {
+      error: await reportCheckoutResourceError("store_credit", error, {
         cartId,
         countryCode,
       }),

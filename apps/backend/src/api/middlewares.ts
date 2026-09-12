@@ -206,6 +206,39 @@ const UpdateAfterSalesStatusSchema = z.strictObject({
   medusa_claim_id: z.string().max(100).nullable().optional(),
 })
 
+const CheckoutErrorResourceSchema = z.enum([
+  "cart",
+  "shipping_options",
+  "payment_providers",
+  "store_credit",
+])
+const CheckoutErrorResolutionSchema = z.enum(["open", "resolved", "ignored"])
+const CreateCheckoutErrorSchema = z.strictObject({
+  error_id: z.string().regex(/^PBN-[A-F0-9]{8}$/),
+  resource: CheckoutErrorResourceSchema,
+  code: z.string().trim().min(1).max(80),
+  status_code: z.number().int().min(100).max(599).nullable().optional(),
+  retryable: z.boolean(),
+  cart_id_hash: z.string().regex(/^[a-f0-9]{12}$/).nullable().optional(),
+  region_id: z.string().trim().min(1).max(120).nullable().optional(),
+  country_code: z.string().trim().regex(/^[a-zA-Z]{2}$/).nullable().optional(),
+  occurred_at: z.iso.datetime(),
+})
+const CheckoutErrorListSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  q: z.string().trim().max(120).optional(),
+  resource: CheckoutErrorResourceSchema.optional(),
+  resolution_status: CheckoutErrorResolutionSchema.optional(),
+  retryable: z.enum(["true", "false"]).transform((value) => value === "true").optional(),
+  date_from: z.iso.datetime().optional(),
+  date_to: z.iso.datetime().optional(),
+})
+const UpdateCheckoutErrorSchema = z.strictObject({
+  resolution_status: CheckoutErrorResolutionSchema,
+  admin_note: z.string().trim().max(2000).nullable().optional(),
+})
+
 export const GetReferralConversionsSchema = z.object({
   status: z
     .enum(["pending", "paid", "partially_reversed", "reversed", "cancelled"])
@@ -216,6 +249,21 @@ export const GetReferralConversionsSchema = z.object({
 
 export default defineMiddlewares({
   routes: [
+    {
+      matcher: "/store/checkout-errors",
+      method: "POST",
+      middlewares: [validateAndTransformBody(CreateCheckoutErrorSchema)],
+    },
+    {
+      matcher: "/admin/checkout-errors",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(CheckoutErrorListSchema, {})],
+    },
+    {
+      matcher: "/admin/checkout-errors/:id/status",
+      method: "POST",
+      middlewares: [validateAndTransformBody(UpdateCheckoutErrorSchema)],
+    },
     {
       matcher: "/store/orders/:id/after-sales",
       method: ["GET", "POST"],

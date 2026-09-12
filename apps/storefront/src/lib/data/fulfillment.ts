@@ -32,7 +32,7 @@ export const listCartShippingMethods = async (
   } catch (error) {
     return {
       ok: false,
-      error: reportCheckoutResourceError("shipping_options", error, {
+      error: await reportCheckoutResourceError("shipping_options", error, {
         cartId,
         countryCode,
       }),

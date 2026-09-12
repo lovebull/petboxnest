@@ -32,6 +32,7 @@ module.exports = {
         yellow: "#FFD966",
         coral: "#FF766C",
         sky: "#BFE3F4",
+        danger: "#B5403C",
         grey: {
           0: "#FFFFFF",
           5: "#F9FAFB",

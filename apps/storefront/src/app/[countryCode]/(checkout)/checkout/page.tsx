@@ -10,7 +10,7 @@ import { createPrivateMetadata } from "@lib/util/seo-metadata"
 
 export const metadata: Metadata = createPrivateMetadata(
   "Secure Checkout | PetBoxNest",
-  "Confirm delivery and payment details for your PetBoxNest order.",
+  "Confirm delivery and payment details for your PetBoxNest order."
 )
 
 export default async function Checkout({
@@ -18,10 +18,10 @@ export default async function Checkout({
 }: {
   params: Promise<{ countryCode: string }>
 }) {
+  const { countryCode } = await params
   const cart = await retrieveCart()
 
   if (!cart?.items?.length) {
-    const { countryCode } = await params
     redirect(`/${countryCode}/cart?checkout_notice=empty-cart`)
   }
 
@@ -57,7 +57,11 @@ export default async function Checkout({
         <div className="mt-6 grid grid-cols-1 items-start gap-6 small:mt-8 small:grid-cols-[minmax(0,1fr)_minmax(340px,416px)] small:gap-8 medium:gap-10">
           <div className="min-w-0 order-2 small:order-1">
             <PaymentWrapper cart={cart}>
-              <CheckoutForm cart={cart} customer={customer} />
+              <CheckoutForm
+                cart={cart}
+                customer={customer}
+                countryCode={countryCode}
+              />
             </PaymentWrapper>
           </div>
           <div className="order-1 min-w-0 small:order-2">

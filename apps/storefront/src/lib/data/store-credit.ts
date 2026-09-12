@@ -5,6 +5,8 @@ import medusaError from "@lib/util/medusa-error"
 import { revalidateTag } from "next/cache"
 
 import { getAuthHeaders, getCacheTag, getCartId } from "./cookies"
+import type { CheckoutResourceResult } from "@lib/types/checkout-resource"
+import { reportCheckoutResourceError } from "@lib/util/checkout-error"
 
 export type StoreCreditAccount = {
   id: string
@@ -23,7 +25,12 @@ export type CashbackEntry = {
   pending_amount: number
   credited_amount: number
   reversed_amount: number
-  status: "pending" | "available" | "partially_reversed" | "reversed" | "cancelled"
+  status:
+    | "pending"
+    | "available"
+    | "partially_reversed"
+    | "reversed"
+    | "cancelled"
   available_at: string
   created_at: string
 }
@@ -47,6 +54,39 @@ export async function listStoreCreditAccounts(currencyCode?: string) {
     )
     .then(({ store_credit_accounts }) => store_credit_accounts)
     .catch(() => [])
+}
+
+export async function listStoreCreditAccountsForCheckout(
+  currencyCode: string,
+  cartId: string,
+  countryCode?: string
+): Promise<CheckoutResourceResult<StoreCreditAccount[]>> {
+  const headers = await getAuthHeaders()
+
+  if (!headers.authorization) {
+    return { ok: true, data: [] }
+  }
+
+  try {
+    const { store_credit_accounts } = await sdk.client.fetch<{
+      store_credit_accounts: StoreCreditAccount[]
+    }>("/store/store-credit-accounts", {
+      method: "GET",
+      headers,
+      query: { currency_code: currencyCode },
+      cache: "no-store",
+    })
+
+    return { ok: true, data: store_credit_accounts }
+  } catch (error) {
+    return {
+      ok: false,
+      error: reportCheckoutResourceError("store_credit", error, {
+        cartId,
+        countryCode,
+      }),
+    }
+  }
 }
 
 export async function listCashbackEntries() {

@@ -3,33 +3,41 @@
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
+import type { CheckoutResourceResult } from "@lib/types/checkout-resource"
+import { reportCheckoutResourceError } from "@lib/util/checkout-error"
 
-export const listCartShippingMethods = async (cartId: string) => {
+export const listCartShippingMethods = async (
+  cartId: string,
+  countryCode?: string
+): Promise<CheckoutResourceResult<HttpTypes.StoreCartShippingOption[]>> => {
   const headers = {
     ...(await getAuthHeaders()),
   }
 
-  const next = {
-    ...(await getCacheOptions("fulfillment")),
-  }
+  try {
+    const { shipping_options } =
+      await sdk.client.fetch<HttpTypes.StoreShippingOptionListResponse>(
+        `/store/shipping-options`,
+        {
+          method: "GET",
+          query: {
+            cart_id: cartId,
+          },
+          headers,
+          cache: "no-store",
+        }
+      )
 
-  return sdk.client
-    .fetch<HttpTypes.StoreShippingOptionListResponse>(
-      `/store/shipping-options`,
-      {
-        method: "GET",
-        query: {
-          cart_id: cartId,
-        },
-        headers,
-        next,
-        cache: "force-cache",
-      }
-    )
-    .then(({ shipping_options }) => shipping_options)
-    .catch(() => {
-      return null
-    })
+    return { ok: true, data: shipping_options }
+  } catch (error) {
+    return {
+      ok: false,
+      error: reportCheckoutResourceError("shipping_options", error, {
+        cartId,
+        countryCode,
+      }),
+    }
+  }
 }
 
 export const calculatePriceForShippingOption = async (

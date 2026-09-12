@@ -16,6 +16,8 @@ import EmailVerificationEmail from "./emails/email-verification"
 import ShipmentCreatedEmail from "./emails/shipment-created"
 import PaymentRefundedEmail from "./emails/payment-refunded"
 import AdminOrderPlacedEmail from "./emails/admin-order-placed"
+import AfterSalesCodeEmail from "./emails/after-sales-code"
+import AfterSalesUpdateEmail from "./emails/after-sales-update"
 
 type ResendOptions = {
   api_key: string
@@ -40,6 +42,8 @@ enum Templates {
   SHIPMENT_CREATED = "shipment-created",
   PAYMENT_REFUNDED = "payment-refunded",
   ADMIN_ORDER_PLACED = "admin-order-placed",
+  AFTER_SALES_CODE = "after-sales-code",
+  AFTER_SALES_UPDATE = "after-sales-update",
 }
 
 const templates: Partial<Record<Templates, (props: any) => ReactNode>> = {
@@ -49,6 +53,8 @@ const templates: Partial<Record<Templates, (props: any) => ReactNode>> = {
   [Templates.SHIPMENT_CREATED]: ShipmentCreatedEmail,
   [Templates.PAYMENT_REFUNDED]: PaymentRefundedEmail,
   [Templates.ADMIN_ORDER_PLACED]: AdminOrderPlacedEmail,
+  [Templates.AFTER_SALES_CODE]: AfterSalesCodeEmail,
+  [Templates.AFTER_SALES_UPDATE]: AfterSalesUpdateEmail,
 }
 
 class ResendNotificationProviderService extends AbstractNotificationProviderService {
@@ -110,6 +116,10 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
         return "Your PetBoxNest refund has been processed"
       case Templates.ADMIN_ORDER_PLACED:
         return "New PetBoxNest order received"
+      case Templates.AFTER_SALES_CODE:
+        return "Your PetBoxNest return verification code"
+      case Templates.AFTER_SALES_UPDATE:
+        return "Your PetBoxNest after-sales request has been updated"
       default:
         return "petboxnest notification"
     }

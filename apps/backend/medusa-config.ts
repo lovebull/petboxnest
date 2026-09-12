@@ -23,6 +23,17 @@ const expandPublicUrl = (value: string | undefined, fallback: string) => {
     .replaceAll("${PUBLIC_HOST}", publicHost)
 }
 
+const mergeCorsOrigins = (configured: string, required: string[]) =>
+  Array.from(
+    new Set(
+      configured
+        .split(",")
+        .map((origin) => origin.trim())
+        .concat(required)
+        .filter(Boolean)
+    )
+  ).join(",")
+
 module.exports = defineConfig({
   featureFlags: {
     view_configurations: true,
@@ -38,22 +49,26 @@ module.exports = defineConfig({
     redisUrl: process.env.REDIS_URL,
     redisPrefix: "petboxnest:",
     http: {
-      storeCors: expandPublicUrl(
-        process.env.STORE_CORS,
-        `http://localhost:7000,${publicUrl(7000)}`
+      storeCors: mergeCorsOrigins(
+        expandPublicUrl(process.env.STORE_CORS, publicUrl(7000)),
+        ["http://localhost:7000", "http://127.0.0.1:7000"]
       ),
-      adminCors: expandPublicUrl(
-        process.env.ADMIN_CORS,
-        `http://localhost:7020,${publicUrl(7020)}`
+      adminCors: mergeCorsOrigins(
+        expandPublicUrl(process.env.ADMIN_CORS, publicUrl(7020)),
+        ["http://localhost:7020", "http://127.0.0.1:7020"]
       ),
-      authCors: expandPublicUrl(
-        process.env.AUTH_CORS,
-        `http://localhost:7000,http://localhost:7020,${publicUrl(
-          7000
-        )},${publicUrl(7020)}`
+      authCors: mergeCorsOrigins(
+        expandPublicUrl(process.env.AUTH_CORS, `${publicUrl(7000)},${publicUrl(7020)}`),
+        [
+          "http://localhost:7000",
+          "http://127.0.0.1:7000",
+          "http://localhost:7020",
+          "http://127.0.0.1:7020",
+        ]
       ),
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
+
       authVerificationsPerActor: {
         customer: [
           {
@@ -79,6 +94,9 @@ module.exports = defineConfig({
     },
   },
   modules: [
+    {
+      resolve: "./src/modules/after-sales",
+    },
     {
       resolve: "./src/modules/product-review",
     },

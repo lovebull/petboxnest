@@ -9,6 +9,7 @@ import OrderDetails from "@modules/order/components/order-details"
 import OrderSummary from "@modules/order/components/order-summary"
 import ShippingDetails from "@modules/order/components/shipping-details"
 import React from "react"
+import AfterSales from "@modules/order/components/after-sales"
 
 type OrderDetailsTemplateProps = {
   order: HttpTypes.StoreOrder
@@ -37,6 +38,7 @@ const OrderDetailsTemplate: React.FC<OrderDetailsTemplateProps> = ({
         <Items order={order} />
         <ShippingDetails order={order} />
         <OrderSummary order={order} />
+        <AfterSales order={order} />
         <Help />
       </div>
     </div>

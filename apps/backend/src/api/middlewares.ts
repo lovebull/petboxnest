@@ -1,4 +1,5 @@
 import {
+  authenticate,
   defineMiddlewares,
   validateAndTransformBody,
   validateAndTransformQuery,
@@ -134,6 +135,77 @@ const BatchModerateReviewsSchema = ModerateReviewSchema.extend({
 })
 const ReviewReplySchema = z.strictObject({ content: z.string().trim().min(2).max(2000) })
 
+const AfterSalesTypeSchema = z.enum(["cancel", "return", "exchange", "damaged_claim", "lost_claim"])
+const CreateAfterSalesTypeSchema = z.enum(["cancel", "return", "damaged_claim", "lost_claim"])
+const AfterSalesStatusSchema = z.enum([
+  "draft", "pending_review", "approved", "rejected", "awaiting_shipment",
+  "in_transit", "received", "processing_refund", "refunded",
+  "replacement_processing", "completed", "cancelled",
+])
+const AfterSalesItemSchema = z.strictObject({
+  order_item_id: z.string().min(1),
+  quantity: z.number().int().min(1).max(100),
+  reason_code: z.string().trim().min(1).max(80).optional(),
+  exchange_variant_id: z.string().min(1).optional(),
+})
+const AfterSalesAttachmentSchema = z.strictObject({
+  url: z.url().max(2000),
+  mime_type: z.enum(["image/jpeg", "image/png", "image/webp"]),
+  size: z.number().int().positive().max(8_000_000),
+})
+const AfterSalesUploadSchema = z.strictObject({
+  files: z.array(z.strictObject({
+    name: z.string().trim().min(1).max(180),
+    mime_type: z.enum(["image/jpeg", "image/png", "image/webp"]),
+    size: z.number().int().positive().max(8_000_000),
+  })).min(1).max(8),
+})
+const GuestAfterSalesUploadSchema = AfterSalesUploadSchema.extend({
+  order_id: z.string().min(1),
+  guest_access_token: z.string().length(64),
+})
+const CreateAfterSalesRequestSchema = z.strictObject({
+  type: CreateAfterSalesTypeSchema,
+  reason_code: z.string().trim().min(1).max(80),
+  reason_text: z.string().trim().max(500).nullable().optional(),
+  customer_note: z.string().trim().max(2000).nullable().optional(),
+  items: z.array(AfterSalesItemSchema).max(50).default([]),
+  attachment_urls: z.array(AfterSalesAttachmentSchema).max(8).optional(),
+})
+const CreateGuestAfterSalesRequestSchema = CreateAfterSalesRequestSchema.extend({
+  order_id: z.string().min(1),
+  guest_access_token: z.string().length(64),
+})
+const GuestCodeRequestSchema = z.strictObject({
+  order_reference: z.string().trim().min(1).max(80),
+  email: z.email().max(320),
+})
+const GuestCodeVerifySchema = z.strictObject({
+  order_reference: z.string().trim().min(1).max(80),
+  email: z.email().max(320),
+  code: z.string().regex(/^\d{6}$/),
+})
+const GuestOrderBodySchema = z.strictObject({
+  order_id: z.string().min(1),
+  access_token: z.string().length(64),
+})
+const AdminAfterSalesListSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  status: AfterSalesStatusSchema.optional(),
+  type: AfterSalesTypeSchema.optional(),
+  q: z.string().trim().max(120).optional(),
+})
+const UpdateAfterSalesStatusSchema = z.strictObject({
+  status: AfterSalesStatusSchema,
+  admin_note: z.string().trim().max(2000).nullable().optional(),
+  customer_message: z.string().trim().max(2000).nullable().optional(),
+  resolution: z.enum(["replacement", "partial_refund", "full_refund", "store_credit", "no_action"]).nullable().optional(),
+  medusa_return_id: z.string().max(100).nullable().optional(),
+  medusa_exchange_id: z.string().max(100).nullable().optional(),
+  medusa_claim_id: z.string().max(100).nullable().optional(),
+})
+
 export const GetReferralConversionsSchema = z.object({
   status: z
     .enum(["pending", "paid", "partially_reversed", "reversed", "cancelled"])
@@ -144,6 +216,69 @@ export const GetReferralConversionsSchema = z.object({
 
 export default defineMiddlewares({
   routes: [
+    {
+      matcher: "/store/orders/:id/after-sales",
+      method: ["GET", "POST"],
+      middlewares: [authenticate("customer", ["session", "bearer"])],
+    },
+    {
+      matcher: "/store/orders/:id/after-sales/uploads",
+      method: "POST",
+      middlewares: [
+        authenticate("customer", ["session", "bearer"]),
+        validateAndTransformBody(AfterSalesUploadSchema),
+      ],
+    },
+    {
+      matcher: "/store/after-sales/guest/uploads",
+      method: "POST",
+      middlewares: [validateAndTransformBody(GuestAfterSalesUploadSchema)],
+    },
+    {
+      matcher: "/store/orders/:id/invoice",
+      method: "GET",
+      middlewares: [authenticate("customer", ["session", "bearer"])],
+    },
+    {
+      matcher: "/store/after-sales/:id/cancel",
+      method: "POST",
+      middlewares: [authenticate("customer", ["session", "bearer"])],
+    },
+    {
+      matcher: "/store/orders/:id/after-sales",
+      method: "POST",
+      middlewares: [validateAndTransformBody(CreateAfterSalesRequestSchema)],
+    },
+    {
+      matcher: "/store/after-sales/guest/request-code",
+      method: "POST",
+      middlewares: [validateAndTransformBody(GuestCodeRequestSchema)],
+    },
+    {
+      matcher: "/store/after-sales/guest/verify",
+      method: "POST",
+      middlewares: [validateAndTransformBody(GuestCodeVerifySchema)],
+    },
+    {
+      matcher: "/store/after-sales/guest/order",
+      method: "POST",
+      middlewares: [validateAndTransformBody(GuestOrderBodySchema)],
+    },
+    {
+      matcher: "/store/after-sales/guest/requests",
+      method: "POST",
+      middlewares: [validateAndTransformBody(CreateGuestAfterSalesRequestSchema)],
+    },
+    {
+      matcher: "/admin/after-sales",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(AdminAfterSalesListSchema, {})],
+    },
+    {
+      matcher: "/admin/after-sales/:id/status",
+      method: "POST",
+      middlewares: [validateAndTransformBody(UpdateAfterSalesStatusSchema)],
+    },
     {
       matcher: "/admin/cashback/settings",
       method: "POST",

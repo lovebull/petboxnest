@@ -64,3 +64,6 @@ apps/cms/media/*
 
 apps/cms/package.json
 apps/cms/next.config.mjs
+
+# Local database safety backups
+apps/backend/backups/*.dump

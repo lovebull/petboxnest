@@ -8,6 +8,7 @@ const supportLinks = [
   { label: "FAQ", href: "/faq" },
   { label: "Shipping", href: "/shipping-policy" },
   { label: "Refund policy", href: "/refund-policy" },
+  { label: "Guest returns", href: "/returns" },
 ]
 
 const companyLinks = [

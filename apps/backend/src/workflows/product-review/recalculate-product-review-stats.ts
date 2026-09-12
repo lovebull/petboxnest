@@ -22,7 +22,7 @@ const recalculateProductReviewStatsStep = createStep(
     )
     const productIds = [...new Set(input.product_ids)]
     const previous: PreviousStat[] = []
-    const stats = []
+    const stats: Awaited<ReturnType<typeof recalculateStats>>[] = []
 
     for (const productId of productIds) {
       const [existing] = await service.listProductReviewStats({
@@ -49,9 +49,9 @@ const recalculateProductReviewStatsStep = createStep(
 
       if (previous && current) {
         await service.updateProductReviewStats({
-          ...(previous as never),
+          ...previous,
           id: current.id,
-        })
+        } as never)
       } else if (!previous && current) {
         await service.deleteProductReviewStats(current.id)
       }

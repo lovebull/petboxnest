@@ -4,7 +4,7 @@ import { Client } from "pg"
 
 const baseUrl = process.env.PRODUCT_REVIEW_TEST_BASE_URL || "http://127.0.0.1:7020"
 const customerEmail = process.env.PRODUCT_REVIEW_TEST_CUSTOMER || "admin@example.com"
-const customerPassword = process.env.PRODUCT_REVIEW_TEST_PASSWORD || "123456"
+const customerPassword = process.env.PRODUCT_REVIEW_TEST_PASSWORD || "12345678"
 const storefrontEnv = fs.readFileSync(
   path.resolve(process.cwd(), "../storefront/.env.local"),
   "utf8"

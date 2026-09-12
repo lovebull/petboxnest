@@ -25,10 +25,11 @@ const moderateProductReviewStep = createStep(
       moderated_at: new Date(),
       flag_reason: input.status === "flagged" ? input.reason!.trim() : null,
     })
+    const action = input.status === "approved" ? "approve" as const : input.status === "flagged" ? "flag" as const : "restore_pending" as const
     await service.createProductReviewAudits({
       review_id: input.id,
       admin_user_id: input.admin_user_id,
-      action: input.status === "approved" ? "approve" : input.status === "flagged" ? "flag" : "restore_pending",
+      action,
       previous_status: previous.status,
       new_status: input.status,
       reason: input.reason?.trim() || null,
@@ -60,7 +61,8 @@ const batchModerateStep = createStep("batch-moderate", async (input: BatchModera
   let auditIds: string[] = []
   try {
     const updated = await service.updateProductReviews(input.ids.map((id) => ({ id, status: input.status, moderated_by: input.admin_user_id, moderated_at: new Date(), flag_reason: input.status === "flagged" ? input.reason!.trim() : null })))
-    const audits = await service.createProductReviewAudits(reviews.map((review) => ({ review_id: review.id, admin_user_id: input.admin_user_id, action: input.status === "approved" ? "approve" : input.status === "flagged" ? "flag" : "restore_pending", previous_status: review.status, new_status: input.status, reason: input.reason?.trim() || null, batch_id: batchId })))
+    const action = input.status === "approved" ? "approve" as const : input.status === "flagged" ? "flag" as const : "restore_pending" as const
+    const audits = await service.createProductReviewAudits(reviews.map((review) => ({ review_id: review.id, admin_user_id: input.admin_user_id, action, previous_status: review.status, new_status: input.status, reason: input.reason?.trim() || null, batch_id: batchId })))
     auditIds = audits.map((audit) => audit.id)
     const productIds = [...new Set(reviews.map((review) => review.product_id))]
     return new StepResponse(

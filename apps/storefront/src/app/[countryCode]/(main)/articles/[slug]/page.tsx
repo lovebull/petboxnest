@@ -20,7 +20,20 @@ type Props = {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params
-  const article = await getArticleBySlug(params.slug)
+  let article
+
+  try {
+    article = await getArticleBySlug(params.slug)
+  } catch {
+    return {
+      title: "The Nest Journal | PetBoxNest",
+      description:
+        "Read PetBoxNest pet care ideas, home-friendly guides, and stories for happier pets and calmer homes.",
+      alternates: {
+        canonical: `/${params.countryCode}/articles/${params.slug}`,
+      },
+    }
+  }
 
   if (!article) {
     return {

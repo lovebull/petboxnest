@@ -4,6 +4,29 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.16.2",
+    date: "2026-09-13 13:18:15 EDT",
+    title: "⏱️ Storefront Payload 读取超时与降级修复",
+    items: [
+      "⏱️ 新增 Storefront 统一 Payload fetch helper，集中处理请求超时、AbortController、HTTP 状态、JSON 解析失败和结构化错误日志。",
+      "⚙️ Storefront 环境模板新增 PAYLOAD_REQUEST_TIMEOUT_MS 与 PAYLOAD_PAGINATION_TIMEOUT_MS，可按环境配置 Payload 单次请求和分页读取超时时间。",
+      "📰 文章列表、文章详情和全量文章读取改用统一 Payload 请求入口，继续保留 Next.js force-cache、revalidate 和 cache tag。",
+      "🧭 全量文章分页新增总超时、最大页数和 nextPage 前进校验，避免 Payload 分页异常时无限读取或长时间阻塞。",
+      "🧩 文章列表 metadata 改为可选读取最新文章，CMS 短暂不可用时仍可返回基础 SEO 信息。",
+      "🛡️ 文章详情 metadata 捕获 Payload 读取异常并返回安全默认 metadata，同时保留正文页面由错误边界处理必需读取失败。",
+      "🖼️ 在线图片与商品增强内容统一接入 Payload fetch helper，非核心展示数据继续保持失败时空数组或 null 降级。",
+    ],
+    fixes: [
+      "🐛 修复 Payload 请求缺少明确超时，CMS 响应慢或网络异常时可能导致 Storefront 页面长时间等待的问题。",
+      "🐛 修复文章全量分页读取没有总耗时限制和页数保护，异常 nextPage 可能造成重复请求或阻塞生成流程的问题。",
+      "🐛 修复 Payload HTTP 错误、网络错误和 JSON 解析错误缺少统一结构化日志，排查具体资源失败原因不够清晰的问题。",
+      "🐛 修复文章列表 metadata 强依赖最新文章读取，CMS 短暂异常时可能影响文章列表 SEO 生成的问题。",
+      "🐛 修复文章详情 metadata 在文章接口异常时直接失败，页面无法获得基础标题、描述和 canonical 兜底的问题。",
+      "🐛 修复在线图片和商品增强内容各自维护 fetch 错误处理，失败行为与文章读取不一致的问题。",
+      "🐛 修复 Storefront 环境示例缺少 Payload 超时配置，部署时难以按环境调节 CMS 请求保护阈值的问题。",
+    ],
+  },
+  {
     version: "v1.16.1",
     date: "2026-09-13 13:01:04 EDT",
     title: "🧱 Storefront 错误日志独立模块修复",

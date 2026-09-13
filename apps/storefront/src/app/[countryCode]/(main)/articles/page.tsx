@@ -14,7 +14,7 @@ export async function generateMetadata({
 }: {
   params: Promise<{ countryCode: string }>
 }) {
-  const [latestArticle] = await getLatestArticles({ limit: 1 })
+  const [latestArticle] = await getLatestArticles({ limit: 1, optional: true })
 
   return createMarketingMetadata({
     countryCode: (await params).countryCode,

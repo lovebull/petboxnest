@@ -2,6 +2,7 @@
 
 import "server-only"
 
+import { fetchPayloadJson } from "./payload-fetch"
 import { getPayloadServerUrl } from "@lib/util/public-url"
 
 export type PayloadMedia = {
@@ -173,25 +174,19 @@ export async function getProductEnhancement({
   }
 
   try {
-    const response = await fetch(
-      `${PAYLOAD_SERVER_URL}/api/product-enhancements?${query.toString()}`,
-      {
-        cache: "force-cache",
-        next: {
-          revalidate: PAYLOAD_REVALIDATE_SECONDS,
-          tags: [
-            "payload-product-enhancements",
-            `payload-product-enhancement-${productHandle}`,
-          ],
-        },
-      }
-    )
-
-    if (!response.ok) {
-      return null
-    }
-
-    const data = (await response.json()) as PayloadListResponse<ProductEnhancement>
+    const data = await fetchPayloadJson<
+      PayloadListResponse<ProductEnhancement>
+    >(`${PAYLOAD_SERVER_URL}/api/product-enhancements?${query.toString()}`, {
+      resource: "product-enhancement",
+      cache: "force-cache",
+      next: {
+        revalidate: PAYLOAD_REVALIDATE_SECONDS,
+        tags: [
+          "payload-product-enhancements",
+          `payload-product-enhancement-${productHandle}`,
+        ],
+      },
+    })
 
     return data.docs[0] ? normalizeEnhancement(data.docs[0]) : null
   } catch {

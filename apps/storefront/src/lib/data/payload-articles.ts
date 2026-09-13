@@ -2,6 +2,13 @@
 
 import "server-only"
 
+import {
+  fetchPayloadJson,
+  getPayloadPaginationTimeoutMs,
+  getPayloadRequestTimeoutMs,
+  PayloadRequestError,
+  reportPayloadRequestError,
+} from "./payload-fetch"
 import { getPayloadServerUrl } from "@lib/util/public-url"
 
 type PayloadMedia = {
@@ -63,6 +70,7 @@ type PayloadListResponse<T> = {
 const PAYLOAD_SERVER_URL = getPayloadServerUrl()
 
 const PAYLOAD_REVALIDATE_SECONDS = 3600
+const PAYLOAD_MAX_ARTICLE_PAGES = 100
 
 function withPayloadUrl(url?: string) {
   if (!url || url.startsWith("http")) {
@@ -103,7 +111,7 @@ function normalizeArticle(article: PayloadArticle): PayloadArticle {
                   ? {
                       ...article.hero_image.sizes.thumbnail,
                       url: withPayloadUrl(
-                        article.hero_image.sizes.thumbnail.url,
+                        article.hero_image.sizes.thumbnail.url
                       ),
                     }
                   : undefined,
@@ -146,22 +154,17 @@ export async function getLatestArticles({
   query.set("where[status][equals]", "published")
 
   try {
-    const response = await fetch(
+    const data = await fetchPayloadJson<PayloadListResponse<PayloadArticle>>(
       `${PAYLOAD_SERVER_URL}/api/articles?${query.toString()}`,
       {
+        resource: "articles",
         cache: "force-cache",
         next: {
           revalidate: PAYLOAD_REVALIDATE_SECONDS,
           tags: ["payload-articles"],
         },
-      },
+      }
     )
-
-    if (!response.ok) {
-      throw new Error(`Payload articles request failed (${response.status})`)
-    }
-
-    const data = (await response.json()) as PayloadListResponse<PayloadArticle>
 
     return data.docs.map(normalizeArticle)
   } catch (error) {
@@ -178,9 +181,11 @@ export async function getLatestArticles({
 
 export async function getAllPublishedArticles(): Promise<PayloadArticle[]> {
   const articles: PayloadArticle[] = []
+  const startedAt = Date.now()
+  const paginationTimeoutMs = getPayloadPaginationTimeoutMs()
   let page = 1
 
-  while (true) {
+  while (page <= PAYLOAD_MAX_ARTICLE_PAGES) {
     const query = new URLSearchParams()
     query.set("limit", "100")
     query.set("page", String(page))
@@ -188,39 +193,64 @@ export async function getAllPublishedArticles(): Promise<PayloadArticle[]> {
     query.set("sort", "-published_at")
     query.set("where[status][equals]", "published")
 
-    try {
-      const response = await fetch(
-        `${PAYLOAD_SERVER_URL}/api/articles?${query.toString()}`,
-        {
-          cache: "force-cache",
-          next: {
-            revalidate: PAYLOAD_REVALIDATE_SECONDS,
-            tags: ["payload-articles"],
-          },
-        },
-      )
+    const remainingTime = paginationTimeoutMs - (Date.now() - startedAt)
 
-      if (!response.ok) {
-        throw new Error(`Payload articles request failed (${response.status})`)
-      }
-
-      const data =
-        (await response.json()) as PayloadListResponse<PayloadArticle>
-      articles.push(...data.docs.map(normalizeArticle))
-
-      if (!data.hasNextPage || !data.nextPage) {
-        return articles
-      }
-
-      page = data.nextPage
-    } catch (error) {
+    if (remainingTime <= 0) {
+      const error = new PayloadRequestError({
+        kind: "timeout",
+        resource: "articles",
+        timeoutMs: paginationTimeoutMs,
+        durationMs: Date.now() - startedAt,
+      })
+      reportPayloadRequestError(error)
       throw error
     }
+
+    const data = await fetchPayloadJson<PayloadListResponse<PayloadArticle>>(
+      `${PAYLOAD_SERVER_URL}/api/articles?${query.toString()}`,
+      {
+        resource: "articles",
+        timeoutMs: Math.min(getPayloadRequestTimeoutMs(), remainingTime),
+        cache: "force-cache",
+        next: {
+          revalidate: PAYLOAD_REVALIDATE_SECONDS,
+          tags: ["payload-articles"],
+        },
+      }
+    )
+
+    articles.push(...data.docs.map(normalizeArticle))
+
+    if (!data.hasNextPage || !data.nextPage) {
+      return articles
+    }
+
+    if (data.nextPage <= page) {
+      const error = new PayloadRequestError({
+        kind: "invalid_response",
+        resource: "articles",
+        timeoutMs: paginationTimeoutMs,
+        durationMs: Date.now() - startedAt,
+      })
+      reportPayloadRequestError(error)
+      throw error
+    }
+
+    page = data.nextPage
   }
+
+  const error = new PayloadRequestError({
+    kind: "invalid_response",
+    resource: "articles",
+    timeoutMs: paginationTimeoutMs,
+    durationMs: Date.now() - startedAt,
+  })
+  reportPayloadRequestError(error)
+  throw error
 }
 
 export async function getArticleBySlug(
-  slug: string,
+  slug: string
 ): Promise<PayloadArticle | null> {
   const query = new URLSearchParams()
   query.set("limit", "1")
@@ -228,27 +258,19 @@ export async function getArticleBySlug(
   query.set("where[status][equals]", "published")
   query.set("where[slug][equals]", slug)
 
-  try {
-    const response = await fetch(
-      `${PAYLOAD_SERVER_URL}/api/articles?${query.toString()}`,
-      {
-        cache: "force-cache",
-        next: {
-          revalidate: PAYLOAD_REVALIDATE_SECONDS,
-          tags: ["payload-articles", `payload-article-${slug}`],
-        },
+  const data = await fetchPayloadJson<PayloadListResponse<PayloadArticle>>(
+    `${PAYLOAD_SERVER_URL}/api/articles?${query.toString()}`,
+    {
+      resource: "article",
+      cache: "force-cache",
+      next: {
+        revalidate: PAYLOAD_REVALIDATE_SECONDS,
+        tags: ["payload-articles", `payload-article-${slug}`],
       },
-    )
-
-    if (!response.ok) {
-      throw new Error(`Payload article request failed (${response.status})`)
     }
+  )
 
-    const data = (await response.json()) as PayloadListResponse<PayloadArticle>
-    const article = data.docs[0]
+  const article = data.docs[0]
 
-    return article ? normalizeArticle(article) : null
-  } catch (error) {
-    throw error
-  }
+  return article ? normalizeArticle(article) : null
 }

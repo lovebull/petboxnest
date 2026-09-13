@@ -2,6 +2,7 @@
 
 import "server-only"
 
+import { fetchPayloadJson } from "./payload-fetch"
 import { getPayloadServerUrl } from "@lib/util/public-url"
 
 export type PayloadOnlineImage = {
@@ -47,23 +48,16 @@ export async function getHeroOnlineImages({
   query.set("sort", "-updatedAt")
 
   try {
-    const response = await fetch(
-      `${PAYLOAD_SERVER_URL}/api/online-images?${query.toString()}`,
-      {
-        cache: "force-cache",
-        next: {
-          revalidate: PAYLOAD_REVALIDATE_SECONDS,
-          tags: ["payload-online-images"],
-        },
+    const data = await fetchPayloadJson<
+      PayloadListResponse<PayloadOnlineImage>
+    >(`${PAYLOAD_SERVER_URL}/api/online-images?${query.toString()}`, {
+      resource: "online-images",
+      cache: "force-cache",
+      next: {
+        revalidate: PAYLOAD_REVALIDATE_SECONDS,
+        tags: ["payload-online-images"],
       },
-    )
-
-    if (!response.ok) {
-      return []
-    }
-
-    const data =
-      (await response.json()) as PayloadListResponse<PayloadOnlineImage>
+    })
 
     return data.docs.map(normalizeOnlineImage)
   } catch {

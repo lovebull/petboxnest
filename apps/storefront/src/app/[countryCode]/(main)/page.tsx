@@ -9,6 +9,7 @@ import SocialProof from "@modules/home/components/social-proof"
 import TrustStrip from "@modules/home/components/trust-strip"
 import { getRegion } from "@lib/data/regions"
 import { createMarketingMetadata } from "@lib/util/seo-metadata"
+import { notFound } from "next/navigation"
 
 export async function generateMetadata({
   params,
@@ -35,7 +36,7 @@ export default async function Home(props: {
   const region = await getRegion(countryCode)
 
   if (!region) {
-    return null
+    notFound()
   }
 
   return (

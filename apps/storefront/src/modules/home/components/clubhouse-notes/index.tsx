@@ -6,7 +6,7 @@ import {
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const ClubhouseNotes = async () => {
-  const articles = await getLatestArticles({ limit: 3 })
+  const articles = await getLatestArticles({ limit: 3, optional: true })
 
   if (!articles.length) {
     return null
@@ -37,7 +37,7 @@ const ClubhouseNotes = async () => {
             const imageUrl = getArticleThumbnailImage(article)
             const imageAlt = article.hero_image?.alt || article.title
             const date = formatArticleDate(
-              article.published_at || article.createdAt || article.updatedAt
+              article.published_at || article.createdAt || article.updatedAt,
             )
 
             return (

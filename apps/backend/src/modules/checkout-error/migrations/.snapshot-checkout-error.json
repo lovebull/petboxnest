@@ -55,7 +55,8 @@
             "cart",
             "shipping_options",
             "payment_providers",
-            "store_credit"
+            "store_credit",
+            "route_render"
           ],
           "mappedType": "enum"
         },
@@ -141,6 +142,38 @@
         },
         "country_code": {
           "name": "country_code",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "route_key": {
+          "name": "route_key",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "digest": {
+          "name": "digest",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,

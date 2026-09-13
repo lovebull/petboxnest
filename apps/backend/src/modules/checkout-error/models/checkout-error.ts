@@ -1,4 +1,4 @@
-import { model } from "@medusajs/framework/utils"
+import { model } from "@medusajs/framework/utils";
 
 const CheckoutError = model
   .define(
@@ -11,6 +11,7 @@ const CheckoutError = model
         "shipping_options",
         "payment_providers",
         "store_credit",
+        "route_render",
       ]),
       code: model.text(),
       status_code: model.number().nullable(),
@@ -18,6 +19,8 @@ const CheckoutError = model
       cart_id_hash: model.text().nullable(),
       region_id: model.text().nullable(),
       country_code: model.text().nullable(),
+      route_key: model.text().nullable(),
+      digest: model.text().nullable(),
       source: model.text().default("storefront"),
       occurred_at: model.dateTime(),
       resolution_status: model
@@ -26,7 +29,7 @@ const CheckoutError = model
       admin_note: model.text().nullable(),
       resolved_by: model.text().nullable(),
       resolved_at: model.dateTime().nullable(),
-    }
+    },
   )
   .indexes([
     {
@@ -41,6 +44,6 @@ const CheckoutError = model
       name: "IDX_pbn_checkout_error_code_occurred",
       on: ["code", "occurred_at"],
     },
-  ])
+  ]);
 
-export default CheckoutError
+export default CheckoutError;

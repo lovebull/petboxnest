@@ -59,9 +59,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       regions.flatMap((region) =>
         (region.countries ?? [])
           .map((country) => country.iso_2?.toLowerCase())
-          .filter((country): country is string => Boolean(country))
-      )
-    )
+          .filter((country): country is string => Boolean(country)),
+      ),
+    ),
   )
 
   const countries = countryCodes.length ? countryCodes : ["us"]
@@ -71,12 +71,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       listCollections({ limit: "100" })
         .then(({ collections }) => collections)
         .catch(() => []),
-      getAllPublishedArticles(),
+      getAllPublishedArticles().catch(() => []),
       Promise.all(
         countries.map(async (countryCode) => ({
           countryCode,
           products: await listAllProducts(countryCode).catch(() => []),
-        }))
+        })),
       ),
     ])
 
@@ -86,8 +86,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const path of PUBLIC_PATHS) {
       entries.push({
         url: `${baseUrl}/${countryCode}${path}`,
-        changeFrequency:
-          path === "" || path === "/store" ? "daily" : "monthly",
+        changeFrequency: path === "" || path === "/store" ? "daily" : "monthly",
         priority: path === "" ? 1 : path === "/store" ? 0.9 : 0.6,
       })
     }
@@ -101,7 +100,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       entries.push({
         url: `${baseUrl}/${countryCode}/products/${encodeURIComponent(
-          product.handle
+          product.handle,
         )}`,
         lastModified: toDate(product.updated_at),
         changeFrequency: "weekly",
@@ -115,7 +114,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       entries.push({
         url: `${baseUrl}/${countryCode}/categories/${encodeURIComponent(
-          category.handle
+          category.handle,
         )}`,
         lastModified: toDate(category.updated_at),
         changeFrequency: "weekly",
@@ -128,7 +127,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       entries.push({
         url: `${baseUrl}/${countryCode}/collections/${encodeURIComponent(
-          collection.handle
+          collection.handle,
         )}`,
         lastModified: toDate(collection.updated_at),
         changeFrequency: "weekly",
@@ -141,10 +140,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       entries.push({
         url: `${baseUrl}/${countryCode}/articles/${encodeURIComponent(
-          article.slug
+          article.slug,
         )}`,
         lastModified: toDate(
-          article.updatedAt || article.published_at || article.createdAt
+          article.updatedAt || article.published_at || article.createdAt,
         ),
         changeFrequency: "monthly",
         priority: 0.6,

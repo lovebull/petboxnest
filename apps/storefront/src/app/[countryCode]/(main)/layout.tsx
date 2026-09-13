@@ -6,6 +6,8 @@ import LayoutSessionBanners from "@modules/layout/components/layout-session-bann
 import { LayoutSessionProvider } from "@modules/layout/components/layout-session-provider"
 import Footer from "@modules/layout/templates/footer"
 import Nav from "@modules/layout/templates/nav"
+import { HeaderSkeleton } from "@modules/skeletons/templates/route-skeletons"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -14,7 +16,9 @@ export const metadata: Metadata = {
 export default function PageLayout(props: { children: React.ReactNode }) {
   return (
     <LayoutSessionProvider>
-      <Nav />
+      <Suspense fallback={<HeaderSkeleton />}>
+        <Nav />
+      </Suspense>
       <LayoutSessionBanners />
       {props.children}
       <Footer />

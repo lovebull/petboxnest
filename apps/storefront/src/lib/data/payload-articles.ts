@@ -103,7 +103,7 @@ function normalizeArticle(article: PayloadArticle): PayloadArticle {
                   ? {
                       ...article.hero_image.sizes.thumbnail,
                       url: withPayloadUrl(
-                        article.hero_image.sizes.thumbnail.url
+                        article.hero_image.sizes.thumbnail.url,
                       ),
                     }
                   : undefined,
@@ -134,8 +134,10 @@ function normalizeArticle(article: PayloadArticle): PayloadArticle {
 
 export async function getLatestArticles({
   limit = 3,
+  optional = false,
 }: {
   limit?: number
+  optional?: boolean
 } = {}): Promise<PayloadArticle[]> {
   const query = new URLSearchParams()
   query.set("limit", String(limit))
@@ -156,14 +158,21 @@ export async function getLatestArticles({
     )
 
     if (!response.ok) {
-      return []
+      throw new Error(`Payload articles request failed (${response.status})`)
     }
 
     const data = (await response.json()) as PayloadListResponse<PayloadArticle>
 
     return data.docs.map(normalizeArticle)
-  } catch {
-    return []
+  } catch (error) {
+    if (optional) {
+      console.error("[payload-articles-optional-unavailable]", {
+        resource: "article-list",
+      })
+      return []
+    }
+
+    throw error
   }
 }
 
@@ -188,14 +197,15 @@ export async function getAllPublishedArticles(): Promise<PayloadArticle[]> {
             revalidate: PAYLOAD_REVALIDATE_SECONDS,
             tags: ["payload-articles"],
           },
-        }
+        },
       )
 
       if (!response.ok) {
-        return articles
+        throw new Error(`Payload articles request failed (${response.status})`)
       }
 
-      const data = (await response.json()) as PayloadListResponse<PayloadArticle>
+      const data =
+        (await response.json()) as PayloadListResponse<PayloadArticle>
       articles.push(...data.docs.map(normalizeArticle))
 
       if (!data.hasNextPage || !data.nextPage) {
@@ -203,8 +213,8 @@ export async function getAllPublishedArticles(): Promise<PayloadArticle[]> {
       }
 
       page = data.nextPage
-    } catch {
-      return articles
+    } catch (error) {
+      throw error
     }
   }
 }
@@ -231,14 +241,14 @@ export async function getArticleBySlug(
     )
 
     if (!response.ok) {
-      return null
+      throw new Error(`Payload article request failed (${response.status})`)
     }
 
     const data = (await response.json()) as PayloadListResponse<PayloadArticle>
     const article = data.docs[0]
 
     return article ? normalizeArticle(article) : null
-  } catch {
-    return null
+  } catch (error) {
+    throw error
   }
 }

@@ -4,6 +4,34 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.16.0",
+    date: "2026-09-13 08:25:22 EDT",
+    title: "🧯 Storefront 错误恢复与加载体验升级",
+    items: [
+      "🧯 新增 Storefront 通用错误状态组件，页面异常时展示可重试、返回商店和联系支持入口，并生成可供客服定位的 PBN 参考编号。",
+      "📡 新增前台路由错误上报工具，将 Next.js route render 错误以 route_render 资源写入 Backend 错误日志接口。",
+      "🧾 Checkout Error 模块扩展 route_render 资源类型，新增 route_key 与 digest 字段、数据库迁移和后台详情展示。",
+      "🧭 Medusa Admin 将结账错误日志升级为前台错误日志，支持搜索错误编号、代码、路由范围、digest 和脱敏上下文。",
+      "🌐 新增全局、国家、主站、账户、文章、购物车、商品详情和 Checkout 路由错误边界，覆盖主要 Storefront 页面失败场景。",
+      "⏳ 新增通用路由加载骨架模板，并为首页、商品列表、商品详情、文章列表、文章详情和账户页接入对应 loading.tsx。",
+      "🧱 主站布局为导航栏增加 Suspense 与 HeaderSkeleton，导航数据加载期间保持页面顶部结构稳定。",
+      "🗺️ Sitemap 文章读取失败时单独降级为空列表，避免 Payload 文章接口短暂异常影响商品、分类和基础页面 Sitemap 生成。",
+      "📰 文章读取函数区分可选读取和必需读取，首页 Clubhouse Notes 可静默降级，文章详情和列表则交由页面错误边界处理。",
+      "🪵 新增 Next.js instrumentation 请求错误日志，记录 routePath、routeType、renderSource、method 和 digest，便于服务端排查。",
+    ],
+    fixes: [
+      "🐛 修复前台页面渲染异常只显示默认错误界面，客户缺少重试、返回商店和联系支持入口的问题。",
+      "🐛 修复页面级异常没有进入后台错误日志，运营和客服无法通过 PBN 参考编号追踪具体路由失败的问题。",
+      "🐛 修复 Checkout 错误日志只能记录结账依赖资源，无法归档首页、商品页、文章页、账户页等 route render 错误的问题。",
+      "🐛 修复错误日志后台无法查看 Next.js digest 和路由范围，排查服务端渲染失败时缺少关键定位信息的问题。",
+      "🐛 修复多个 Storefront 路由缺少 loading.tsx，页面切换或数据加载期间容易出现空白和布局跳动的问题。",
+      "🐛 修复首页地区数据不存在时直接返回 null，页面可能空白且没有触发标准 notFound 处理的问题。",
+      "🐛 修复 Payload 文章接口失败时读取函数吞掉异常，文章页和列表页无法交给错误边界展示恢复体验的问题。",
+      "🐛 修复 Sitemap 生成时文章接口失败可能中断整张 Sitemap 的风险，现在只跳过文章并保留商品、分类和固定页面。",
+      "🐛 修复首页文章模块依赖必需文章读取，CMS 短暂不可用时可能影响首页渲染的问题。",
+    ],
+  },
+  {
     version: "v1.15.1",
     date: "2026-09-13 03:59:42 EDT",
     title: "🧭 Medusa Admin 运营菜单排序优化",

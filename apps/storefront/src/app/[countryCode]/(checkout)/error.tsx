@@ -6,7 +6,11 @@ import {
   ExclamationCircle,
 } from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { useEffect } from "react"
+import {
+  createStorefrontErrorId,
+  reportStorefrontRouteError,
+} from "@lib/util/storefront-error"
+import { useEffect, useRef } from "react"
 
 export default function CheckoutError({
   error,
@@ -15,11 +19,13 @@ export default function CheckoutError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const errorId = useRef(createStorefrontErrorId(error, "checkout"))
+
   useEffect(() => {
-    console.error("[checkout-route-error]", {
-      event: "checkout_render_failed",
-      digest: error.digest,
-      name: error.name,
+    void reportStorefrontRouteError({
+      error,
+      errorId: errorId.current,
+      scope: "checkout",
     })
   }, [error])
 
@@ -50,11 +56,10 @@ export default function CheckoutError({
           Something unexpected interrupted checkout. Try loading it again, or
           contact our team if the problem continues.
         </p>
-        {error.digest && (
-          <p className="mt-3 text-xs font-medium uppercase tracking-[0.08em] text-muted">
-            Support reference: {error.digest}
-          </p>
-        )}
+        <p className="mt-3 text-xs font-medium uppercase tracking-[0.08em] text-muted">
+          Support reference: {errorId.current}
+          {error.digest ? ` · ${error.digest}` : ""}
+        </p>
         <div className="mt-7 flex flex-col gap-3 xsmall:flex-row xsmall:flex-wrap">
           <button
             type="button"

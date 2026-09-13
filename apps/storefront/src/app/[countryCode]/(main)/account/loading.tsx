@@ -1,9 +1,5 @@
-import Spinner from "@modules/common/icons/spinner"
+import { AccountPageSkeleton } from "@modules/skeletons/templates/route-skeletons"
 
 export default function Loading() {
-  return (
-    <div className="flex items-center justify-center w-full h-full text-ui-fg-base">
-      <Spinner size={36} />
-    </div>
-  )
+  return <AccountPageSkeleton />
 }

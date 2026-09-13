@@ -419,6 +419,7 @@ function Detail({ label, value }: { label: string; value: string }) {
 export const config = defineRouteConfig({
   label: "结账错误 / Checkout errors",
   icon: ChatBubbleLeftRight,
+  rank: 60,
 })
 
 export default CheckoutErrorsPage

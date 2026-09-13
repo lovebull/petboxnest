@@ -567,5 +567,6 @@ function Info({ label, value }: { label: string; value: string }) {
 export const config = defineRouteConfig({
   label: "售后服务",
   icon: ShoppingBag,
+  rank: 10,
 });
 export default AfterSalesPage;

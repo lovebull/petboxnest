@@ -3,5 +3,5 @@ import { ChatBubbleLeftRight } from "@medusajs/icons"
 import CommerceAutomationList from "../../components/commerce-automation-list"
 
 const RestockNotificationsPage = () => <CommerceAutomationList feature="restock" />
-export const config = defineRouteConfig({ label: "缺货通知 / Restock", icon: ChatBubbleLeftRight })
+export const config = defineRouteConfig({ label: "缺货通知 / Restock", icon: ChatBubbleLeftRight, rank: 30 })
 export default RestockNotificationsPage

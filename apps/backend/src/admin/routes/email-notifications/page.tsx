@@ -328,6 +328,7 @@ const formatDateTime = (value: string) =>
 export const config = defineRouteConfig({
   label: "邮件通知 / Email Notifications",
   icon: EnvelopeSolid,
+  rank: 50,
 })
 
 export default EmailNotificationsPage

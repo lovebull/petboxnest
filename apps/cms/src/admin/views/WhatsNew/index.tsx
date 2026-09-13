@@ -4,6 +4,29 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.16.1",
+    date: "2026-09-13 13:01:04 EDT",
+    title: "🧱 Storefront 错误日志独立模块修复",
+    items: [
+      "🧱 新增 Storefront Error Medusa 独立模块、数据模型和迁移，专门保存页面渲染错误的 scope、route_key、digest、国家和处理状态。",
+      "🔀 新增迁移将既有 route_render 记录从 pbn_checkout_error 迁移到 pbn_storefront_error，并恢复 Checkout Error 表只保存结账依赖资源。",
+      "📡 Storefront 路由错误上报从 /store/checkout-errors 改为 /store/storefront-errors，payload 使用 scope 与 route_key 描述页面范围。",
+      "🧾 新增 Store API 与 Admin API，支持页面错误创建、详情读取、状态更新以及与 Checkout 依赖错误的聚合列表查询。",
+      "🧭 前台错误后台页面改为聚合 checkout 与 route 两类记录，可按错误类型、结账资源、页面范围、状态、重试类型和日期筛选。",
+      "🛠️ Checkout Error 工作流恢复为只处理 cart、shipping_options、payment_providers 和 store_credit，并改用规范的 workflow function 写法。",
+      "⚙️ Medusa 配置注册 storefront-error 模块，确保新模块服务、迁移和 API 可在 Backend 中正常解析。",
+    ],
+    fixes: [
+      "🐛 修复页面渲染错误复用 Checkout Error 模型，导致结账依赖错误表混入 route_render 资源、字段语义不清的问题。",
+      "🐛 修复 Checkout Error 数据模型被 route_key 与 digest 字段污染，后续结账依赖排查和迁移维护边界不清的问题。",
+      "🐛 修复后台错误列表只能调用 checkout-errors 接口，无法在同一页面稳定区分结账依赖错误与页面渲染错误的问题。",
+      "🐛 修复 Storefront route 错误上报缺少独立 Store API，前台页面错误与 Checkout 依赖失败共用入口带来的校验和归档混乱。",
+      "🐛 修复搜索页面渲染错误时无法可靠匹配 scope、route_key 或 digest 的问题，现在由 Storefront Error 服务单独搜索。",
+      "🐛 修复前台错误状态更新只能走 Checkout Error 工作流的问题，route 类型记录现在使用独立 Storefront Error 状态工作流。",
+      "🐛 修复上一版 route_render 记录迁移后可能残留在 pbn_checkout_error 中的问题，迁移会复制到新表后删除旧表 route_render 记录。",
+    ],
+  },
+  {
     version: "v1.16.0",
     date: "2026-09-13 08:25:22 EDT",
     title: "🧯 Storefront 错误恢复与加载体验升级",

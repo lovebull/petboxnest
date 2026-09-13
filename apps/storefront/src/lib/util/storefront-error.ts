@@ -52,9 +52,8 @@ export async function reportStorefrontRouteError({
 }) {
   const payload = {
     error_id: errorId,
-    resource: "route_render" as const,
+    scope,
     code: "NEXT_ROUTE_RENDER_FAILED",
-    status_code: null,
     retryable: true,
     country_code: getCountryCode(),
     route_key: scope,
@@ -70,7 +69,7 @@ export async function reportStorefrontRouteError({
   })
 
   try {
-    await sdk.client.fetch("/store/checkout-errors", {
+    await sdk.client.fetch("/store/storefront-errors", {
       method: "POST",
       body: payload,
       cache: "no-store",

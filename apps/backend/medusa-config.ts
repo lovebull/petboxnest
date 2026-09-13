@@ -104,6 +104,9 @@ module.exports = defineConfig({
       resolve: "./src/modules/checkout-error",
     },
     {
+      resolve: "./src/modules/storefront-error",
+    },
+    {
       resolve: "./src/modules/after-sales",
     },
     {

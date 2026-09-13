@@ -24,9 +24,11 @@ type Resource =
   | "payment_providers"
   | "store_credit"
   | "route_render";
+type ErrorKind = "checkout" | "route";
 
 type CheckoutError = {
   id: string;
+  kind: ErrorKind;
   error_id: string;
   resource: Resource;
   code: string;
@@ -35,8 +37,9 @@ type CheckoutError = {
   cart_id_hash: string | null;
   region_id: string | null;
   country_code: string | null;
-  route_key: string | null;
-  digest: string | null;
+  route_key?: string | null;
+  digest?: string | null;
+  scope?: string;
   source: string;
   occurred_at: string;
   resolution_status: ResolutionStatus;
@@ -79,6 +82,8 @@ const CheckoutErrorsPage = () => {
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [resource, setResource] = useState("all");
+  const [kind, setKind] = useState("all");
+  const [scope, setScope] = useState("all");
   const [status, setStatus] = useState("all");
   const [retryable, setRetryable] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
@@ -95,23 +100,27 @@ const CheckoutErrorsPage = () => {
 
   const list = useQuery({
     queryKey: [
-      "checkout-errors",
+      "storefront-errors",
       page,
       limit,
       query,
       resource,
+      kind,
+      scope,
       status,
       retryable,
       dateFrom,
       dateTo,
     ],
     queryFn: () =>
-      sdk.client.fetch<ListResponse>("/admin/checkout-errors", {
+      sdk.client.fetch<ListResponse>("/admin/storefront-errors", {
         query: {
           page,
           limit,
           q: query || undefined,
           resource: resource === "all" ? undefined : resource,
+          kind,
+          scope: scope === "all" ? undefined : scope,
           resolution_status: status === "all" ? undefined : status,
           retryable: retryable === "all" ? undefined : retryable,
           date_from: dateFrom
@@ -124,10 +133,10 @@ const CheckoutErrorsPage = () => {
       }),
   });
   const detail = useQuery({
-    queryKey: ["checkout-error", activeId],
+    queryKey: ["storefront-error", activeId],
     queryFn: () =>
       sdk.client.fetch<{ error: CheckoutError }>(
-        `/admin/checkout-errors/${activeId}`,
+        `/admin/storefront-errors/${activeId}`,
       ),
     enabled: Boolean(activeId),
   });
@@ -141,14 +150,14 @@ const CheckoutErrorsPage = () => {
       resolution_status: ResolutionStatus;
       admin_note?: string | null;
     }) =>
-      sdk.client.fetch(`/admin/checkout-errors/${id}/status`, {
+      sdk.client.fetch(`/admin/storefront-errors/${id}/status`, {
         method: "POST",
         body: { resolution_status, admin_note },
       }),
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["checkout-errors"] }),
-        queryClient.invalidateQueries({ queryKey: ["checkout-error"] }),
+        queryClient.invalidateQueries({ queryKey: ["storefront-errors"] }),
+        queryClient.invalidateQueries({ queryKey: ["storefront-error"] }),
       ]);
       toast.success("处理状态已更新");
     },
@@ -159,6 +168,8 @@ const CheckoutErrorsPage = () => {
     setSearch("");
     setQuery("");
     setResource("all");
+    setKind("all");
+    setScope("all");
     setStatus("all");
     setRetryable("all");
     setDateFrom("");
@@ -169,6 +180,8 @@ const CheckoutErrorsPage = () => {
   const hasFilters =
     query ||
     resource !== "all" ||
+    kind !== "all" ||
+    scope !== "all" ||
     status !== "all" ||
     retryable !== "all" ||
     dateFrom ||
@@ -203,13 +216,53 @@ const CheckoutErrorsPage = () => {
             className="lg:max-w-sm"
           />
           <FilterSelect
+            value={kind}
+            onChange={(value) => {
+              setKind(value);
+              setResource("all");
+              setScope("all");
+              setPage(1);
+            }}
+            placeholder="全部错误类型"
+            options={[
+              ["checkout", "结账依赖 / Checkout"],
+              ["route", "页面渲染 / Route render"],
+            ]}
+          />
+          <FilterSelect
             value={resource}
             onChange={(value) => {
               setResource(value);
+              if (value !== "all") {
+                setKind("checkout");
+                setScope("all");
+              }
               setPage(1);
             }}
             placeholder="全部资源"
-            options={Object.entries(resourceLabels)}
+            options={Object.entries(resourceLabels).filter(([value]) => value !== "route_render")}
+          />
+          <FilterSelect
+            value={scope}
+            onChange={(value) => {
+              setScope(value);
+              if (value !== "all") {
+                setKind("route");
+                setResource("all");
+              }
+              setPage(1);
+            }}
+            placeholder="全部页面范围"
+            options={[
+              ["root", "根布局 / Root"],
+              ["country", "国家布局 / Country"],
+              ["main", "主站布局 / Main"],
+              ["product-detail", "产品详情 / Product"],
+              ["articles", "文章 / Articles"],
+              ["account", "账户 / Account"],
+              ["cart", "购物车 / Cart"],
+              ["checkout", "结账页面 / Checkout"],
+            ]}
           />
           <FilterSelect
             value={status}
@@ -285,7 +338,7 @@ const CheckoutErrorsPage = () => {
                   <Table.Row
                     key={record.id}
                     className="cursor-pointer"
-                    onClick={() => setActiveId(record.id)}
+                    onClick={() => setActiveId(`${record.kind}/${record.id}`)}
                   >
                     <Table.Cell className="font-mono">
                       {record.error_id}
@@ -454,6 +507,10 @@ function ErrorDrawer({
               <div className="grid grid-cols-2 gap-3 rounded-md bg-ui-bg-subtle p-4">
                 <Detail label="资源" value={resourceLabels[record.resource]} />
                 <Detail
+                  label="错误类型"
+                  value={record.kind === "route" ? "页面渲染 / Route render" : "结账依赖 / Checkout"}
+                />
+                <Detail
                   label="状态码"
                   value={record.status_code?.toString() || "未提供"}
                 />
@@ -471,7 +528,7 @@ function ErrorDrawer({
                   label="国家"
                   value={record.country_code?.toUpperCase() || "未提供"}
                 />
-                <Detail label="路由范围" value={record.route_key || "未提供"} />
+                <Detail label="路由范围" value={record.scope || record.route_key || "未提供"} />
                 <Detail
                   label="Next.js digest"
                   value={record.digest || "未提供"}

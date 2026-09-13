@@ -268,7 +268,16 @@ const CheckoutErrorResourceSchema = z.enum([
   "shipping_options",
   "payment_providers",
   "store_credit",
-  "route_render",
+]);
+const StorefrontErrorScopeSchema = z.enum([
+  "root",
+  "country",
+  "main",
+  "product-detail",
+  "articles",
+  "account",
+  "cart",
+  "checkout",
 ]);
 const CheckoutErrorResolutionSchema = z.enum(["open", "resolved", "ignored"]);
 const CreateCheckoutErrorSchema = z.strictObject({
@@ -289,13 +298,15 @@ const CreateCheckoutErrorSchema = z.strictObject({
     .regex(/^[a-zA-Z]{2}$/)
     .nullable()
     .optional(),
-  route_key: z
-    .string()
-    .trim()
-    .regex(/^[a-z0-9-]+$/)
-    .max(80)
-    .nullable()
-    .optional(),
+  occurred_at: z.iso.datetime(),
+});
+const CreateStorefrontErrorSchema = z.strictObject({
+  error_id: z.string().regex(/^PBN-[A-F0-9]{8}$/),
+  scope: StorefrontErrorScopeSchema,
+  code: z.string().trim().min(1).max(80),
+  retryable: z.boolean(),
+  country_code: z.string().trim().regex(/^[a-zA-Z]{2}$/).nullable().optional(),
+  route_key: z.string().trim().regex(/^[a-z0-9-]+$/).max(80),
   digest: z.string().trim().max(160).nullable().optional(),
   occurred_at: z.iso.datetime(),
 });
@@ -309,6 +320,18 @@ const CheckoutErrorListSchema = z.object({
     .enum(["true", "false"])
     .transform((value) => value === "true")
     .optional(),
+  date_from: z.iso.datetime().optional(),
+  date_to: z.iso.datetime().optional(),
+});
+const StorefrontErrorListSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  q: z.string().trim().max(120).optional(),
+  kind: z.enum(["all", "checkout", "route"]).default("all"),
+  resource: CheckoutErrorResourceSchema.optional(),
+  scope: StorefrontErrorScopeSchema.optional(),
+  resolution_status: CheckoutErrorResolutionSchema.optional(),
+  retryable: z.enum(["true", "false"]).transform((value) => value === "true").optional(),
   date_from: z.iso.datetime().optional(),
   date_to: z.iso.datetime().optional(),
 });
@@ -377,6 +400,21 @@ export default defineMiddlewares({
       matcher: "/store/checkout-errors",
       method: "POST",
       middlewares: [validateAndTransformBody(CreateCheckoutErrorSchema)],
+    },
+    {
+      matcher: "/store/storefront-errors",
+      method: "POST",
+      middlewares: [validateAndTransformBody(CreateStorefrontErrorSchema)],
+    },
+    {
+      matcher: "/admin/storefront-errors",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(StorefrontErrorListSchema, {})],
+    },
+    {
+      matcher: "/admin/storefront-errors/:kind/:id/status",
+      method: "POST",
+      middlewares: [validateAndTransformBody(UpdateCheckoutErrorSchema)],
     },
     {
       matcher: "/admin/checkout-errors",

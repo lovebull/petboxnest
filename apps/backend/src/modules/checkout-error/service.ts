@@ -29,10 +29,8 @@ class CheckoutErrorModuleService extends MedusaService({ CheckoutError }) {
            or code ilike ?
            or coalesce(cart_id_hash, '') ilike ?
            or coalesce(region_id, '') ilike ?
-           or coalesce(route_key, '') ilike ?
-           or coalesce(digest, '') ilike ?
          )`,
-      Array(6).fill(`%${search}%`),
+      Array(4).fill(`%${search}%`),
     );
     return rows.map((row) => row.id);
   }

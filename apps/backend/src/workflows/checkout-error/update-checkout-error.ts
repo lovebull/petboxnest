@@ -53,6 +53,7 @@ const updateCheckoutErrorStep = createStep(
 
 export const updateCheckoutErrorWorkflow = createWorkflow(
   "update-checkout-error",
-  (input: UpdateCheckoutErrorInput) =>
-    new WorkflowResponse(updateCheckoutErrorStep(input))
+  function (input: UpdateCheckoutErrorInput) {
+    return new WorkflowResponse(updateCheckoutErrorStep(input))
+  }
 )

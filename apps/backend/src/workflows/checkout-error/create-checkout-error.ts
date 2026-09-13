@@ -17,8 +17,6 @@ export type CreateCheckoutErrorInput = {
   cart_id_hash?: string | null;
   region_id?: string | null;
   country_code?: string | null;
-  route_key?: string | null;
-  digest?: string | null;
   occurred_at: string;
 };
 
@@ -40,8 +38,6 @@ const createCheckoutErrorStep = createStep(
       cart_id_hash: input.cart_id_hash ?? null,
       region_id: input.region_id ?? null,
       country_code: input.country_code ?? null,
-      route_key: input.route_key ?? null,
-      digest: input.digest ?? null,
       occurred_at: new Date(input.occurred_at),
       source: "storefront",
       resolution_status: "open",
@@ -62,6 +58,7 @@ const createCheckoutErrorStep = createStep(
 
 export const createCheckoutErrorWorkflow = createWorkflow(
   "create-checkout-error",
-  (input: CreateCheckoutErrorInput) =>
-    new WorkflowResponse(createCheckoutErrorStep(input)),
+  function (input: CreateCheckoutErrorInput) {
+    return new WorkflowResponse(createCheckoutErrorStep(input));
+  },
 );

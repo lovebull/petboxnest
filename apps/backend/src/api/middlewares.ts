@@ -239,6 +239,21 @@ const UpdateCheckoutErrorSchema = z.strictObject({
   admin_note: z.string().trim().max(2000).nullable().optional(),
 })
 
+const AutomationListSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  q: z.string().trim().max(160).optional(),
+  status: z.string().trim().max(40).optional(),
+})
+const CreateRestockSubscriptionSchema = z.strictObject({
+  variant_id: z.string().min(1).max(120),
+  email: z.email().max(320),
+  consent: z.literal(true),
+  consent_source: z.string().trim().min(1).max(80).optional(),
+  country_code: z.string().trim().regex(/^[a-zA-Z]{2}$/).optional(),
+})
+const AutomationTokenSchema = z.strictObject({ token: z.string().min(20).max(2000) })
+
 export const GetReferralConversionsSchema = z.object({
   status: z
     .enum(["pending", "paid", "partially_reversed", "reversed", "cancelled"])
@@ -249,6 +264,31 @@ export const GetReferralConversionsSchema = z.object({
 
 export default defineMiddlewares({
   routes: [
+    {
+      matcher: "/store/restock-subscriptions",
+      method: "POST",
+      middlewares: [validateAndTransformBody(CreateRestockSubscriptionSchema)],
+    },
+    {
+      matcher: "/store/restock-subscriptions/unsubscribe",
+      method: "POST",
+      middlewares: [validateAndTransformBody(AutomationTokenSchema)],
+    },
+    {
+      matcher: "/store/cart-recovery/:action",
+      method: "POST",
+      middlewares: [validateAndTransformBody(AutomationTokenSchema)],
+    },
+    {
+      matcher: "/admin/restock-notifications",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(AutomationListSchema, {})],
+    },
+    {
+      matcher: "/admin/cart-recoveries",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(AutomationListSchema, {})],
+    },
     {
       matcher: "/store/checkout-errors",
       method: "POST",

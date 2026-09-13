@@ -95,6 +95,15 @@ module.exports = defineConfig({
   },
   modules: [
     {
+      resolve: "./src/modules/restock",
+    },
+    {
+      resolve: "./src/modules/cart-recovery",
+    },
+    {
+      resolve: "./src/modules/checkout-error",
+    },
+    {
       resolve: "./src/modules/after-sales",
     },
     {

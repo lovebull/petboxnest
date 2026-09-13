@@ -12,6 +12,7 @@ import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
 import { notifyLayoutSessionChanged } from "@modules/layout/components/layout-session-provider"
+import RestockForm from "./restock-form"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -194,6 +195,9 @@ export default function ProductActions({
             ? "Out of stock"
             : "Add to cart"}
         </Button>
+        {selectedVariant && !inStock && isValidVariant && (
+          <RestockForm variantId={selectedVariant.id} countryCode={countryCode} />
+        )}
         <MobileActions
           product={product}
           variant={selectedVariant}

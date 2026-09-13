@@ -9,15 +9,22 @@ const CartTemplate = ({
   cart,
   customer,
   showEmptyCheckoutNotice = false,
+  recoveryStatus,
 }: {
   cart: HttpTypes.StoreCart | null
   customer: HttpTypes.StoreCustomer | null
   showEmptyCheckoutNotice?: boolean
+  recoveryStatus?: string
 }) => {
   return (
     <main className="overflow-x-clip bg-cream text-ink">
       <div className="pbn-container py-10 small:py-16" data-testid="cart-container">
         {showEmptyCheckoutNotice && <CheckoutRedirectNotice />}
+        {recoveryStatus && (
+          <div className={`mb-5 rounded-[18px] border p-4 text-sm font-semibold ${recoveryStatus === "success" ? "border-brand/20 bg-mint/60 text-ink" : "border-red-200 bg-red-50 text-red-700"}`} role="status">
+            {recoveryStatus === "success" ? "Your saved cart is back. The private recovery link has now been used and can’t be reused." : "That cart recovery link is invalid, expired, or has already been used."}
+          </div>
+        )}
         {cart?.items?.length ? (
           <div className="grid gap-8 small:grid-cols-[minmax(0,1fr)_380px] small:items-start medium:grid-cols-[minmax(0,1fr)_420px]">
             <section className="min-w-0 space-y-5">

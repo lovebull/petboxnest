@@ -18,6 +18,8 @@ import PaymentRefundedEmail from "./emails/payment-refunded"
 import AdminOrderPlacedEmail from "./emails/admin-order-placed"
 import AfterSalesCodeEmail from "./emails/after-sales-code"
 import AfterSalesUpdateEmail from "./emails/after-sales-update"
+import RestockAvailableEmail from "./emails/restock-available"
+import AbandonedCartEmail from "./emails/abandoned-cart"
 
 type ResendOptions = {
   api_key: string
@@ -44,6 +46,8 @@ enum Templates {
   ADMIN_ORDER_PLACED = "admin-order-placed",
   AFTER_SALES_CODE = "after-sales-code",
   AFTER_SALES_UPDATE = "after-sales-update",
+  RESTOCK_AVAILABLE = "restock-available",
+  ABANDONED_CART = "abandoned-cart",
 }
 
 const templates: Partial<Record<Templates, (props: any) => ReactNode>> = {
@@ -55,6 +59,8 @@ const templates: Partial<Record<Templates, (props: any) => ReactNode>> = {
   [Templates.ADMIN_ORDER_PLACED]: AdminOrderPlacedEmail,
   [Templates.AFTER_SALES_CODE]: AfterSalesCodeEmail,
   [Templates.AFTER_SALES_UPDATE]: AfterSalesUpdateEmail,
+  [Templates.RESTOCK_AVAILABLE]: RestockAvailableEmail,
+  [Templates.ABANDONED_CART]: AbandonedCartEmail,
 }
 
 class ResendNotificationProviderService extends AbstractNotificationProviderService {
@@ -120,6 +126,10 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
         return "Your PetBoxNest return verification code"
       case Templates.AFTER_SALES_UPDATE:
         return "Your PetBoxNest after-sales request has been updated"
+      case Templates.RESTOCK_AVAILABLE:
+        return "It’s back: your PetBoxNest restock alert"
+      case Templates.ABANDONED_CART:
+        return "Your PetBoxNest cart is waiting"
       default:
         return "petboxnest notification"
     }
@@ -161,7 +171,10 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       this.logger.error(
         `Failed to send Resend email: ${error?.message ?? "unknown error"}`
       )
-      return {}
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        `Resend delivery failed: ${error?.message ?? "unknown error"}`
+      )
     }
 
     return { id: data.id }

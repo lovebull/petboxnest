@@ -13,7 +13,7 @@ export const metadata: Metadata = createPrivateMetadata(
 export default async function Cart({
   searchParams,
 }: {
-  searchParams: Promise<{ checkout_notice?: string }>
+  searchParams: Promise<{ checkout_notice?: string; recovery?: string }>
 }) {
   const cart = await retrieveCart().catch((error) => {
     console.error(error)
@@ -21,13 +21,14 @@ export default async function Cart({
   })
 
   const customer = await retrieveCustomer()
-  const { checkout_notice: checkoutNotice } = await searchParams
+  const { checkout_notice: checkoutNotice, recovery } = await searchParams
 
   return (
     <CartTemplate
       cart={cart}
       customer={customer}
       showEmptyCheckoutNotice={checkoutNotice === "empty-cart"}
+      recoveryStatus={recovery}
     />
   )
 }

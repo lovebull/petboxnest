@@ -12,6 +12,7 @@ import BillingAddress from "../billing_address"
 import ErrorMessage from "../error-message"
 import ShippingAddress from "../shipping-address"
 import { SubmitButton } from "../submit-button"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const Addresses = ({
   cart,
@@ -100,6 +101,18 @@ const Addresses = ({
                 <BillingAddress cart={cart} />
               </div>
             )}
+            <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-[16px] border border-[#E4E1F2] bg-[#F8F7FC] p-4 text-sm leading-6 text-muted">
+              <input
+                type="checkbox"
+                name="abandoned_cart_consent"
+                defaultChecked={cart?.metadata?.abandoned_cart_consent === true}
+                className="mt-1 h-4 w-4 shrink-0 accent-brand"
+              />
+              <span>
+                Email me a private, time-limited link if I leave items behind. This is optional, and I can unsubscribe anytime. See our{" "}
+                <LocalizedClientLink href="/privacy-policy" className="font-semibold text-brand underline underline-offset-2">Privacy Policy</LocalizedClientLink>.
+              </span>
+            </label>
             <SubmitButton
               size="large"
               className="mt-6 min-h-12 w-full rounded-[14px] !bg-brand px-6 text-base font-bold !text-white hover:!bg-brand-dark xsmall:w-auto"

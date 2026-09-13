@@ -376,7 +376,7 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
     if (!formData) {
       throw new Error("No form data found when setting addresses")
     }
-    const cartId = getCartId()
+    const cartId = await getCartId()
     if (!cartId) {
       throw new Error("No existing cart found when setting addresses")
     }
@@ -395,6 +395,15 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         phone: formData.get("shipping_address.phone"),
       },
       email: formData.get("email"),
+      metadata: {
+        ...((await retrieveCart(cartId, "id,metadata"))?.metadata || {}),
+        abandoned_cart_consent: formData.get("abandoned_cart_consent") === "on",
+        abandoned_cart_consented_at:
+          formData.get("abandoned_cart_consent") === "on"
+            ? new Date().toISOString()
+            : null,
+        abandoned_cart_consent_source: "checkout_address",
+      },
     } as any
 
     const sameAsBilling = formData.get("same_as_billing")

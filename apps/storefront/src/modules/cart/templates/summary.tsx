@@ -11,6 +11,7 @@ import type React from "react"
 
 import CartTotals from "@modules/common/components/cart-totals"
 import DiscountCode from "@modules/checkout/components/discount-code"
+import GiftCardCode from "@modules/checkout/components/gift-card-code"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
 
@@ -52,6 +53,10 @@ const Summary = ({ cart }: SummaryProps) => {
         <DiscountCode cart={cart} variant="cart" />
       </div>
 
+      <div className="mt-3">
+        <GiftCardCode cart={cart} />
+      </div>
+
       <div className="mt-5">
         <CartTotals totals={cart} variant="cart" />
       </div>
@@ -69,7 +74,10 @@ const Summary = ({ cart }: SummaryProps) => {
 
       <div className="mt-5 grid gap-3 text-sm text-muted">
         <TrustItem icon={<CreditCard />} text="Secure checkout" />
-        <TrustItem icon={<TruckFast />} text="Shipping calculated at checkout" />
+        <TrustItem
+          icon={<TruckFast />}
+          text="Shipping calculated at checkout"
+        />
         <TrustItem
           icon={<CheckCircleSolid />}
           text={

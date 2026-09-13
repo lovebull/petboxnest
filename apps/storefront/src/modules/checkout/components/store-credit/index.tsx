@@ -1,6 +1,7 @@
 "use client"
 
 import { applyStoreCredit, StoreCreditAccount } from "@lib/data/store-credit"
+import { getCreditLineAmounts } from "@lib/types/loyalty"
 import { convertToLocale } from "@lib/util/money"
 import { Button, Heading, Input, Text } from "@modules/common/components/ui"
 import { HttpTypes } from "@medusajs/types"
@@ -15,7 +16,7 @@ export default function StoreCredit({
   account: StoreCreditAccount
 }) {
   const router = useRouter()
-  const currentCredit = Number(cart.credit_line_total || 0)
+  const currentCredit = getCreditLineAmounts(cart).storeCredit
   const maximum = Math.min(
     Number(account.balance),
     currentCredit + Number(cart.total || 0)

@@ -1,18 +1,25 @@
 "use client"
 
 import { convertToLocale } from "@lib/util/money"
+import { getCreditLineAmounts } from "@lib/types/loyalty"
 import React from "react"
 
 type CartTotalsProps = {
   totals: {
     total?: number | null
-    subtotal?: number | null
     tax_total?: number | null
     currency_code: string
     item_subtotal?: number | null
     shipping_subtotal?: number | null
     discount_subtotal?: number | null
     credit_line_total?: number | null
+    gift_card_total?: number | null
+    credit_lines?: Array<{
+      id: string
+      amount: number
+      reference: string | null
+      reference_id: string | null
+    }> | null
   }
   variant?: "default" | "cart"
 }
@@ -28,8 +35,8 @@ const CartTotals: React.FC<CartTotalsProps> = ({
     item_subtotal,
     shipping_subtotal,
     discount_subtotal,
-    credit_line_total,
   } = totals
+  const { giftCard, storeCredit } = getCreditLineAmounts(totals)
 
   if (variant === "cart") {
     return (
@@ -74,14 +81,25 @@ const CartTotals: React.FC<CartTotalsProps> = ({
               </span>
             </div>
           )}
-          {!!credit_line_total && (
+          {giftCard > 0 && (
+            <div className="flex items-center justify-between gap-4">
+              <span>Gift card</span>
+              <span
+                className="font-bold text-brand"
+                data-testid="cart-gift-card"
+              >
+                - {convertToLocale({ amount: giftCard, currency_code })}
+              </span>
+            </div>
+          )}
+          {storeCredit > 0 && (
             <div className="flex items-center justify-between gap-4">
               <span>Store credit</span>
               <span
                 className="font-bold text-brand"
                 data-testid="cart-store-credit"
               >
-                - {convertToLocale({ amount: credit_line_total, currency_code })}
+                - {convertToLocale({ amount: storeCredit, currency_code })}
               </span>
             </div>
           )}
@@ -142,11 +160,25 @@ const CartTotals: React.FC<CartTotalsProps> = ({
             </span>
           </div>
         )}
-        {!!credit_line_total && (
+        {giftCard > 0 && (
+          <div className="flex items-center justify-between">
+            <span>Gift card</span>
+            <span
+              className="text-ui-fg-interactive"
+              data-testid="cart-gift-card"
+            >
+              - {convertToLocale({ amount: giftCard, currency_code })}
+            </span>
+          </div>
+        )}
+        {storeCredit > 0 && (
           <div className="flex items-center justify-between">
             <span>Store credit</span>
-            <span className="text-ui-fg-interactive" data-testid="cart-store-credit">
-              - {convertToLocale({ amount: credit_line_total, currency_code })}
+            <span
+              className="text-ui-fg-interactive"
+              data-testid="cart-store-credit"
+            >
+              - {convertToLocale({ amount: storeCredit, currency_code })}
             </span>
           </div>
         )}

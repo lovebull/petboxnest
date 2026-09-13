@@ -17,6 +17,7 @@ import {
 import { HttpTypes } from "@medusajs/types"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
+import { getCreditLineAmounts, getGiftCards } from "@lib/types/loyalty"
 
 const Payment = ({
   cart,
@@ -26,14 +27,14 @@ const Payment = ({
   availablePaymentMethods: { id: string }[]
 }) => {
   const activeSession = cart.payment_collection?.payment_sessions?.find(
-    (paymentSession) => paymentSession.status === "pending",
+    (paymentSession) => paymentSession.status === "pending"
   )
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [paymentComplete, setPaymentComplete] = useState(false)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
-    activeSession?.provider_id ?? "",
+    activeSession?.provider_id ?? ""
   )
 
   const searchParams = useSearchParams()
@@ -52,14 +53,12 @@ const Payment = ({
     }
   }
 
-  const paidByGiftcard = !!(
-    (cart as unknown as Record<string, unknown>)?.gift_cards &&
-    ((cart as unknown as Record<string, unknown>)?.gift_cards as unknown[])
-      ?.length > 0 &&
-    cart?.total === 0
-  )
+  const giftCards = getGiftCards(cart)
+  const creditLineAmounts = getCreditLineAmounts(cart)
+  const paidByGiftcard =
+    cart.total === 0 && (giftCards.length > 0 || creditLineAmounts.giftCard > 0)
   const paidByStoreCredit =
-    Number(cart.credit_line_total || 0) > 0 && cart.total === 0
+    cart.total === 0 && creditLineAmounts.storeCredit > 0
   const paidWithoutProvider = paidByGiftcard || paidByStoreCredit
 
   const paymentReady =
@@ -73,7 +72,7 @@ const Payment = ({
 
       return params.toString()
     },
-    [searchParams],
+    [searchParams]
   )
 
   const handleEdit = () => {
@@ -88,7 +87,7 @@ const Payment = ({
       if (paidWithoutProvider) {
         return router.push(
           pathname + "?" + createQueryString("step", "review"),
-          { scroll: false },
+          { scroll: false }
         )
       }
 
@@ -109,7 +108,7 @@ const Payment = ({
           pathname + "?" + createQueryString("step", "review"),
           {
             scroll: false,
-          },
+          }
         )
       }
     } catch (err) {
@@ -139,7 +138,7 @@ const Payment = ({
             {
               "opacity-45 pointer-events-none select-none":
                 !isOpen && !paymentReady,
-            },
+            }
           )}
         >
           <span
@@ -147,8 +146,8 @@ const Payment = ({
               isOpen
                 ? "bg-brand text-white"
                 : paymentReady
-                  ? "bg-mint text-ink"
-                  : "bg-mist text-muted"
+                ? "bg-mint text-ink"
+                : "bg-mist text-muted"
             }`}
             aria-hidden="true"
           >

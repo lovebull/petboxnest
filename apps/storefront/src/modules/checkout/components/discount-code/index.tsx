@@ -1,9 +1,15 @@
 "use client"
 
-import { Badge, Heading, Input, Label, Text } from "@modules/common/components/ui"
+import {
+  Badge,
+  Heading,
+  Input,
+  Label,
+  Text,
+} from "@modules/common/components/ui"
 import React from "react"
 
-import { applyPromotions } from "@lib/data/cart"
+import { applyPromotions, removeDiscount } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
 import Trash from "@modules/common/icons/trash"
@@ -21,16 +27,21 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({
 }) => {
   const [isOpen, setIsOpen] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState("")
+  const [removingCode, setRemovingCode] = React.useState<string | null>(null)
 
   const { promotions = [] } = cart
   const removePromotionCode = async (code: string) => {
-    const validPromotions = promotions.filter(
-      (promotion) => promotion.code !== code
-    )
-
-    await applyPromotions(
-      validPromotions.filter((p) => p.code !== undefined).map((p) => p.code!)
-    )
+    setRemovingCode(code)
+    setErrorMessage("")
+    try {
+      await removeDiscount(code)
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Unable to remove promotion."
+      )
+    } finally {
+      setRemovingCode(null)
+    }
   }
 
   const addPromotionCode = async (formData: FormData) => {
@@ -152,6 +163,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({
                             removePromotionCode(promotion.code)
                           }}
                           data-testid="remove-discount-button"
+                          disabled={removingCode === promotion.code}
                         >
                           <Trash size={14} />
                           <span className="sr-only">
@@ -271,6 +283,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({
                           removePromotionCode(promotion.code)
                         }}
                         data-testid="remove-discount-button"
+                        disabled={removingCode === promotion.code}
                       >
                         <Trash size={14} />
                         <span className="sr-only">

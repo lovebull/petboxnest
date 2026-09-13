@@ -2,6 +2,7 @@
 
 import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
+import type { LoyaltyStoreCartResponse } from "@lib/types/loyalty"
 import { HttpTypes } from "@medusajs/types"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
@@ -26,7 +27,7 @@ import { bindStoredReferralToCart } from "./referrals"
 export async function retrieveCart(cartId?: string, fields?: string) {
   const id = cartId || (await getCartId())
   fields ??=
-    "*items, *region, *items.product, *items.variant, +items.variant.inventory_quantity, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name, *credit_lines, +credit_line_total"
+    "*items, *region, *items.product, *items.variant, +items.variant.inventory_quantity, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name, *credit_lines, *gift_cards, +credit_line_total, +gift_card_total, +gift_card_tax_total"
 
   if (!id) {
     return null
@@ -285,46 +286,76 @@ export async function applyPromotions(codes: string[]) {
 }
 
 export async function applyGiftCard(code: string) {
-  //   const cartId = getCartId()
-  //   if (!cartId) return "No cartId cookie found"
-  //   try {
-  //     await updateCart(cartId, { gift_cards: [{ code }] }).then(() => {
-  //       revalidateTag("cart")
-  //     })
-  //   } catch (error: any) {
-  //     throw error
-  //   }
+  const cartId = await getCartId()
+  const normalizedCode = code.trim()
+
+  if (!cartId) {
+    throw new Error("No existing cart found")
+  }
+  if (!normalizedCode) {
+    throw new Error("Enter a gift card code")
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  return sdk.client
+    .fetch<LoyaltyStoreCartResponse>(`/store/carts/${cartId}/gift-cards`, {
+      method: "POST",
+      body: { code: normalizedCode },
+      headers,
+      cache: "no-store",
+    })
+    .then(async ({ cart }) => {
+      revalidateTag(await getCacheTag("carts"))
+      revalidateTag(await getCacheTag("fulfillment"))
+      return cart
+    })
+    .catch(medusaError)
 }
 
 export async function removeDiscount(code: string) {
-  // const cartId = getCartId()
-  // if (!cartId) return "No cartId cookie found"
-  // try {
-  //   await deleteDiscount(cartId, code)
-  //   revalidateTag("cart")
-  // } catch (error: any) {
-  //   throw error
-  // }
+  const cart = await retrieveCart()
+  if (!cart) {
+    throw new Error("No existing cart found")
+  }
+
+  const remainingCodes = (cart.promotions ?? [])
+    .filter((promotion) => promotion.code && promotion.code !== code)
+    .map((promotion) => promotion.code!)
+
+  return applyPromotions(remainingCodes)
 }
 
-export async function removeGiftCard(
-  codeToRemove: string,
-  giftCards: any[]
-  // giftCards: GiftCard[]
-) {
-  //   const cartId = getCartId()
-  //   if (!cartId) return "No cartId cookie found"
-  //   try {
-  //     await updateCart(cartId, {
-  //       gift_cards: [...giftCards]
-  //         .filter((gc) => gc.code !== codeToRemove)
-  //         .map((gc) => ({ code: gc.code })),
-  //     }).then(() => {
-  //       revalidateTag("cart")
-  //     })
-  //   } catch (error: any) {
-  //     throw error
-  //   }
+export async function removeGiftCard(code: string) {
+  const cartId = await getCartId()
+  const normalizedCode = code.trim()
+
+  if (!cartId) {
+    throw new Error("No existing cart found")
+  }
+  if (!normalizedCode) {
+    throw new Error("A gift card code is required")
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  return sdk.client
+    .fetch<LoyaltyStoreCartResponse>(`/store/carts/${cartId}/gift-cards`, {
+      method: "DELETE",
+      body: { code: normalizedCode },
+      headers,
+      cache: "no-store",
+    })
+    .then(async ({ cart }) => {
+      revalidateTag(await getCacheTag("carts"))
+      revalidateTag(await getCacheTag("fulfillment"))
+      return cart
+    })
+    .catch(medusaError)
 }
 
 export async function submitPromotionForm(

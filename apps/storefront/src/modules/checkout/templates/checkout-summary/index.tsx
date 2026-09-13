@@ -2,6 +2,7 @@ import { ChevronDown, ShieldCheck } from "@medusajs/icons"
 
 import ItemsPreviewTemplate from "@modules/cart/templates/preview"
 import DiscountCode from "@modules/checkout/components/discount-code"
+import GiftCardCode from "@modules/checkout/components/gift-card-code"
 import CartTotals from "@modules/common/components/cart-totals"
 import Divider from "@modules/common/components/divider"
 import { HttpTypes } from "@medusajs/types"
@@ -40,6 +41,9 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
           <CartTotals totals={cart} variant="cart" />
           <div className="mt-4">
             <DiscountCode cart={cart} variant="cart" />
+          </div>
+          <div className="mt-3">
+            <GiftCardCode cart={cart} />
           </div>
           <div className="mt-4 flex items-start gap-3 rounded-[16px] bg-mint/60 p-4 text-sm leading-5 text-ink">
             <ShieldCheck

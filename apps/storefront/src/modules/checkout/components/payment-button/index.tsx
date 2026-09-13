@@ -2,6 +2,7 @@
 
 import { isManual, isStripeLike } from "@lib/constants"
 import { placeOrder } from "@lib/data/cart"
+import { getCreditLineAmounts, getGiftCards } from "@lib/types/loyalty"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@modules/common/components/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
@@ -26,11 +27,16 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     (cart.shipping_methods?.length ?? 0) < 1
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
-  const paidByStoreCredit =
-    Number(cart.credit_line_total || 0) > 0 && cart.total === 0
+  const giftCards = getGiftCards(cart)
+  const creditLineAmounts = getCreditLineAmounts(cart)
+  const paidByCredit =
+    cart.total === 0 &&
+    (giftCards.length > 0 ||
+      creditLineAmounts.giftCard > 0 ||
+      creditLineAmounts.storeCredit > 0)
 
   switch (true) {
-    case paidByStoreCredit:
+    case paidByCredit:
       return (
         <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
       )

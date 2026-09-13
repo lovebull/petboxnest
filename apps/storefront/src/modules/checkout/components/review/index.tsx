@@ -6,20 +6,19 @@ import PaymentButton from "../payment-button"
 import { useSearchParams } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { getCreditLineAmounts, getGiftCards } from "@lib/types/loyalty"
 
 const Review = ({ cart }: { cart: HttpTypes.StoreCart }) => {
   const searchParams = useSearchParams()
 
   const isOpen = searchParams.get("step") === "review"
 
-  const paidByGiftcard = !!(
-    (cart as unknown as Record<string, unknown>)?.gift_cards &&
-    ((cart as unknown as Record<string, unknown>)?.gift_cards as unknown[])
-      ?.length > 0 &&
-    cart?.total === 0
-  )
+  const giftCards = getGiftCards(cart)
+  const creditLineAmounts = getCreditLineAmounts(cart)
+  const paidByGiftcard =
+    cart.total === 0 && (giftCards.length > 0 || creditLineAmounts.giftCard > 0)
   const paidByStoreCredit =
-    Number(cart.credit_line_total || 0) > 0 && cart.total === 0
+    cart.total === 0 && creditLineAmounts.storeCredit > 0
 
   const previousStepsCompleted =
     cart.shipping_address &&

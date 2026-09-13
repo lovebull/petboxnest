@@ -8,6 +8,7 @@ import Review from "@modules/checkout/components/review"
 import Shipping from "@modules/checkout/components/shipping"
 import StoreCredit from "@modules/checkout/components/store-credit"
 import CheckoutResourceErrorState from "@modules/checkout/components/checkout-resource-error"
+import { getCreditLineAmounts, getGiftCards } from "@lib/types/loyalty"
 
 export default async function CheckoutForm({
   cart,
@@ -28,10 +29,13 @@ export default async function CheckoutForm({
     )
   }
 
-  const giftCards = (cart as unknown as { gift_cards?: unknown[] }).gift_cards
+  const giftCards = getGiftCards(cart)
+  const creditLineAmounts = getCreditLineAmounts(cart)
   const paidWithoutProvider =
     cart.total === 0 &&
-    ((giftCards?.length ?? 0) > 0 || Number(cart.credit_line_total || 0) > 0)
+    (giftCards.length > 0 ||
+      creditLineAmounts.giftCard > 0 ||
+      creditLineAmounts.storeCredit > 0)
   const hasExistingPaymentSession = Boolean(
     cart.payment_collection?.payment_sessions?.some(
       (session) => session.status === "pending"

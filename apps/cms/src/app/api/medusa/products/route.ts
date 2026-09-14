@@ -16,7 +16,7 @@ type MedusaProductsResponse = {
 const MEDUSA_BACKEND_URL =
   process.env.MEDUSA_BACKEND_URL ||
   process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
-  "http://127.0.0.1:8030"
+  "http://127.0.0.1:7020"
 
 const MEDUSA_PUBLISHABLE_API_KEY =
   process.env.MEDUSA_PUBLISHABLE_API_KEY ||

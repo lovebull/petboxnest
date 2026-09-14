@@ -2,7 +2,7 @@ import { expandPublicUrl, getPublicUrl } from "@lib/util/public-url"
 import Medusa from "@medusajs/js-sdk"
 
 // Defaults to standard port for Medusa server
-let MEDUSA_BACKEND_URL = getPublicUrl(8030)
+let MEDUSA_BACKEND_URL = getPublicUrl(7020)
 
 if (process.env.MEDUSA_BACKEND_URL) {
   MEDUSA_BACKEND_URL = expandPublicUrl(

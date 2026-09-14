@@ -4,6 +4,29 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.17.3",
+    date: "2026-09-14 09:02:41 EDT",
+    title: "🔐 Medusa Admin 安全 Cookie 与后台 SDK 调用修复",
+    items: [
+      "🔐 Medusa Backend 生产环境 Session Cookie 改为按 NODE_ENV 启用 secure，并补充反向代理必须传递 Host、X-Forwarded-For 与 X-Forwarded-Proto 的部署说明。",
+      "🧭 Backend 域名环境示例新增 HTTPS 反向代理头配置提示，帮助生产环境正确识别原始协议与客户端来源。",
+      "🛠️ Product Amazon URL Admin widget 从原生 fetch 改为 Medusa Admin SDK 的 sdk.admin.product.update，并保留既有 metadata 后再更新 amazon_url。",
+      "🧹 Storefront Cache Clear Admin widget 从原生 fetch 改为 sdk.client.fetch，确保自定义 Admin API 请求自动携带会话认证信息。",
+      "📋 Commerce PRD 更新为 1.0 当前开发基线，补充 Gift Card、Store Credit、返现、推荐计划和售后流程的已实现范围。",
+      "✅ PRD 验收项同步当前实现状态，标记商品、购物车、Checkout、账户、退款、SEO、安全 Cookie 和前台错误日志等已完成能力。",
+      "↩️ 退货政策文档统一为签收后 15 个日历日，并同步商品详情线框中的退货期说明。",
+    ],
+    fixes: [
+      "🐛 修复生产环境 Medusa Admin Session Cookie 仍使用 secure: false，HTTPS 反向代理部署下可能影响安全策略和 Cookie 校验的问题。",
+      "🐛 修复反向代理未明确要求 X-Forwarded-Proto 时，Medusa 无法可靠判断原始 HTTPS 协议并正确签发会话 Cookie 的风险。",
+      "🐛 修复 Product Amazon URL widget 使用原生 fetch 调用 Admin API，缺少 SDK 统一认证与请求处理的问题。",
+      "🐛 修复保存 amazon_url 时直接覆盖 metadata 对象，可能丢失商品其他 metadata 字段的问题。",
+      "🐛 修复 Storefront Cache Clear widget 使用原生 fetch 调用自定义 Admin API，认证头和会话处理不如 SDK 稳定的问题。",
+      "🐛 修复 Commerce PRD 仍把 Gift Card、Store Credit、返现和推荐计划列为非 MVP 范围，和当前实现基线不一致的问题。",
+      "🐛 修复退货期文档仍显示 30-day returns，与正式 15 天退货政策不一致的问题。",
+    ],
+  },
+  {
     version: "v1.17.2",
     date: "2026-09-14 05:49:52 EDT",
     title: "🔌 本地服务端口与环境模板统一修复",

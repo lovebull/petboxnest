@@ -2,6 +2,8 @@ import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import { Button, Container, Text, toast } from "@medusajs/ui"
 import { useState } from "react"
 
+import { sdk } from "../lib/sdk"
+
 const StorefrontCacheClearWidget = () => {
   const [isClearing, setIsClearing] = useState(false)
 
@@ -9,14 +11,9 @@ const StorefrontCacheClearWidget = () => {
     setIsClearing(true)
 
     try {
-      const response = await fetch("/admin/storefront-cache/clear", {
+      await sdk.client.fetch("/admin/storefront-cache/clear", {
         method: "POST",
-        credentials: "include",
       })
-
-      if (!response.ok) {
-        throw new Error("Failed to clear storefront cache.")
-      }
 
       toast.success("Storefront cache cleared.")
     } catch (error) {

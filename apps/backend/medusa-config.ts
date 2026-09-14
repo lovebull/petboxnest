@@ -85,9 +85,11 @@ module.exports = defineConfig({
       saveUninitialized: false,
       ttl: 10 * 60 * 60 * 1000,
     },
-    // The current Admin is accessed directly over HTTP by IP address.
+    // Production traffic terminates TLS at the reverse proxy. The proxy must
+    // preserve the original protocol with `X-Forwarded-Proto` so Medusa can
+    // issue and validate HTTPS-only session cookies correctly.
     cookieOptions: {
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       httpOnly: true,
       path: "/",

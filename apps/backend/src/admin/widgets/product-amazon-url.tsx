@@ -3,6 +3,8 @@ import { AdminProduct, DetailWidgetProps } from "@medusajs/framework/types"
 import { Button, Container, Heading, Input, Label, Text } from "@medusajs/ui"
 import { FormEvent, useState } from "react"
 
+import { sdk } from "../lib/sdk"
+
 const ProductAmazonUrlWidget = ({
   data,
 }: DetailWidgetProps<AdminProduct>) => {
@@ -25,22 +27,12 @@ const ProductAmazonUrlWidget = ({
     const value = amazonUrl.trim()
 
     try {
-      const response = await fetch(`/admin/products/${data.id}`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
+      await sdk.admin.product.update(data.id, {
+        metadata: {
+          ...data.metadata,
+          amazon_url: value,
         },
-        body: JSON.stringify({
-          metadata: {
-            amazon_url: value,
-          },
-        }),
       })
-
-      if (!response.ok) {
-        throw new Error("Failed to save Amazon URL.")
-      }
 
       setMessage(value ? "Amazon URL saved." : "Amazon URL removed.")
     } catch (saveError) {

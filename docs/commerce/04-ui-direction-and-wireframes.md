@@ -288,7 +288,7 @@ Product Card 原则：
 │                                          │                               │
 │                                          │ In stock / ships in X days    │
 │                                          │ Free shipping over $XX        │
-│                                          │ 30-day returns                │
+│                                          │ 15-day returns                │
 ├──────────────────────────────────────────┴───────────────────────────────┤
 │ DETAILS                                                                  │
 │ Product story and practical information                                  │

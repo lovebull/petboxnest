@@ -1,18 +1,23 @@
+import Image from "next/image"
+
 const ContactHero = () => {
   return (
     <section className="relative isolate flex min-h-[380px] w-full items-center justify-center overflow-hidden small:min-h-[460px]">
-      <img
+      <Image
         src="https://cdn.petboxnest.com/s/files/0822/banner-brand-img-blog.webp"
         alt=""
+        fill
+        sizes="100vw"
         className="absolute inset-0 -z-20 h-full w-full object-cover"
-        loading="lazy"
       />
       <div className="absolute inset-0 -z-10 bg-[#063f43]/70" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/15 via-transparent to-black/20" />
 
       <div className="content-container py-16 text-center text-white">
         <h2 className="mx-auto max-w-[940px] font-serif text-[30px] font-semibold leading-[1.22] tracking-[-0.015em] text-white small:text-[42px]">
-          We create quality badminton gear and accessories designed for players of all levels, bringing performance, passion, and the spirit of badminton to every game.
+          We create quality badminton gear and accessories designed for players
+          of all levels, bringing performance, passion, and the spirit of
+          badminton to every game.
         </h2>
         <a
           href="mailto:contact@petboxnest.com"

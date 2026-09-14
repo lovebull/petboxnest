@@ -1,6 +1,7 @@
 import type { PayloadArticle } from "@lib/data/payload-articles"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { ArrowRight, Sparkles } from "@medusajs/icons"
+import Image from "next/image"
 
 export function getArticleImage(article: PayloadArticle) {
   return (
@@ -43,7 +44,7 @@ export default function ArticleCard({ article }: { article: PayloadArticle }) {
   const imageUrl = getArticleThumbnailImage(article)
   const imageAlt = getArticleImageAlt(article)
   const date = formatArticleDate(
-    article.published_at || article.createdAt || article.updatedAt
+    article.published_at || article.createdAt || article.updatedAt,
   )
 
   return (
@@ -53,11 +54,13 @@ export default function ArticleCard({ article }: { article: PayloadArticle }) {
         className="pbn-focus block overflow-hidden bg-mist"
       >
         {imageUrl ? (
-          <img
+          <Image
             src={imageUrl}
             alt={imageAlt}
+            width={960}
+            height={720}
+            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"
             className="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025] motion-reduce:transition-none xsmall:aspect-[16/11]"
-            loading="lazy"
           />
         ) : (
           <div className="flex aspect-[4/3] w-full items-center justify-center bg-mint text-brand xsmall:aspect-[16/11]">

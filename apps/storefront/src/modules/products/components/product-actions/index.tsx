@@ -13,6 +13,7 @@ import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
 import { notifyLayoutSessionChanged } from "@modules/layout/components/layout-session-provider"
 import RestockForm from "./restock-form"
+import { ExclamationCircle } from "@medusajs/icons"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -39,6 +40,7 @@ export default function ProductActions({
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
   const countryCode = useParams().countryCode as string
   // If there is only 1 variant, preselect the options
   useEffect(() => {
@@ -61,6 +63,7 @@ export default function ProductActions({
 
   // update the options when a variant is selected
   const setOptionValue = (optionId: string, value: string) => {
+    setAddError(null)
     setOptions((prev) => ({
       ...prev,
       [optionId]: value,
@@ -90,7 +93,7 @@ export default function ProductActions({
     }
 
     router.replace(pathname + "?" + params.toString())
-  }, [selectedVariant, isValidVariant])
+  }, [isValidVariant, pathname, router, searchParams, selectedVariant])
 
   // check if the selected variant is in stock
   const inStock = useMemo(() => {
@@ -122,18 +125,48 @@ export default function ProductActions({
 
   // add the selected variant to the cart
   const handleAddToCart = async () => {
-    if (!selectedVariant?.id) return null
+    if (!selectedVariant?.id || isAdding) {
+      return
+    }
 
     setIsAdding(true)
+    setAddError(null)
 
-    await addToCart({
-      variantId: selectedVariant.id,
-      quantity: 1,
-      countryCode,
-    })
+    try {
+      await addToCart({
+        variantId: selectedVariant.id,
+        quantity: 1,
+        countryCode,
+      })
 
-    notifyLayoutSessionChanged()
-    setIsAdding(false)
+      notifyLayoutSessionChanged()
+    } catch (error) {
+      const message = error instanceof Error ? error.message.toLowerCase() : ""
+
+      if (
+        message.includes("stock") ||
+        message.includes("inventory") ||
+        message.includes("available")
+      ) {
+        setAddError(
+          "This item is no longer available in the selected option. Choose another option or request a restock alert."
+        )
+      } else if (
+        message.includes("network") ||
+        message.includes("fetch") ||
+        message.includes("no response")
+      ) {
+        setAddError(
+          "We couldn't reach the store. Check your connection and try adding the item again."
+        )
+      } else {
+        setAddError(
+          "We couldn't add this item to your cart. Please try again. If it keeps happening, contact support."
+        )
+      }
+    } finally {
+      setIsAdding(false)
+    }
   }
 
   return (
@@ -193,10 +226,29 @@ export default function ProductActions({
             ? "Select options"
             : !inStock || !isValidVariant
             ? "Out of stock"
+            : addError
+            ? "Try adding again"
             : "Add to cart"}
         </Button>
+        {addError && (
+          <div
+            role="alert"
+            aria-live="assertive"
+            className="flex items-start gap-3 rounded-[14px] border border-danger/25 bg-[#FFF0EE] p-4 text-sm font-semibold leading-6 text-ink"
+            data-testid="add-to-cart-error"
+          >
+            <ExclamationCircle
+              className="mt-0.5 shrink-0 text-danger"
+              aria-hidden="true"
+            />
+            <span>{addError}</span>
+          </div>
+        )}
         {selectedVariant && !inStock && isValidVariant && (
-          <RestockForm variantId={selectedVariant.id} countryCode={countryCode} />
+          <RestockForm
+            variantId={selectedVariant.id}
+            countryCode={countryCode}
+          />
         )}
         <MobileActions
           product={product}
@@ -206,6 +258,7 @@ export default function ProductActions({
           inStock={inStock}
           handleAddToCart={handleAddToCart}
           isAdding={isAdding}
+          addError={addError}
           show={!inView}
           optionsDisabled={!!disabled || isAdding}
         />

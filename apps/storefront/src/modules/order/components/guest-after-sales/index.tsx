@@ -7,6 +7,8 @@ import {
   requestGuestAfterSalesCode,
   verifyGuestAfterSalesCode,
   uploadAfterSalesEvidence,
+  type AfterSalesEvidence,
+  type OrderAfterSalesResponse,
 } from "@lib/data/after-sales"
 
 const statusLabels: Record<string, string> = {
@@ -32,7 +34,7 @@ export default function GuestAfterSales() {
   const [code, setCode] = useState("")
   const [orderId, setOrderId] = useState("")
   const [token, setToken] = useState("")
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<OrderAfterSalesResponse | null>(null)
   const [selected, setSelected] = useState<Record<string, number>>({})
   const [reason, setReason] = useState("changed_mind")
   const [note, setNote] = useState("")
@@ -46,7 +48,7 @@ export default function GuestAfterSales() {
     setMessage("")
     const result = await requestGuestAfterSalesCode(reference, email)
     setPending(false)
-    if (result.error) return setMessage(result.error)
+    if ("error" in result) return setMessage(result.error)
     if (result.development_code) setCode(result.development_code)
     setStep("verify")
     setMessage(result.message)
@@ -56,7 +58,7 @@ export default function GuestAfterSales() {
     setPending(true)
     setMessage("")
     const result = await verifyGuestAfterSalesCode(reference, email, code)
-    if (result.error) {
+    if ("error" in result) {
       setPending(false)
       return setMessage(result.error)
     }
@@ -65,7 +67,7 @@ export default function GuestAfterSales() {
       result.access_token,
     )
     setPending(false)
-    if (order.error) return setMessage(order.error)
+    if ("error" in order) return setMessage(order.error)
     setOrderId(result.order_id)
     setToken(result.access_token)
     setData(order)
@@ -83,14 +85,14 @@ export default function GuestAfterSales() {
     if (!items.length) return setMessage("Select at least one item to return.")
     setPending(true)
     setMessage("")
-    let attachments: any[] | undefined
+    let attachments: AfterSalesEvidence[] | undefined
     if (files.length) {
       const formData = new FormData()
       formData.set("order_id", orderId)
       formData.set("guest_access_token", token)
       files.forEach((file) => formData.append("files", file))
       const upload = await uploadAfterSalesEvidence(formData)
-      if (upload.error) {
+      if ("error" in upload) {
         setPending(false)
         return setMessage(upload.error)
       }
@@ -106,7 +108,7 @@ export default function GuestAfterSales() {
       attachment_urls: attachments,
     })
     setPending(false)
-    if (result.error) return setMessage(result.error)
+    if ("error" in result) return setMessage(result.error)
     setStep("done")
   }
 
@@ -174,13 +176,13 @@ export default function GuestAfterSales() {
         {step === "order" && (
           <form onSubmit={submit}>
             <h2 className="font-display text-2xl font-bold text-ink">
-              Order #{data.order.display_id}
+              Order #{data?.order.display_id}
             </h2>
             <p className="mt-1 text-sm text-muted">
               Choose the delivered items you want to return.
             </p>
             <div className="mt-5 space-y-3">
-              {data.order.items?.map((item: any) => (
+              {data?.order.items?.map((item) => (
                 <label
                   key={item.id}
                   className="flex items-center justify-between gap-4 rounded-[16px] bg-mist p-4"
@@ -231,7 +233,9 @@ export default function GuestAfterSales() {
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 multiple
-                onChange={(event) => setFiles(Array.from(event.target.files || []).slice(0, 8))}
+                onChange={(event) =>
+                  setFiles(Array.from(event.target.files || []).slice(0, 8))
+                }
               />
             </label>
             <label className="mt-5 block text-sm font-bold">
@@ -244,28 +248,37 @@ export default function GuestAfterSales() {
               />
             </label>
             <button
-              disabled={pending || !data.eligibility.return}
+              disabled={pending || !data?.eligibility.return}
               className="mt-5 min-h-12 w-full rounded-[15px] bg-brand px-5 font-bold text-white disabled:opacity-50"
             >
               {pending
                 ? "Submitting…"
-                : data.eligibility.return
+                : data?.eligibility.return
                   ? "Submit return request"
                   : "This order is not currently eligible"}
             </button>
-            {!data.eligibility.return && data.eligibility.reasons?.return && (
+            {!data?.eligibility.return && data?.eligibility.reasons?.return && (
               <p role="status" className="mt-3 text-sm text-muted">
                 {data.eligibility.reasons.return}
               </p>
             )}
-            {!!data.requests?.length && (
-              <section className="mt-8 border-t border-[#E6E8EC] pt-6" aria-labelledby="guest-request-progress">
-                <h3 id="guest-request-progress" className="font-display text-xl font-bold text-ink">
+            {!!data?.requests.length && (
+              <section
+                className="mt-8 border-t border-[#E6E8EC] pt-6"
+                aria-labelledby="guest-request-progress"
+              >
+                <h3
+                  id="guest-request-progress"
+                  className="font-display text-xl font-bold text-ink"
+                >
                   Existing request progress
                 </h3>
                 <div className="mt-3 space-y-3">
-                  {data.requests.map((request: any) => (
-                    <article key={request.id} className="rounded-[16px] bg-mist p-4">
+                  {data.requests.map((request) => (
+                    <article
+                      key={request.id}
+                      className="rounded-[16px] bg-mist p-4"
+                    >
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <strong>{request.request_number}</strong>
                         <span className="rounded-full bg-mint px-3 py-1 text-xs font-bold text-ink">
@@ -279,14 +292,19 @@ export default function GuestAfterSales() {
                         </p>
                       )}
                       <ol className="mt-3 border-l-2 border-mint pl-4">
-                        {request.history?.map((entry: any) => (
-                          <li key={entry.id} className="mb-2 text-sm text-muted">
+                        {request.history?.map((entry) => (
+                          <li
+                            key={entry.id}
+                            className="mb-2 text-sm text-muted"
+                          >
                             <strong className="text-ink">
                               {statusLabels[entry.to_status] || entry.to_status}
                             </strong>{" "}
                             · {new Date(entry.created_at).toLocaleString()}
                             {entry.public_note && (
-                              <span className="mt-1 block">{entry.public_note}</span>
+                              <span className="mt-1 block">
+                                {entry.public_note}
+                              </span>
                             )}
                           </li>
                         ))}

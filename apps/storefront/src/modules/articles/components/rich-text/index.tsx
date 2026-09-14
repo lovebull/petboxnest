@@ -4,6 +4,7 @@ import type {
 } from "@lib/data/payload-articles"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import type { ReactNode } from "react"
+import Image from "next/image"
 
 function textAlignClass(format?: number | string) {
   if (format === "center") {
@@ -64,11 +65,13 @@ function renderUpload(node: PayloadRichTextNode, key: number) {
 
   return (
     <figure key={key} className="my-10 small:my-12">
-      <img
+      <Image
         src={value.url}
         alt={value.alt || ""}
+        width={1200}
+        height={900}
+        sizes="(min-width: 1024px) 768px, calc(100vw - 64px)"
         className="aspect-[4/3] w-full rounded-[20px] border border-[#E6E8EC] object-cover xsmall:aspect-[16/10]"
-        loading="lazy"
       />
       {value.alt && (
         <figcaption className="mt-3 text-sm leading-6 text-muted">

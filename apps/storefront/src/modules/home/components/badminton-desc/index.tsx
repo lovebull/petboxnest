@@ -1,14 +1,18 @@
+import Image from "next/image"
+
 const BadmintonDesc = ({ countryCode }: { countryCode: string }) => {
   return (
     <section className="border-y border-[#ded8c8] bg-[#f7f3e7] py-10 small:py-16">
       <div className="content-container">
         <div className="grid overflow-hidden medium:grid-cols-2 medium:items-stretch">
           <div className="h-[320px] overflow-hidden small:h-[440px] medium:h-[500px]">
-            <img
+            <Image
               src="https://cdn.petboxnest.com/s/files/0822/Badminton-005-766x1024.webp"
               alt="Club Recess sporting display with trophies and a pennant"
+              width={766}
+              height={1024}
+              sizes="(min-width: 768px) 50vw, 100vw"
               className="h-full w-full object-contain object-center transition-transform duration-700 ease-out hover:scale-[1.015]"
-              loading="lazy"
             />
           </div>
 
@@ -36,9 +40,9 @@ const BadmintonDesc = ({ countryCode }: { countryCode: string }) => {
                 and accurate flight.
               </p>
               <p>
-                4. Quality Control & Packaging Each shuttlecock is inspected
-                for balance, appearance, durability, and flight consistency
-                before being carefully packaged for delivery.
+                4. Quality Control & Packaging Each shuttlecock is inspected for
+                balance, appearance, durability, and flight consistency before
+                being carefully packaged for delivery.
               </p>
 
               <a

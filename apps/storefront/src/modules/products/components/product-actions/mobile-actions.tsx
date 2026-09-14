@@ -10,6 +10,7 @@ import { getProductPrice } from "@lib/util/get-product-price"
 import OptionSelect from "./option-select"
 import { HttpTypes } from "@medusajs/types"
 import { isSimpleProduct } from "@lib/util/product"
+import { ExclamationCircle } from "@medusajs/icons"
 
 type MobileActionsProps = {
   product: HttpTypes.StoreProduct
@@ -17,8 +18,9 @@ type MobileActionsProps = {
   options: Record<string, string | undefined>
   updateOptions: (title: string, value: string) => void
   inStock?: boolean
-  handleAddToCart: () => void
+  handleAddToCart: () => Promise<void>
   isAdding?: boolean
+  addError?: string | null
   show: boolean
   optionsDisabled: boolean
 }
@@ -31,6 +33,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   inStock,
   handleAddToCart,
   isAdding,
+  addError,
   show,
   optionsDisabled,
 }) => {
@@ -72,6 +75,20 @@ const MobileActions: React.FC<MobileActionsProps> = ({
             className="flex w-full flex-col gap-3 border-t border-grey-20 bg-white/95 px-4 pt-3 shadow-[0_-12px_30px_rgba(32,36,51,0.10)] backdrop-blur-md pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
             data-testid="mobile-actions"
           >
+            {addError && (
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="flex items-start gap-2 rounded-[12px] border border-danger/25 bg-[#FFF0EE] px-3 py-2 text-xs font-semibold leading-5 text-ink"
+                data-testid="mobile-add-to-cart-error"
+              >
+                <ExclamationCircle
+                  className="mt-0.5 shrink-0 text-danger"
+                  aria-hidden="true"
+                />
+                <span>{addError}</span>
+              </div>
+            )}
             <div className="flex w-full items-center justify-between gap-4">
               <span
                 className="min-w-0 truncate text-sm font-bold text-ink"
@@ -124,7 +141,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               )}
               <Button
                 onClick={handleAddToCart}
-                disabled={!inStock || !variant}
+                disabled={!inStock || !variant || isAdding}
                 className="pbn-primary-button w-full px-4"
                 isLoading={isAdding}
                 data-testid="mobile-cart-button"
@@ -133,6 +150,8 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                   ? "Select variant"
                   : !inStock
                   ? "Out of stock"
+                  : addError
+                  ? "Try again"
                   : "Add to cart"}
               </Button>
             </div>

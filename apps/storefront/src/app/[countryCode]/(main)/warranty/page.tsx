@@ -64,7 +64,7 @@ export default function WarrantyPage() {
             Damage caused by impact, misuse, neglect, or improper storage.
           </li>
           <li>
-            Unauthorized repair, alteration, or use outside the product's
+            Unauthorized repair, alteration, or use outside the product&apos;s
             intended purpose.
           </li>
           <li>

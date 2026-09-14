@@ -3,6 +3,7 @@ import {
   ProductEnhancement as ProductEnhancementType,
 } from "@lib/data/payload-product-enhancements"
 import type React from "react"
+import Image from "next/image"
 
 type ProductEnhancementProps = {
   enhancement: ProductEnhancementType | null
@@ -10,7 +11,7 @@ type ProductEnhancementProps = {
 
 function renderTextNode(
   node: PayloadRichTextNode,
-  key: string
+  key: string,
 ): React.ReactNode {
   let content: React.ReactNode = node.text || ""
 
@@ -33,7 +34,7 @@ function renderTextNode(
 }
 
 function renderRichTextChildren(
-  nodes?: PayloadRichTextNode[]
+  nodes?: PayloadRichTextNode[],
 ): React.ReactNode[] | undefined {
   return nodes?.map((node, index) => renderRichTextNode(node, `${index}`))
 }
@@ -64,10 +65,10 @@ function getMediaAlignClass(format?: string | number) {
 
 function renderRichTextNode(
   node: PayloadRichTextNode,
-  key: string
+  key: string,
 ): React.ReactNode {
   const children: React.ReactNode[] | undefined = renderRichTextChildren(
-    node.children
+    node.children,
   )
   const textAlignClass = getTextAlignClass(node.format)
 
@@ -148,16 +149,16 @@ function renderRichTextNode(
         <figure
           key={key}
           className={`mt-8 flex overflow-hidden rounded-[24px] ${getMediaAlignClass(
-            node.format
+            node.format,
           )}`}
         >
-          <img
+          <Image
             src={media.url}
             alt={node.fields?.alt || media.alt || ""}
-            width={media.width}
-            height={media.height}
+            width={media.width || 1200}
+            height={media.height || 900}
+            sizes="(min-width: 1024px) 768px, calc(100vw - 32px)"
             className="h-auto max-w-full rounded-[24px]"
-            loading="lazy"
           />
         </figure>
       )
@@ -192,15 +193,15 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
 
   const highlights =
     enhancement.highlights?.filter(
-      (highlight) => highlight.label || highlight.description
+      (highlight) => highlight.label || highlight.description,
     ) || []
   const storySections =
     enhancement.story_sections?.filter(
-      (section) => section.heading || section.body || section.image?.url
+      (section) => section.heading || section.body || section.image?.url,
     ) || []
   const imageBlocks =
     enhancement.image_blocks?.filter(
-      (block) => block.image?.url || block.title || block.description
+      (block) => block.image?.url || block.title || block.description,
     ) || []
   const specifications =
     enhancement.specifications?.filter((spec) => spec.label || spec.value) || []
@@ -250,8 +251,8 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
                   index % 3 === 0
                     ? "bg-mint/60"
                     : index % 3 === 1
-                    ? "bg-sky/60"
-                    : "bg-yellow/60"
+                      ? "bg-sky/60"
+                      : "bg-yellow/60"
                 }`}
               >
                 <span className="grid h-9 w-9 place-items-center rounded-circle bg-white text-sm font-bold text-brand">
@@ -283,15 +284,15 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
                   className="grid overflow-hidden rounded-[28px] border border-grey-20 bg-mist small:grid-cols-2 small:items-center"
                 >
                   {section.image?.url && (
-                    <img
+                    <Image
                       src={section.image.url}
                       alt={section.image.alt || section.heading || ""}
-                      width={section.image.width}
-                      height={section.image.height}
+                      width={section.image.width || 960}
+                      height={section.image.height || 720}
+                      sizes="(min-width: 768px) 50vw, 100vw"
                       className={`h-full min-h-[280px] w-full object-cover ${
                         imageOnRight ? "small:order-2" : ""
                       }`}
-                      loading="lazy"
                     />
                   )}
                   <div
@@ -324,13 +325,13 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
                 className="overflow-hidden rounded-[22px] border border-grey-20 bg-white"
               >
                 {block.image?.url && (
-                  <img
+                  <Image
                     src={block.image.url}
                     alt={block.image.alt || block.title || ""}
-                    width={block.image.width}
-                    height={block.image.height}
+                    width={block.image.width || 720}
+                    height={block.image.height || 720}
+                    sizes="(min-width: 640px) 33vw, 100vw"
                     className="aspect-square h-auto w-full object-cover"
-                    loading="lazy"
                   />
                 )}
                 {(block.title || block.description) && (

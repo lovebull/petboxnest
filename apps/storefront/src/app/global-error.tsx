@@ -5,6 +5,7 @@ import {
   reportStorefrontRouteError,
 } from "@lib/util/storefront-error"
 import { useEffect, useRef } from "react"
+import Link from "next/link"
 import "styles/globals.css"
 
 export default function GlobalError({
@@ -34,12 +35,12 @@ export default function GlobalError({
             role="alert"
             aria-labelledby="global-error-heading"
           >
-            <a
+            <Link
               href="/"
               className="pbn-focus inline-block rounded-lg font-display text-2xl font-extrabold tracking-[-0.04em] text-ink"
             >
               PetBox<span className="text-brand">Nest</span>
-            </a>
+            </Link>
             <p className="mt-8 text-xs font-bold uppercase tracking-[0.16em] text-brand">
               The nest needs a quick reset
             </p>
@@ -65,9 +66,12 @@ export default function GlobalError({
               >
                 Try again
               </button>
-              <a href="/" className="pbn-secondary-button w-full xsmall:w-auto">
+              <Link
+                href="/"
+                className="pbn-secondary-button w-full xsmall:w-auto"
+              >
                 Return home
-              </a>
+              </Link>
             </div>
           </section>
         </main>

@@ -1,14 +1,18 @@
+import Image from "next/image"
+
 const JoinTheClub = ({ countryCode }: { countryCode: string }) => {
   return (
     <section className="border-y border-[#ded8c8] bg-[#f7f3e7] py-10 small:py-16">
       <div className="content-container">
         <div className="grid overflow-hidden medium:grid-cols-2 medium:items-stretch">
           <div className="min-h-[320px] overflow-hidden small:min-h-[440px] medium:min-h-[500px]">
-            <img
+            <Image
               src="https://clubrecess.com/cdn/shop/files/ClubRecess32014.jpg?v=1779717016&width=690"
               alt="Club Recess sporting display with trophies and a pennant"
+              width={690}
+              height={690}
+              sizes="(min-width: 768px) 50vw, 100vw"
               className="h-full w-full object-cover object-center transition-transform duration-700 ease-out hover:scale-[1.015]"
-              loading="lazy"
             />
           </div>
 
@@ -21,9 +25,8 @@ const JoinTheClub = ({ countryCode }: { countryCode: string }) => {
                 You&apos;ve been a member all along.
               </h2>
               <p className="mt-6 max-w-[500px] text-base leading-7 text-[#393631]">
-                Earn rewards on every Petboxnest order, get first access to
-                new drops, and discover more from our growing sports
-                community.
+                Earn rewards on every Petboxnest order, get first access to new
+                drops, and discover more from our growing sports community.
               </p>
               <a
                 href={`/${countryCode}/account`}

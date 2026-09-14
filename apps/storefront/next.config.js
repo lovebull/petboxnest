@@ -8,6 +8,20 @@ checkEnvVariables()
 const S3_HOSTNAME = process.env.MEDUSA_CLOUD_S3_HOSTNAME
 const S3_PATHNAME = process.env.MEDUSA_CLOUD_S3_PATHNAME
 
+const payloadImagePattern = (() => {
+  try {
+    const url = new URL(process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL)
+    return {
+      protocol: url.protocol.replace(":", ""),
+      hostname: url.hostname,
+      ...(url.port ? { port: url.port } : {}),
+      pathname: "/**",
+    }
+  } catch {
+    return null
+  }
+})()
+
 /**
  * @type {import('next').NextConfig}
  */
@@ -17,12 +31,6 @@ const nextConfig = {
     fetches: {
       fullUrl: true,
     },
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
   },
   images: {
     formats: ["image/avif", "image/webp"],
@@ -47,6 +55,10 @@ const nextConfig = {
         hostname: "cdn.larumsport.com",
         pathname: "/static/**",
       },
+      { protocol: "https", hostname: "cdn.petboxnest.com" },
+      { protocol: "https", hostname: "cms.petboxnest.com" },
+      { protocol: "https", hostname: "clubrecess.com" },
+      ...(payloadImagePattern ? [payloadImagePattern] : []),
       ...(S3_HOSTNAME && S3_PATHNAME
         ? [
             {

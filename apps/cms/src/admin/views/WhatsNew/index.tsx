@@ -4,6 +4,34 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.17.0",
+    date: "2026-09-13 22:29:04 EDT",
+    title: "💳 Storefront 支付失败恢复与质量门禁升级",
+    items: [
+      "💳 新增购物车支付失败提示组件，支持 payment_failed 与 order_failed 两类状态，提供重新检查支付和联系支持入口。",
+      "🔁 Stripe 支付回流失败时不再暴露支付意图参数到前台地址栏，改为携带 payment_error 并回到 Checkout 支付步骤展示可恢复提示。",
+      "🛒 购物车页面支持从查询参数读取支付失败状态，在客户回到购物车时展示清晰的订单保护和重试说明。",
+      "🛍️ 商品详情加入 Add to Cart 错误状态，区分库存不可用、网络失败和通用失败，并同步到移动端底部购买栏。",
+      "🚚 Checkout 配送步骤使用 memoized 配送/自提分组与安全的价格计算更新，减少重复计算和组件卸载后的状态写入风险。",
+      "🧾 售后数据层补充订单售后、游客验证码、上传凭证和请求历史类型，替换 loose any 返回，提升前台售后页面的数据安全性。",
+      "🖼️ 文章、首页、商品增强和内容图片迁移到 Next Image，并补充 width、height、sizes 与 priority 配置，改善图片优化和布局稳定性。",
+      "🧰 Storefront 迁移到 ESLint flat config，新增 lint、typecheck、quality 脚本，并恢复 build 前质量检查。",
+      "🌐 Next Image 远程图片白名单补充 Payload、PetBoxNest CDN、CMS 和 Club Recess 域名，支持 CMS/营销图片正常优化加载。",
+    ],
+    fixes: [
+      "🐛 修复支付回流失败后客户缺少明确恢复路径，只能停留在不清晰的 Checkout 状态中的问题。",
+      "🐛 修复支付失败 URL 继续携带 payment_intent 和 client_secret 等参数，不利于前台地址简洁和错误归因的问题。",
+      "🐛 修复商品加入购物车失败时按钮只结束 loading、没有可读错误提示的问题，客户现在能看到库存、网络或通用失败原因。",
+      "🐛 修复移动端商品购买栏重复点击 Add to Cart 时可能并发提交的问题，添加中会禁用按钮并显示错误反馈。",
+      "🐛 修复 Checkout 地址表单直接传 FormDataEntryValue，可能把非字符串值写入购物车地址字段并触发类型不稳定的问题。",
+      "🐛 修复配送方式价格计算 Promise 完成后组件已卸载仍可能 setState 的问题，并让无计算配送方式时也能结束加载态。",
+      "🐛 修复售后接口返回结构缺少类型保护，订单售后、游客售后和上传凭证页面容易在字段变化时产生隐性运行时错误的问题。",
+      "🐛 修复 Storefront 构建配置忽略 ESLint 和 TypeScript 错误，问题可能延迟到线上才暴露的风险。",
+      "🐛 修复文章、首页和商品增强内容大量使用原生 img，缺少响应式图片优化和尺寸占位，可能影响 LCP、CLS 与图片加载表现的问题。",
+      "🐛 修复全局错误页使用普通 a 标签跳转首页，改为 Next Link 保持应用内导航一致性。",
+    ],
+  },
+  {
     version: "v1.16.2",
     date: "2026-09-13 13:18:15 EDT",
     title: "⏱️ Storefront Payload 读取超时与降级修复",

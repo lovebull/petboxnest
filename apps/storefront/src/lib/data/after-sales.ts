@@ -19,17 +19,81 @@ export type AfterSalesInput = {
   attachment_urls?: Array<{ url: string; mime_type: string; size: number }>
 }
 
+export type AfterSalesEvidence = {
+  url: string
+  mime_type: string
+  size: number
+}
+
+export type AfterSalesTrackingLabel = {
+  id?: string
+  tracking_number?: string | null
+  tracking_url?: string | null
+}
+
+export type AfterSalesHistory = {
+  id: string
+  to_status: string
+  public_note?: string | null
+  created_at: string
+}
+
+export type AfterSalesRequest = {
+  id: string
+  request_number: string
+  type: string
+  status: string
+  submitted_at: string
+  customer_message?: string | null
+  history?: AfterSalesHistory[]
+}
+
+export type AfterSalesEligibility = Record<AfterSalesType, boolean> & {
+  exchange: boolean
+  reasons?: Partial<Record<AfterSalesType | "exchange", string | null>>
+}
+
+export type AfterSalesOrder = {
+  id: string
+  display_id?: string | number
+  items?: Array<{
+    id: string
+    title?: string | null
+    quantity: number
+  }>
+  fulfillments?: Array<{ labels?: AfterSalesTrackingLabel[] }>
+}
+
+export type OrderAfterSalesResponse = {
+  order: AfterSalesOrder
+  eligibility: AfterSalesEligibility
+  requests: AfterSalesRequest[]
+}
+
+type ApiError = { error: string }
+type CreateAfterSalesResponse = { request: AfterSalesRequest }
+type GuestCodeResponse = { message: string; development_code?: string }
+type GuestVerifyResponse = { order_id: string; access_token: string }
+type UploadUrlResponse = {
+  uploads: Array<AfterSalesEvidence & { upload_url: string; file_url: string }>
+}
+
 const errorMessage = (error: unknown) =>
   error instanceof Error
     ? error.message
     : "We couldn't complete that request. Please try again."
 
-export async function getOrderAfterSales(orderId: string) {
+export async function getOrderAfterSales(
+  orderId: string,
+): Promise<OrderAfterSalesResponse | ApiError> {
   try {
-    return await sdk.client.fetch<any>(`/store/orders/${orderId}/after-sales`, {
-      headers: await getAuthHeaders(),
-      cache: "no-store",
-    })
+    return await sdk.client.fetch<OrderAfterSalesResponse>(
+      `/store/orders/${orderId}/after-sales`,
+      {
+        headers: await getAuthHeaders(),
+        cache: "no-store",
+      },
+    )
   } catch (error) {
     return { error: errorMessage(error) }
   }
@@ -38,22 +102,27 @@ export async function getOrderAfterSales(orderId: string) {
 export async function createOrderAfterSales(
   orderId: string,
   input: AfterSalesInput,
-) {
+): Promise<CreateAfterSalesResponse | ApiError> {
   try {
-    return await sdk.client.fetch<any>(`/store/orders/${orderId}/after-sales`, {
-      method: "POST",
-      body: input,
-      headers: await getAuthHeaders(),
-      cache: "no-store",
-    })
+    return await sdk.client.fetch<CreateAfterSalesResponse>(
+      `/store/orders/${orderId}/after-sales`,
+      {
+        method: "POST",
+        body: input,
+        headers: await getAuthHeaders(),
+        cache: "no-store",
+      },
+    )
   } catch (error) {
     return { error: errorMessage(error) }
   }
 }
 
-export async function cancelOrderAfterSales(requestId: string) {
+export async function cancelOrderAfterSales(
+  requestId: string,
+): Promise<CreateAfterSalesResponse | ApiError> {
   try {
-    return await sdk.client.fetch<any>(
+    return await sdk.client.fetch<CreateAfterSalesResponse>(
       `/store/after-sales/${requestId}/cancel`,
       {
         method: "POST",
@@ -86,9 +155,9 @@ export async function downloadOrderInvoice(orderId: string) {
 export async function requestGuestAfterSalesCode(
   orderReference: string,
   email: string,
-) {
+): Promise<GuestCodeResponse | ApiError> {
   try {
-    return await sdk.client.fetch<any>(
+    return await sdk.client.fetch<GuestCodeResponse>(
       "/store/after-sales/guest/request-code",
       {
         method: "POST",
@@ -105,13 +174,16 @@ export async function verifyGuestAfterSalesCode(
   orderReference: string,
   email: string,
   code: string,
-) {
+): Promise<GuestVerifyResponse | ApiError> {
   try {
-    return await sdk.client.fetch<any>("/store/after-sales/guest/verify", {
-      method: "POST",
-      body: { order_reference: orderReference, email, code },
-      cache: "no-store",
-    })
+    return await sdk.client.fetch<GuestVerifyResponse>(
+      "/store/after-sales/guest/verify",
+      {
+        method: "POST",
+        body: { order_reference: orderReference, email, code },
+        cache: "no-store",
+      },
+    )
   } catch (error) {
     return { error: errorMessage(error) }
   }
@@ -120,13 +192,16 @@ export async function verifyGuestAfterSalesCode(
 export async function getGuestAfterSalesOrder(
   orderId: string,
   accessToken: string,
-) {
+): Promise<OrderAfterSalesResponse | ApiError> {
   try {
-    return await sdk.client.fetch<any>("/store/after-sales/guest/order", {
-      method: "POST",
-      body: { order_id: orderId, access_token: accessToken },
-      cache: "no-store",
-    })
+    return await sdk.client.fetch<OrderAfterSalesResponse>(
+      "/store/after-sales/guest/order",
+      {
+        method: "POST",
+        body: { order_id: orderId, access_token: accessToken },
+        cache: "no-store",
+      },
+    )
   } catch (error) {
     return { error: errorMessage(error) }
   }
@@ -134,21 +209,24 @@ export async function getGuestAfterSalesOrder(
 
 export async function createGuestAfterSales(
   input: AfterSalesInput & { order_id: string; guest_access_token: string },
-) {
+): Promise<CreateAfterSalesResponse | ApiError> {
   try {
-    return await sdk.client.fetch<any>("/store/after-sales/guest/requests", {
-      method: "POST",
-      body: input,
-      cache: "no-store",
-    })
+    return await sdk.client.fetch<CreateAfterSalesResponse>(
+      "/store/after-sales/guest/requests",
+      {
+        method: "POST",
+        body: input,
+        cache: "no-store",
+      },
+    )
   } catch (error) {
     return { error: errorMessage(error) }
   }
 }
 
-type UploadedEvidence = { url: string; mime_type: string; size: number }
-
-export async function uploadAfterSalesEvidence(formData: FormData) {
+export async function uploadAfterSalesEvidence(
+  formData: FormData,
+): Promise<{ attachments: AfterSalesEvidence[] } | ApiError> {
   try {
     const orderId = String(formData.get("order_id") || "")
     const guestAccessToken = String(formData.get("guest_access_token") || "")
@@ -165,16 +243,19 @@ export async function uploadAfterSalesEvidence(formData: FormData) {
       size: file.size,
     }))
     const response = guestAccessToken
-      ? await sdk.client.fetch<any>("/store/after-sales/guest/uploads", {
-          method: "POST",
-          body: {
-            order_id: orderId,
-            guest_access_token: guestAccessToken,
-            files: descriptors,
+      ? await sdk.client.fetch<UploadUrlResponse>(
+          "/store/after-sales/guest/uploads",
+          {
+            method: "POST",
+            body: {
+              order_id: orderId,
+              guest_access_token: guestAccessToken,
+              files: descriptors,
+            },
+            cache: "no-store",
           },
-          cache: "no-store",
-        })
-      : await sdk.client.fetch<any>(
+        )
+      : await sdk.client.fetch<UploadUrlResponse>(
           `/store/orders/${orderId}/after-sales/uploads`,
           {
             method: "POST",
@@ -184,7 +265,7 @@ export async function uploadAfterSalesEvidence(formData: FormData) {
           },
         )
 
-    const attachments: UploadedEvidence[] = []
+    const attachments: AfterSalesEvidence[] = []
     for (let index = 0; index < files.length; index++) {
       const upload = response.uploads[index]
       const uploadResponse = await fetch(upload.upload_url, {

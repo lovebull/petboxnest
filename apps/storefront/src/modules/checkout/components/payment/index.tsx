@@ -2,7 +2,12 @@
 import { RadioGroup } from "@headlessui/react"
 import { isStripeLike, paymentInfoMap } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
-import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
+import {
+  CheckCircleSolid,
+  CreditCard,
+  ExclamationCircle,
+  XMark,
+} from "@medusajs/icons"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
   StripePaymentContainer,
@@ -42,6 +47,15 @@ const Payment = ({
   const pathname = usePathname()
 
   const isOpen = searchParams.get("step") === "payment"
+  const hasPaymentReturnError =
+    searchParams.get("payment_error") === "payment_failed"
+
+  const dismissPaymentReturnError = () => {
+    const params = new URLSearchParams(searchParams)
+    params.delete("payment_error")
+    const query = params.toString()
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
+  }
 
   const setPaymentMethod = async (method: string) => {
     setError(null)
@@ -174,6 +188,34 @@ const Payment = ({
       </div>
       <div>
         <div className={isOpen ? "block" : "hidden"}>
+          {hasPaymentReturnError && (
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="mb-5 flex items-start gap-3 rounded-[16px] border border-danger/25 bg-[#FFF0EE] p-4 text-ink"
+              data-testid="checkout-payment-return-error"
+            >
+              <ExclamationCircle
+                className="mt-0.5 shrink-0 text-danger"
+                aria-hidden="true"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="font-bold">Payment was not completed</p>
+                <p className="mt-1 text-sm leading-6 text-muted">
+                  Review the payment details below and try again. Your cart and
+                  delivery information are still saved.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={dismissPaymentReturnError}
+                className="pbn-focus -mr-2 -mt-2 flex size-11 shrink-0 items-center justify-center rounded-[12px] text-muted transition-colors hover:bg-white hover:text-ink"
+                aria-label="Dismiss payment error"
+              >
+                <XMark aria-hidden="true" />
+              </button>
+            </div>
+          )}
           {!paidWithoutProvider && availablePaymentMethods?.length && (
             <>
               <RadioGroup

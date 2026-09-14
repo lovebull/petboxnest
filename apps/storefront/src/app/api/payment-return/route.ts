@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   const countryCode = searchParams.get("country_code")
   const paymentIntent = searchParams.get("payment_intent")
   const paymentIntentClientSecret = searchParams.get(
-    "payment_intent_client_secret",
+    "payment_intent_client_secret"
   )
   const redirectStatus = searchParams.get("redirect_status")
 
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     .catch(() => null)
 
   const paymentSession = cart?.payment_collection?.payment_sessions?.find(
-    (session) => session.data?.id === paymentIntent,
+    (session) => session.data?.id === paymentIntent
   )
 
   if (
@@ -48,19 +48,10 @@ export async function GET(req: NextRequest) {
   await setCartId(cartId)
 
   if (redirectStatus === "failed") {
-    const params = new URLSearchParams({ step: "payment" })
-
-    for (const key of [
-      "payment_intent",
-      "payment_intent_client_secret",
-      "redirect_status",
-    ]) {
-      const value = searchParams.get(key)
-
-      if (value) {
-        params.set(key, value)
-      }
-    }
+    const params = new URLSearchParams({
+      step: "payment",
+      payment_error: "payment_failed",
+    })
 
     return NextResponse.redirect(`${origin}${prefix}/checkout?${params}`)
   }

@@ -1,12 +1,14 @@
 "use client"
 
 import { HttpTypes } from "@medusajs/types"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   cancelOrderAfterSales,
   createOrderAfterSales,
   downloadOrderInvoice,
   getOrderAfterSales,
+  type AfterSalesEvidence,
+  type OrderAfterSalesResponse,
   type AfterSalesType,
   uploadAfterSalesEvidence,
 } from "@lib/data/after-sales"
@@ -35,7 +37,7 @@ const requestTypeLabel = (type: string) =>
   (type === "exchange" ? "Exchange (legacy request)" : type)
 
 export default function AfterSales({ order }: { order: HttpTypes.StoreOrder }) {
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<OrderAfterSalesResponse | null>(null)
   const [error, setError] = useState("")
   const [open, setOpen] = useState<AfterSalesType | null>(null)
   const [selected, setSelected] = useState<Record<string, number>>({})
@@ -43,18 +45,18 @@ export default function AfterSales({ order }: { order: HttpTypes.StoreOrder }) {
   const [note, setNote] = useState("")
   const [pending, setPending] = useState(false)
   const [files, setFiles] = useState<File[]>([])
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     const result = await getOrderAfterSales(order.id)
-    if (result.error) setError(result.error)
+    if ("error" in result) setError(result.error)
     else setData(result)
-  }
+  }, [order.id])
   useEffect(() => {
     void refresh()
-  }, [order.id])
+  }, [refresh])
   const tracking = useMemo(
     () =>
-      (data?.order?.fulfillments || []).flatMap(
-        (fulfillment: any) => fulfillment.labels || [],
+      (data?.order.fulfillments || []).flatMap(
+        (fulfillment) => fulfillment.labels || [],
       ),
     [data],
   )
@@ -75,13 +77,13 @@ export default function AfterSales({ order }: { order: HttpTypes.StoreOrder }) {
       return setError("Select at least one item.")
     setPending(true)
     setError("")
-    let attachments: any[] | undefined
+    let attachments: AfterSalesEvidence[] | undefined
     if (files.length) {
       const formData = new FormData()
       formData.set("order_id", order.id)
       files.forEach((file) => formData.append("files", file))
       const upload = await uploadAfterSalesEvidence(formData)
-      if (upload.error) {
+      if ("error" in upload) {
         setPending(false)
         return setError(upload.error)
       }
@@ -95,7 +97,7 @@ export default function AfterSales({ order }: { order: HttpTypes.StoreOrder }) {
       attachment_urls: attachments,
     })
     setPending(false)
-    if (result.error) return setError(result.error)
+    if ("error" in result) return setError(result.error)
     setOpen(null)
     setSelected({})
     setNote("")
@@ -122,7 +124,7 @@ export default function AfterSales({ order }: { order: HttpTypes.StoreOrder }) {
     setPending(true)
     const result = await cancelOrderAfterSales(requestId)
     setPending(false)
-    if (result.error) return setError(result.error)
+    if ("error" in result) return setError(result.error)
     await refresh()
   }
 
@@ -156,7 +158,7 @@ export default function AfterSales({ order }: { order: HttpTypes.StoreOrder }) {
       {tracking.length > 0 && (
         <div className="mt-5 rounded-[18px] bg-white p-4">
           <h3 className="font-bold text-ink">Track your package</h3>
-          {tracking.map((label: any, index: number) => (
+          {tracking.map((label, index) => (
             <div
               key={label.id || index}
               className="mt-2 flex flex-wrap items-center justify-between gap-3 text-sm"
@@ -281,14 +283,17 @@ export default function AfterSales({ order }: { order: HttpTypes.StoreOrder }) {
             <label className="mt-4 block text-sm font-bold">
               Evidence photos (optional)
               <span className="mt-1 block text-xs font-normal text-muted">
-                Up to 8 JPG, PNG, or WebP images, 8 MB each. Photos are especially helpful for damaged or missing items.
+                Up to 8 JPG, PNG, or WebP images, 8 MB each. Photos are
+                especially helpful for damaged or missing items.
               </span>
               <input
                 className="mt-2 block min-h-12 w-full rounded-xl border border-[#E6E8EC] bg-white p-3 text-sm font-normal"
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 multiple
-                onChange={(event) => setFiles(Array.from(event.target.files || []).slice(0, 8))}
+                onChange={(event) =>
+                  setFiles(Array.from(event.target.files || []).slice(0, 8))
+                }
               />
             </label>
           )}
@@ -318,13 +323,13 @@ export default function AfterSales({ order }: { order: HttpTypes.StoreOrder }) {
           </div>
         </div>
       )}
-      {data?.requests?.length > 0 && (
+      {data && data.requests.length > 0 && (
         <div className="mt-6">
           <h3 className="font-display text-xl font-bold text-ink">
             Request progress
           </h3>
           <div className="mt-3 space-y-3">
-            {data.requests.map((request: any) => (
+            {data.requests.map((request) => (
               <article key={request.id} className="rounded-[18px] bg-white p-4">
                 <div className="flex flex-wrap justify-between gap-2">
                   <strong>{request.request_number}</strong>
@@ -337,7 +342,7 @@ export default function AfterSales({ order }: { order: HttpTypes.StoreOrder }) {
                   {new Date(request.submitted_at).toLocaleDateString()}
                 </p>
                 <ol className="mt-3 border-l-2 border-mint pl-4">
-                  {request.history?.map((entry: any) => (
+                  {request.history?.map((entry) => (
                     <li key={entry.id} className="mb-2 text-sm">
                       <span className="font-bold">
                         {statusLabels[entry.to_status] || entry.to_status}

@@ -4,25 +4,48 @@ import EmptyCartMessage from "../components/empty-cart-message"
 import SignInPrompt from "../components/sign-in-prompt"
 import CheckoutRedirectNotice from "../components/checkout-redirect-notice"
 import { HttpTypes } from "@medusajs/types"
+import PaymentFailureNotice, {
+  type CartPaymentError,
+} from "../components/payment-failure-notice"
 
 const CartTemplate = ({
   cart,
   customer,
   showEmptyCheckoutNotice = false,
   recoveryStatus,
+  paymentError,
 }: {
   cart: HttpTypes.StoreCart | null
   customer: HttpTypes.StoreCustomer | null
   showEmptyCheckoutNotice?: boolean
   recoveryStatus?: string
+  paymentError?: CartPaymentError
 }) => {
   return (
     <main className="overflow-x-clip bg-cream text-ink">
-      <div className="pbn-container py-10 small:py-16" data-testid="cart-container">
+      <div
+        className="pbn-container py-10 small:py-16"
+        data-testid="cart-container"
+      >
         {showEmptyCheckoutNotice && <CheckoutRedirectNotice />}
+        {paymentError && (
+          <PaymentFailureNotice
+            error={paymentError}
+            canRetry={Boolean(cart?.items?.length)}
+          />
+        )}
         {recoveryStatus && (
-          <div className={`mb-5 rounded-[18px] border p-4 text-sm font-semibold ${recoveryStatus === "success" ? "border-brand/20 bg-mint/60 text-ink" : "border-red-200 bg-red-50 text-red-700"}`} role="status">
-            {recoveryStatus === "success" ? "Your saved cart is back. The private recovery link has now been used and can’t be reused." : "That cart recovery link is invalid, expired, or has already been used."}
+          <div
+            className={`mb-5 rounded-[18px] border p-4 text-sm font-semibold ${
+              recoveryStatus === "success"
+                ? "border-brand/20 bg-mint/60 text-ink"
+                : "border-red-200 bg-red-50 text-red-700"
+            }`}
+            role="status"
+          >
+            {recoveryStatus === "success"
+              ? "Your saved cart is back. The private recovery link has now been used and can’t be reused."
+              : "That cart recovery link is invalid, expired, or has already been used."}
           </div>
         )}
         {cart?.items?.length ? (
@@ -41,16 +64,12 @@ const CartTemplate = ({
                 </p>
               </div>
 
-              {!customer && (
-                <SignInPrompt />
-              )}
+              {!customer && <SignInPrompt />}
               <ItemsTemplate cart={cart} />
             </section>
             <aside className="relative min-w-0">
               <div className="small:sticky small:top-24">
-                {cart && cart.region && (
-                  <Summary cart={cart} />
-                )}
+                {cart && cart.region && <Summary cart={cart} />}
               </div>
             </aside>
           </div>

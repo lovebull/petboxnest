@@ -4,6 +4,7 @@ import {
   getArticleThumbnailImage,
 } from "@modules/articles/components/article-card"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Image from "next/image"
 
 const ClubhouseNotes = async () => {
   const articles = await getLatestArticles({ limit: 3, optional: true })
@@ -47,11 +48,13 @@ const ClubhouseNotes = async () => {
                   className="block overflow-hidden"
                 >
                   {imageUrl ? (
-                    <img
+                    <Image
                       src={imageUrl}
                       alt={imageAlt}
+                      width={960}
+                      height={600}
+                      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"
                       className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025]"
-                      loading="lazy"
                     />
                   ) : (
                     <div className="aspect-[16/10] w-full bg-ui-bg-subtle" />

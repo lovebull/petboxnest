@@ -4,6 +4,21 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.17.1",
+    date: "2026-09-14 04:54:45 EDT",
+    title: "🖼️ Storefront 远程图片域名白名单修复",
+    items: [
+      "🖼️ Storefront Next Image 远程图片配置新增 media.6769.net 域名，并限制路径为 /petboxnest-p/**。",
+      "🛡️ 保持远程图片白名单按域名与路径精确匹配，避免过宽放开外部图片来源。",
+      "🌐 支持 PetBoxNest 外部媒体资源通过 Next.js 图片优化链路正常加载。",
+    ],
+    fixes: [
+      "🐛 修复 media.6769.net/petboxnest-p 下的图片未进入 Next Image remotePatterns，页面渲染时可能出现图片加载失败的问题。",
+      "🐛 修复外部媒体图片无法走 Next.js 响应式优化、尺寸处理和格式优化的问题。",
+      "🐛 修复新增媒体源只缺少 Storefront 白名单配置，导致 CMS/商品或营销图片在前台不可见的风险。",
+    ],
+  },
+  {
     version: "v1.17.0",
     date: "2026-09-13 22:29:04 EDT",
     title: "💳 Storefront 支付失败恢复与质量门禁升级",

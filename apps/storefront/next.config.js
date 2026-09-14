@@ -55,6 +55,11 @@ const nextConfig = {
         hostname: "cdn.larumsport.com",
         pathname: "/static/**",
       },
+      {
+        protocol: "https",
+        hostname: "media.6769.net",
+        pathname: "/petboxnest-p/**",
+      },
       { protocol: "https", hostname: "cdn.petboxnest.com" },
       { protocol: "https", hostname: "cms.petboxnest.com" },
       { protocol: "https", hostname: "clubrecess.com" },

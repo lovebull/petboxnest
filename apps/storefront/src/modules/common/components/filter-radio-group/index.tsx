@@ -1,5 +1,4 @@
-import { EllipseMiniSolid } from "@medusajs/icons"
-import { Label, RadioGroup, Text, clx } from "@modules/common/components/ui"
+import { Label, RadioGroup } from "@modules/common/components/ui"
 type FilterRadioGroupProps = {
   title: string
   items: {
@@ -19,17 +18,13 @@ const FilterRadioGroup = ({
   "data-testid": dataTestId,
 }: FilterRadioGroupProps) => {
   return (
-    <div className="flex gap-x-3 flex-col gap-y-3">
-      <Text className="txt-compact-small-plus text-ui-fg-muted">{title}</Text>
-      <RadioGroup data-testid={dataTestId}>
+    <div className="flex flex-col gap-y-3">
+      <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-muted">
+        {title}
+      </h3>
+      <RadioGroup className="grid gap-2" data-testid={dataTestId}>
         {items?.map((i) => (
-          <div
-            key={i.value}
-            className={clx("flex gap-x-2 items-center", {
-              "ml-[-23px]": i.value === value,
-            })}
-          >
-            {i.value === value && <EllipseMiniSolid />}
+          <div key={i.value}>
             <RadioGroup.Item
               checked={i.value === value}
               onChange={() => handleChange(i.value)}
@@ -39,12 +34,7 @@ const FilterRadioGroup = ({
             />
             <Label
               htmlFor={i.value}
-              className={clx(
-                "!txt-compact-small !transform-none text-ui-fg-subtle hover:cursor-pointer",
-                {
-                  "text-ui-fg-base": i.value === value,
-                }
-              )}
+              className="pbn-focus flex min-h-10 cursor-pointer items-center rounded-circle border border-grey-20 bg-cream px-3 text-sm font-bold text-ink transition peer-checked:border-brand peer-checked:bg-brand peer-checked:text-white hover:border-brand/60"
               data-testid="radio-label"
               data-active={i.value === value}
             >

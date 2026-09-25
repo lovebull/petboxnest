@@ -56,16 +56,14 @@ const OptionsPicker = ({
 
   return (
     <div className="flex flex-col gap-y-4">
-      <div className="flex items-center justify-between px-1">
-        <span className="txt-compact-small-plus text-ui-fg-subtle">
-          Options
-        </span>
-      </div>
+      <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-muted">
+        Product options
+      </h3>
       <Accordion.Root
         type="multiple"
         value={openItems}
         onValueChange={(values) => setOpenItems(values as string[])}
-        className="flex flex-col gap-y-3 pr-6"
+        className="flex flex-col gap-y-2"
       >
         {options.map((option) => {
           const values =
@@ -104,18 +102,18 @@ const OptionsPicker = ({
               className="overflow-hidden"
             >
               <Accordion.Header>
-                <Accordion.Trigger className="flex w-full items-center justify-between py-3 text-left">
+                <Accordion.Trigger className="pbn-focus flex min-h-11 w-full items-center justify-between rounded-[14px] bg-cream px-3 text-left">
                   <div className="flex items-center gap-2">
-                    <span className="txt-compact-small-plus text-ui-fg-base">
+                    <span className="text-sm font-bold text-ink">
                       {option.title || "Option"}
                     </span>
-                    <span className="txt-compact-small-plus text-ui-fg-muted">
+                    <span className="text-xs font-bold text-muted">
                       ({selectedCount})
                     </span>
                   </div>
                   <span
                     className={clsx(
-                      "flex h-7 w-7 items-center justify-center text-ui-fg-muted transition-transform duration-150",
+                      "flex h-7 w-7 items-center justify-center text-muted transition-transform duration-150",
                       {
                         "rotate-180": isOpen,
                       }
@@ -125,7 +123,7 @@ const OptionsPicker = ({
                   </span>
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="pb-4 pt-1">
+              <Accordion.Content className="pb-4 pt-3">
                 <div className="flex flex-wrap gap-2">
                   {values.map((value) => {
                     const isSelected = selectedValueIds.includes(value.id)
@@ -135,11 +133,10 @@ const OptionsPicker = ({
                         key={value.id}
                         onClick={() => toggleValue(value.id)}
                         className={clsx(
-                          "border-ui-border-base border text-small-regular h-10 rounded-rounded px-3 flex items-center transition-colors duration-150",
+                          "pbn-focus flex min-h-10 items-center rounded-circle border px-3 text-sm font-bold transition-colors duration-150",
                           {
-                            "border-ui-border-interactive text-ui-fg-base":
-                              isSelected,
-                            "text-ui-fg-muted hover:text-ui-fg-base":
+                            "border-brand bg-brand text-white": isSelected,
+                            "border-grey-20 bg-white text-ink hover:border-brand/60":
                               !isSelected,
                           }
                         )}

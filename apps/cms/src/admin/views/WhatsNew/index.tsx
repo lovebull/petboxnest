@@ -4,6 +4,31 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.18.0",
+    date: "2026-09-25 00:06:31 EDT",
+    title: "🛍️ Storefront 商品目录筛选与浏览体验升级",
+    items: [
+      "🛍️ 新增 Storefront 目录筛选工具，支持 pet、price、availability 查询参数，并统一解析商品列表、分类页和集合页筛选状态。",
+      "🐾 商品目录新增按 Cats、Dogs、价格区间和 In stock 状态筛选，商品选项筛选继续支持多选并与新筛选条件共存。",
+      "🧭 新增统一 CatalogPageShell，Store、Category 和 Collection 页面共用品牌化 Hero、面包屑、当前浏览卡片、子导航和内容布局。",
+      "📱 商品筛选栏升级为桌面 sticky 侧栏和移动端抽屉，移动端显示筛选数量、支持关闭抽屉和一键清空筛选。",
+      "🧺 商品列表新增筛选后的结果数量、页码说明、空状态和加载失败兜底，客户可以直接清空筛选重新浏览。",
+      "🔢 分页控件升级为可访问的圆角按钮导航，保留当前筛选与排序参数并为当前页补充 aria-current。",
+      "🎛️ Filter radio、商品选项 Accordion 和筛选标签改为 PetBoxNest 品牌样式，提高目录页扫描和点击体验。",
+      "🖼️ Storefront Next Image 远程配置补充 cdn.larumsport.com/media/**，支持该路径下的目录或商品素材正常优化加载。",
+    ],
+    fixes: [
+      "🐛 修复 Store、Category 和 Collection 页面布局各自实现，筛选区、标题区和面包屑体验不一致的问题。",
+      "🐛 修复目录页只能排序和筛选商品选项，无法按宠物类型、价格区间或库存状态快速缩小商品范围的问题。",
+      "🐛 修复移动端筛选控件常驻页面占空间且缺少抽屉式操作入口，客户浏览商品时不够顺手的问题。",
+      "🐛 修复应用筛选后仍按原始商品总数计算分页，可能出现空页或页数与实际结果不一致的问题。",
+      "🐛 修复商品目录加载失败或地区数据缺失时直接返回空内容，客户看不到恢复提示的问题。",
+      "🐛 修复筛选无结果时缺少清晰空状态和清空入口，客户难以回到可浏览商品列表的问题。",
+      "🐛 修复分页按钮缺少清晰当前页语义和触控友好的按钮样式，键盘和移动端浏览体验不够稳定的问题。",
+      "🐛 修复 cdn.larumsport.com/media 路径未进入 Next Image 白名单，相关素材可能无法在前台加载的问题。",
+    ],
+  },
+  {
     version: "v1.17.3",
     date: "2026-09-14 09:02:41 EDT",
     title: "🔐 Medusa Admin 安全 Cookie 与后台 SDK 调用修复",

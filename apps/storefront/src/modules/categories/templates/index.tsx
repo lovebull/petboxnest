@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 
-import InteractiveLink from "@modules/common/components/interactive-link"
+import { CatalogFilters } from "@lib/util/catalog-filters"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import CatalogPageShell from "@modules/store/templates/catalog-page-shell"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
 import { OptionValueIds } from "@lib/util/product-option-filters"
 
@@ -16,12 +16,14 @@ export default function CategoryTemplate({
   page,
   countryCode,
   optionValueIds,
+  filters,
 }: {
   category: HttpTypes.StoreProductCategory
   sortBy?: SortOptions
   page?: string
   countryCode: string
   optionValueIds?: OptionValueIds
+  filters?: CatalogFilters
 }) {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
@@ -39,51 +41,40 @@ export default function CategoryTemplate({
 
   getParents(category)
 
+  const breadcrumbs = [
+    { label: "Shop", href: "/store" },
+    ...parents.reverse().map((parent) => ({
+      label: parent.name,
+      href: `/categories/${parent.handle}`,
+    })),
+    { label: category.name },
+  ]
+
+  const subnav =
+    category.category_children?.map((child) => ({
+      label: child.name,
+      href: `/categories/${child.handle}`,
+    })) || []
+
   return (
-    <div
-      className="flex flex-col small:flex-row small:items-start py-6 content-container"
-      data-testid="category-container"
+    <CatalogPageShell
+      eyebrow="Category"
+      title={category.name}
+      description={
+        category.description ||
+        "Browse useful, home-friendly picks selected for this part of pet life."
+      }
+      currentLabel={category.name}
+      breadcrumbs={breadcrumbs}
+      refinement={
+        <RefinementList
+          sortBy={sort}
+          data-testid="sort-by-container"
+          hideOptionsPicker
+        />
+      }
+      subnav={subnav}
     >
-      <RefinementList
-        sortBy={sort}
-        data-testid="sort-by-container"
-        hideOptionsPicker
-      />
-      <div className="w-full">
-        <div className="flex flex-row mb-8 text-2xl-semi gap-4">
-          {parents &&
-            parents.map((parent) => (
-              <span key={parent.id} className="text-ui-fg-subtle">
-                <LocalizedClientLink
-                  className="mr-4 hover:text-black"
-                  href={`/categories/${parent.handle}`}
-                  data-testid="sort-by-link"
-                >
-                  {parent.name}
-                </LocalizedClientLink>
-                /
-              </span>
-            ))}
-          <h1 data-testid="category-page-title">{category.name}</h1>
-        </div>
-        {category.description && (
-          <div className="mb-8 text-base-regular">
-            <p>{category.description}</p>
-          </div>
-        )}
-        {category.category_children && (
-          <div className="mb-8 text-base-large">
-            <ul className="grid grid-cols-1 gap-2">
-              {category.category_children?.map((c) => (
-                <li key={c.id}>
-                  <InteractiveLink href={`/categories/${c.handle}`}>
-                    {c.name}
-                  </InteractiveLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
         <Suspense
           fallback={
             <SkeletonProductGrid
@@ -97,9 +88,11 @@ export default function CategoryTemplate({
             categoryId={category.id}
             countryCode={countryCode}
             optionValueIds={optionValueIds}
+            filters={filters}
+            emptyTitle={`No products found in ${category.name}`}
+            emptyDescription="Clear filters or step back to the full shop to find another cozy fit."
           />
         </Suspense>
-      </div>
-    </div>
+    </CatalogPageShell>
   )
 }

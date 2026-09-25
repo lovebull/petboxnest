@@ -57,6 +57,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cdn.larumsport.com",
+        pathname: "/media/**",
+      },
+      {
+        protocol: "https",
         hostname: "media.6769.net",
         pathname: "/petboxnest-p/**",
       },

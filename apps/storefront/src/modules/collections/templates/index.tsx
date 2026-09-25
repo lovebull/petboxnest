@@ -16,6 +16,7 @@ export default function CollectionTemplate({
   countryCode,
   optionValueIds,
   filters,
+  searchQuery,
 }: {
   sortBy?: SortOptions
   collection: HttpTypes.StoreCollection
@@ -23,16 +24,26 @@ export default function CollectionTemplate({
   countryCode: string
   optionValueIds?: OptionValueIds
   filters?: CatalogFilters
+  searchQuery?: string
 }) {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
+  const isSearch = Boolean(searchQuery)
 
   return (
     <CatalogPageShell
-      eyebrow="Collection"
-      title={collection.title}
-      description={`${collection.title} picks from PetBoxNest, gathered for easy browsing and calmer pet routines.`}
-      currentLabel={collection.title}
+      eyebrow={isSearch ? "Collection search" : "Collection"}
+      title={
+        isSearch
+          ? `Search "${searchQuery}" in ${collection.title}`
+          : collection.title
+      }
+      description={
+        isSearch
+          ? "Search this collection by product title, keyword, SKU, and related category details."
+          : `${collection.title} picks from PetBoxNest, gathered for easy browsing and calmer pet routines.`
+      }
+      currentLabel={isSearch ? `Searching "${searchQuery}"` : collection.title}
       breadcrumbs={[
         { label: "Shop", href: "/store" },
         { label: "Collections" },
@@ -58,7 +69,12 @@ export default function CollectionTemplate({
             countryCode={countryCode}
             optionValueIds={optionValueIds}
             filters={filters}
-            emptyTitle={`No products found in ${collection.title}`}
+            searchQuery={searchQuery}
+            emptyTitle={
+              isSearch
+                ? `No products found for "${searchQuery}"`
+                : `No products found in ${collection.title}`
+            }
             emptyDescription="Clear filters or browse all products to find another PetBoxNest match."
           />
         </Suspense>

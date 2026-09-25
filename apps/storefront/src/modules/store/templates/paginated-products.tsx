@@ -27,6 +27,7 @@ export default async function PaginatedProducts({
   countryCode,
   optionValueIds,
   filters,
+  searchQuery,
   emptyTitle = "No products found",
   emptyDescription = "Try clearing a filter or browse all PetBoxNest finds.",
 }: {
@@ -38,6 +39,7 @@ export default async function PaginatedProducts({
   countryCode: string
   optionValueIds?: OptionValueIds
   filters?: CatalogFilters
+  searchQuery?: string
   emptyTitle?: string
   emptyDescription?: string
 }) {
@@ -83,6 +85,7 @@ export default async function PaginatedProducts({
       countryCode,
       optionValueIds,
       filters,
+      searchQuery,
     })
 
     products = result.response.products

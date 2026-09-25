@@ -15,22 +15,33 @@ const StoreTemplate = ({
   countryCode,
   optionValueIds,
   filters,
+  searchQuery,
 }: {
   sortBy?: SortOptions
   page?: string
   countryCode: string
   optionValueIds?: OptionValueIds
   filters?: CatalogFilters
+  searchQuery?: string
 }) => {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
+  const isSearch = Boolean(searchQuery)
 
   return (
     <CatalogPageShell
-      eyebrow="Shop all"
-      title="Find a better fit for every corner of pet life."
-      description="Browse PetBoxNest essentials for cozy naps, cleaner routines, and home-friendly pet care."
-      currentLabel="All products"
+      eyebrow={isSearch ? "Search" : "Shop all"}
+      title={
+        isSearch
+          ? `Search results for "${searchQuery}"`
+          : "Find a better fit for every corner of pet life."
+      }
+      description={
+        isSearch
+          ? "Refine your search by pet, price, availability, SKU, category, and product options."
+          : "Browse PetBoxNest essentials for cozy naps, cleaner routines, and home-friendly pet care."
+      }
+      currentLabel={isSearch ? `Searching "${searchQuery}"` : "All products"}
       breadcrumbs={[{ label: "Shop", href: "/store" }, { label: "All products" }]}
       refinement={<RefinementList sortBy={sort} />}
       subnav={[
@@ -46,8 +57,17 @@ const StoreTemplate = ({
             countryCode={countryCode}
             optionValueIds={optionValueIds}
             filters={filters}
-            emptyTitle="No products matched those filters"
-            emptyDescription="Clear a filter or switch pet type to keep exploring PetBoxNest finds."
+            searchQuery={searchQuery}
+            emptyTitle={
+              isSearch
+                ? `No products found for "${searchQuery}"`
+                : "No products matched those filters"
+            }
+            emptyDescription={
+              isSearch
+                ? "Check the spelling, try a broader product name, SKU, or category, or browse all products."
+                : "Clear a filter or switch pet type to keep exploring PetBoxNest finds."
+            }
           />
         </Suspense>
     </CatalogPageShell>

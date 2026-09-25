@@ -3,6 +3,7 @@ import { HttpTypes } from "@medusajs/types"
 export const PET_FILTER_QUERY_KEY = "pet"
 export const PRICE_FILTER_QUERY_KEY = "price"
 export const AVAILABILITY_FILTER_QUERY_KEY = "availability"
+export const SEARCH_QUERY_KEY = "q"
 
 export type PetFilter = "cats" | "dogs"
 export type PriceFilter = "under_25" | "25_50" | "50_100" | "over_100"
@@ -12,6 +13,21 @@ export type CatalogFilters = {
   pet?: PetFilter
   price?: PriceFilter
   availability?: AvailabilityFilter
+}
+
+const readSearchParam = (
+  searchParams: URLSearchParams | Record<string, string | string[] | undefined>,
+  key: string
+) => {
+  if (typeof (searchParams as URLSearchParams).get === "function") {
+    return (searchParams as URLSearchParams).get(key) || undefined
+  }
+
+  const value = (searchParams as Record<string, string | string[] | undefined>)[
+    key
+  ]
+
+  return Array.isArray(value) ? value[0] : value
 }
 
 export const petFilterOptions: { value: PetFilter; label: string }[] = [
@@ -34,21 +50,12 @@ export const priceFilterOptions: {
 export const parseCatalogFilters = (
   searchParams: URLSearchParams | Record<string, string | string[] | undefined>
 ): CatalogFilters => {
-  const read = (key: string) => {
-    if (typeof (searchParams as URLSearchParams).get === "function") {
-      return (searchParams as URLSearchParams).get(key) || undefined
-    }
-
-    const value = (
-      searchParams as Record<string, string | string[] | undefined>
-    )[key]
-
-    return Array.isArray(value) ? value[0] : value
-  }
-
-  const pet = read(PET_FILTER_QUERY_KEY)
-  const price = read(PRICE_FILTER_QUERY_KEY)
-  const availability = read(AVAILABILITY_FILTER_QUERY_KEY)
+  const pet = readSearchParam(searchParams, PET_FILTER_QUERY_KEY)
+  const price = readSearchParam(searchParams, PRICE_FILTER_QUERY_KEY)
+  const availability = readSearchParam(
+    searchParams,
+    AVAILABILITY_FILTER_QUERY_KEY
+  )
 
   return {
     pet: pet === "cats" || pet === "dogs" ? pet : undefined,
@@ -57,6 +64,14 @@ export const parseCatalogFilters = (
       : undefined,
     availability: availability === "in_stock" ? "in_stock" : undefined,
   }
+}
+
+export const parseSearchQuery = (
+  searchParams: URLSearchParams | Record<string, string | string[] | undefined>
+) => {
+  const query = readSearchParam(searchParams, SEARCH_QUERY_KEY)?.trim()
+
+  return query ? query.slice(0, 120) : undefined
 }
 
 export const getProductMinPrice = (product: HttpTypes.StoreProduct) => {
@@ -77,6 +92,13 @@ export const isProductInStock = (product: HttpTypes.StoreProduct) =>
     return (variant.inventory_quantity || 0) > 0
   }) || false
 
+const normalizeSearchText = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[-_/]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+
 const productText = (product: HttpTypes.StoreProduct) =>
   [
     product.title,
@@ -85,7 +107,17 @@ const productText = (product: HttpTypes.StoreProduct) =>
     product.handle,
     product.collection?.title,
     product.collection?.handle,
+    ...(product.categories?.flatMap((category) => [
+      category.name,
+      category.handle,
+      category.description,
+    ]) || []),
     product.type?.value,
+    ...(product.variants?.flatMap((variant) => [
+      variant.title,
+      variant.sku,
+      ...(variant.options?.map((option) => option.value) || []),
+    ]) || []),
     ...(product.tags?.flatMap((tag) => [tag.value, tag.metadata?.label]) || []),
     ...Object.values(product.metadata || {}).map((value) =>
       typeof value === "string" ? value : ""
@@ -110,11 +142,36 @@ export const productMatchesPet = (
     : /\b(dog|dogs|puppy|canine)\b/.test(text)
 }
 
+export const productMatchesSearch = (
+  product: HttpTypes.StoreProduct,
+  query?: string
+) => {
+  if (!query) {
+    return true
+  }
+
+  const normalizedQuery = normalizeSearchText(query)
+  const terms = normalizedQuery.split(" ").filter(Boolean)
+
+  if (!terms.length) {
+    return true
+  }
+
+  const text = normalizeSearchText(productText(product))
+
+  return terms.every((term) => text.includes(term))
+}
+
 export const filterCatalogProducts = (
   products: HttpTypes.StoreProduct[],
-  filters?: CatalogFilters
+  filters?: CatalogFilters,
+  searchQuery?: string
 ) =>
   products.filter((product) => {
+    if (!productMatchesSearch(product, searchQuery)) {
+      return false
+    }
+
     if (filters?.availability === "in_stock" && !isProductInStock(product)) {
       return false
     }

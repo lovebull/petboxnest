@@ -65,6 +65,13 @@ export default async function Nav() {
           </div>
 
           <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-2 xsmall:gap-x-4">
+            {/* Top navigation search is intentionally disabled for now.
+            <ProductSearchForm
+              targetPath="/store"
+              variant="nav"
+              className="hidden medium:flex"
+            />
+            */}
             <LocalizedClientLink
               href="/about-us"
               className="pbn-focus hidden rounded-lg py-3 hover:text-brand small:block"

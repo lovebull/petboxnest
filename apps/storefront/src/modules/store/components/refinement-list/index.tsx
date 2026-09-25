@@ -8,7 +8,9 @@ import {
   AVAILABILITY_FILTER_QUERY_KEY,
   PRICE_FILTER_QUERY_KEY,
   PET_FILTER_QUERY_KEY,
+  SEARCH_QUERY_KEY,
   parseCatalogFilters,
+  parseSearchQuery,
   petFilterOptions,
   priceFilterOptions,
 } from "@lib/util/catalog-filters"
@@ -17,6 +19,7 @@ import {
   parseOptionValueIds,
 } from "@lib/util/product-option-filters"
 import OptionsPicker from "./options-picker"
+import ProductSearchForm from "../product-search-form"
 import SortProducts, { SortOptions } from "./sort-products"
 
 type RefinementListProps = {
@@ -89,6 +92,10 @@ const RefinementList = ({
     () => parseCatalogFilters(searchParams),
     [searchParams]
   )
+  const searchQuery = useMemo(
+    () => parseSearchQuery(searchParams),
+    [searchParams]
+  )
 
   const setOptionValueIds = (valueIds: string[]) =>
     updateQueryParams((params) => {
@@ -145,6 +152,7 @@ const RefinementList = ({
       selectedOptionValueIds={selectedOptionValueIds}
       activeFilters={activeFilters}
       catalogFilters={catalogFilters}
+      searchQuery={searchQuery}
       setQueryParams={setQueryParams}
       toggleQueryParam={toggleQueryParam}
       clearQueryParam={clearQueryParam}
@@ -239,6 +247,7 @@ function FilterPanel({
   selectedOptionValueIds,
   activeFilters,
   catalogFilters,
+  searchQuery,
   setQueryParams,
   toggleQueryParam,
   clearQueryParam,
@@ -251,6 +260,7 @@ function FilterPanel({
   selectedOptionValueIds: string[]
   activeFilters: ActiveFilter[]
   catalogFilters: ReturnType<typeof parseCatalogFilters>
+  searchQuery?: string
   setQueryParams: (name: string, value: string) => void
   toggleQueryParam: (name: string, value: string) => void
   clearQueryParam: (name: string) => void
@@ -298,6 +308,27 @@ function FilterPanel({
       )}
 
       <div className="mt-7 space-y-8">
+        <div>
+          <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-muted">
+            Search
+          </h3>
+          <ProductSearchForm
+            initialQuery={searchQuery}
+            preserveParams
+            variant="catalog"
+            className="mt-3"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => clearQueryParam(SEARCH_QUERY_KEY)}
+              className="pbn-focus mt-2 min-h-9 rounded-[12px] text-xs font-bold text-brand hover:text-brand-dark"
+            >
+              Clear search
+            </button>
+          )}
+        </div>
+
         <SortProducts
           sortBy={sortBy}
           setQueryParams={setQueryParams}

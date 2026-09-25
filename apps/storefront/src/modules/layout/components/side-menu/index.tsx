@@ -10,6 +10,7 @@ import { Fragment } from "react"
 import CountrySelect from "../country-select"
 import LanguageSelect from "../language-select"
 import { Locale } from "@lib/data/locales"
+import ProductSearchForm from "@modules/store/components/product-search-form"
 
 const SideMenuItems = {
   Home: "/",
@@ -78,6 +79,13 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                       >
                         <XMark />
                       </button>
+                    </div>
+                    <div className="mt-3">
+                      <ProductSearchForm
+                        targetPath="/store"
+                        variant="mobile"
+                        onSearch={close}
+                      />
                     </div>
                     <ul className="flex flex-col items-start justify-start gap-2">
                       {Object.entries(SideMenuItems).map(([name, href]) => {

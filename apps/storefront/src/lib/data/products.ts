@@ -18,6 +18,61 @@ type ProductListQueryParams = (HttpTypes.FindParams &
   option_value_id?: string | string[]
 }
 
+const PRODUCT_BATCH_LIMIT = 100
+
+const hasCatalogFilters = (filters?: CatalogFilters) =>
+  Boolean(filters?.pet || filters?.price || filters?.availability)
+
+const withOptionFilters = (
+  queryParams: ProductListQueryParams | undefined,
+  optionValueIds: OptionValueIds | undefined
+): ProductListQueryParams => {
+  const optionFilters = Array.from(
+    new Set((optionValueIds || []).filter(Boolean))
+  )
+
+  return {
+    ...queryParams,
+    ...(optionFilters.length ? { option_value_id: optionFilters } : {}),
+  }
+}
+
+const listAllProducts = async ({
+  queryParams,
+  countryCode,
+}: {
+  queryParams?: ProductListQueryParams
+  countryCode: string
+}) => {
+  const products: HttpTypes.StoreProduct[] = []
+  let pageParam = 1
+  let totalCount = 0
+
+  while (true) {
+    const {
+      response: { products: batch, count },
+    } = await listProducts({
+      pageParam,
+      queryParams: {
+        ...queryParams,
+        limit: PRODUCT_BATCH_LIMIT,
+      },
+      countryCode,
+    })
+
+    totalCount = count
+    products.push(...batch)
+
+    if (!batch.length || products.length >= count) {
+      break
+    }
+
+    pageParam += 1
+  }
+
+  return { products, count: totalCount }
+}
+
 export const listProducts = async ({
   pageParam = 1,
   queryParams,
@@ -79,7 +134,7 @@ export const listProducts = async ({
           offset,
           region_id: region?.id,
           fields:
-            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,",
+            "*variants.calculated_price,+variants.inventory_quantity,+variants.sku,*variants.images,*variants.options,+metadata,+tags,*categories,",
           ...queryParams,
         },
         headers,
@@ -102,16 +157,19 @@ export const listProducts = async ({
 }
 
 /**
- * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
- * It will then return the paginated products based on the page and limit parameters.
+ * Lists products with API-backed pagination whenever the selected sort/filter
+ * can be handled by Medusa. Custom catalog filters and price sorting require a
+ * full paginated read because Medusa 2.19's Store Product List endpoint doesn't
+ * expose those storefront-specific predicates as database filters.
  */
 export const listProductsWithSort = async ({
-  page = 0,
+  page = 1,
   queryParams,
   sortBy = "created_at",
   countryCode,
   optionValueIds,
   filters,
+  searchQuery,
 }: {
   page?: number
   queryParams?: ProductListQueryParams
@@ -119,38 +177,49 @@ export const listProductsWithSort = async ({
   countryCode: string
   optionValueIds?: OptionValueIds
   filters?: CatalogFilters
+  searchQuery?: string
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
   queryParams?: ProductListQueryParams
 }> => {
   const limit = queryParams?.limit || 12
-  const optionFilters = Array.from(
-    new Set((optionValueIds || []).filter(Boolean))
-  )
+  const pageParam = Math.max(page, 1)
+  const queryWithOptionFilters = withOptionFilters(queryParams, optionValueIds)
+  const requiresFullCatalogPass =
+    sortBy === "price_asc" ||
+    sortBy === "price_desc" ||
+    hasCatalogFilters(filters) ||
+    Boolean(searchQuery)
 
-  const {
-    response: { products },
-  } = await listProducts({
-    pageParam: 0,
-    queryParams: {
-      ...queryParams,
-      ...(optionFilters.length ? { option_value_id: optionFilters } : {}),
-      limit: 100,
-    },
+  if (!requiresFullCatalogPass) {
+    return listProducts({
+      pageParam,
+      queryParams: {
+        ...queryWithOptionFilters,
+        order:
+          sortBy === "created_at" ? "-created_at" : queryWithOptionFilters.order,
+        limit,
+      },
+      countryCode,
+    })
+  }
+
+  const { products } = await listAllProducts({
+    queryParams: queryWithOptionFilters,
     countryCode,
   })
 
-  const filteredProducts = filterCatalogProducts(products, filters)
+  const filteredProducts = filterCatalogProducts(products, filters, searchQuery)
   const sortedProducts = sortProducts(filteredProducts, sortBy)
 
-  const pageParam = (page - 1) * limit
+  const offset = (pageParam - 1) * limit
 
   const filteredCount = filteredProducts.length
 
-  const nextPage = filteredCount > pageParam + limit ? pageParam + limit : null
+  const nextPage = filteredCount > offset + limit ? pageParam + 1 : null
 
-  const paginatedProducts = sortedProducts.slice(pageParam, pageParam + limit)
+  const paginatedProducts = sortedProducts.slice(offset, offset + limit)
 
   return {
     response: {

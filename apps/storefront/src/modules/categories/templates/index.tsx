@@ -17,6 +17,7 @@ export default function CategoryTemplate({
   countryCode,
   optionValueIds,
   filters,
+  searchQuery,
 }: {
   category: HttpTypes.StoreProductCategory
   sortBy?: SortOptions
@@ -24,9 +25,11 @@ export default function CategoryTemplate({
   countryCode: string
   optionValueIds?: OptionValueIds
   filters?: CatalogFilters
+  searchQuery?: string
 }) {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
+  const isSearch = Boolean(searchQuery)
 
   if (!category || !countryCode) notFound()
 
@@ -58,13 +61,15 @@ export default function CategoryTemplate({
 
   return (
     <CatalogPageShell
-      eyebrow="Category"
-      title={category.name}
+      eyebrow={isSearch ? "Category search" : "Category"}
+      title={isSearch ? `Search "${searchQuery}" in ${category.name}` : category.name}
       description={
-        category.description ||
-        "Browse useful, home-friendly picks selected for this part of pet life."
+        isSearch
+          ? "Search this category by product title, keyword, SKU, and related category details."
+          : category.description ||
+            "Browse useful, home-friendly picks selected for this part of pet life."
       }
-      currentLabel={category.name}
+      currentLabel={isSearch ? `Searching "${searchQuery}"` : category.name}
       breadcrumbs={breadcrumbs}
       refinement={
         <RefinementList
@@ -89,7 +94,12 @@ export default function CategoryTemplate({
             countryCode={countryCode}
             optionValueIds={optionValueIds}
             filters={filters}
-            emptyTitle={`No products found in ${category.name}`}
+            searchQuery={searchQuery}
+            emptyTitle={
+              isSearch
+                ? `No products found for "${searchQuery}"`
+                : `No products found in ${category.name}`
+            }
             emptyDescription="Clear filters or step back to the full shop to find another cozy fit."
           />
         </Suspense>

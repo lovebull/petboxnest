@@ -65,6 +65,23 @@ const nextConfig = {
         hostname: "media.6769.net",
         pathname: "/petboxnest-p/**",
       },
+      {
+        protocol: "https",
+        hostname: "media.6769.net",
+        pathname: "/petboxnest-m/**",
+      },
+      {
+        protocol: "http",
+        hostname: "203.88.118.104",
+        port: "7020",
+        pathname: "/static/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "7020",
+        pathname: "/static/**",
+      },
       { protocol: "https", hostname: "cdn.petboxnest.com" },
       { protocol: "https", hostname: "cms.petboxnest.com" },
       { protocol: "https", hostname: "clubrecess.com" },

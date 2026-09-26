@@ -4,6 +4,23 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.19.1",
+    date: "2026-09-26 15:45:43 EDT",
+    title: "🖼️ 商品媒体与详情标题显示修复",
+    items: [
+      "🖼️ Storefront Next Image 远程图片配置新增 media.6769.net 的 /petboxnest-m/** 路径，支持更多 PetBoxNest 媒体资源优化加载。",
+      "🧩 Storefront 图片白名单新增 Medusa Backend 静态文件地址，覆盖 203.88.118.104:7020/static/** 与 127.0.0.1:7020/static/**。",
+      "📦 Medusa Backend 配置新增 MEDUSA_FILE_BACKEND_URL 展开结果，为本地静态文件公开地址统一使用 PUBLIC_* 占位符做好配置准备。",
+      "🏷️ 商品详情页标题样式调整为更紧凑的响应式字号，允许长标题自然换行并避免撑破商品信息区域。",
+    ],
+    fixes: [
+      "🐛 修复 media.6769.net/petboxnest-m 下的商品或营销图片未进入 Next Image 白名单，前台可能无法加载的问题。",
+      "🐛 修复 Medusa 本地 /static 文件地址未进入 Storefront 图片白名单，本地或 IP 访问时商品图片可能被 Next Image 拦截的问题。",
+      "🐛 修复本地文件公开地址缺少统一展开变量，后续本地文件服务配置容易继续写死端口或主机的问题。",
+      "🐛 修复商品详情页长商品名使用较大字号和负字距时容易挤压、溢出或换行不自然的问题。",
+    ],
+  },
+  {
     version: "v1.19.0",
     date: "2026-09-25 02:26:57 EDT",
     title: "🔎 Storefront 商品搜索与目录分页修复",

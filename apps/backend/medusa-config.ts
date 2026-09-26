@@ -23,6 +23,11 @@ const expandPublicUrl = (value: string | undefined, fallback: string) => {
     .replaceAll("${PUBLIC_HOST}", publicHost)
 }
 
+const fileBackendUrl = expandPublicUrl(
+  process.env.MEDUSA_FILE_BACKEND_URL,
+  publicUrl(7020, "/static")
+)
+
 const mergeCorsOrigins = (configured: string, required: string[]) =>
   Array.from(
     new Set(

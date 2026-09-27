@@ -186,10 +186,54 @@ export const ProductEnhancements: CollectionConfig = {
       label: "图片 / Images",
       fields: [
         {
+          name: "image_source",
+          type: "select",
+          defaultValue: "upload",
+          label: "图片来源 / Image Source",
+          options: [
+            { label: "上传媒体 / Uploaded Media", value: "upload" },
+            { label: "外部 URL / External URL", value: "external" },
+          ],
+          required: true,
+        },
+        {
           name: "image",
           type: "upload",
           label: "图片 / Image",
           relationTo: "media",
+          admin: {
+            condition: (_, siblingData) =>
+              siblingData?.image_source !== "external",
+            description:
+              "上传到 Payload Media，并按媒体库配置保存。 / Upload to Payload Media using the configured media storage.",
+          },
+        },
+        {
+          name: "image_url",
+          type: "text",
+          label: "在线图片地址 / External Image URL",
+          admin: {
+            components: {
+              Field:
+                "/admin/components/ExternalImageUrlField#ExternalImageUrlField",
+            },
+            condition: (_, siblingData) =>
+              siblingData?.image_source === "external",
+            description:
+              "只保存图片 URL，不会抓取远程文件、不会写入 Media，也不会上传到 S3。 / Stores the URL only. It will not fetch the remote file, create Media, or upload to S3.",
+            placeholder: "https://example.com/product-image.jpg",
+          },
+        },
+        {
+          name: "image_alt",
+          type: "text",
+          label: "在线图片 Alt / External Image Alt",
+          admin: {
+            condition: (_, siblingData) =>
+              siblingData?.image_source === "external",
+            description:
+              "可选。外部图片的无障碍和 SEO 文本。 / Optional alt text for the external image.",
+          },
         },
         {
           name: "title",

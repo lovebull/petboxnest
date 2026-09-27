@@ -4,6 +4,28 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.20.0",
+    date: "2026-09-27 12:53:53 EDT",
+    title: "🖼️ CMS 外部图片与媒体预览能力上线",
+    items: [
+      "🖼️ Payload Media 集合新增缩略图预览列，媒体列表可直接查看图片缩略图或文件类型占位。",
+      "🔗 Payload Media 上传支持 pasteURL 白名单，允许从 cdn.larumsport.com、media.6769.net 和 s3.6769.net 粘贴远程图片 URL。",
+      "🌐 Product Enhancements 的图片区块新增图片来源选择，可在上传媒体和外部 URL 之间切换。",
+      "🧩 新增外部图片 URL 自定义字段组件，支持 http/https 地址校验、缩略图预览、预览失败提示和打开原图。",
+      "🏷️ 外部图片新增独立 Alt 文本字段，便于无障碍和 SEO 管理。",
+      "🗃️ 新增 Payload 数据库迁移，为 product_enhancements_image_blocks 增加 image_source、image_url 和 image_alt 字段。",
+      "🛍️ Storefront 产品增强读取与渲染支持外部图片 URL，外部图片使用普通 img 懒加载，上传媒体继续使用 Next Image。",
+    ],
+    fixes: [
+      "🐛 修复 CMS 媒体列表只能看文件名和 alt，运营人员难以快速识别图片内容的问题。",
+      "🐛 修复产品增强图片区块只能选择已上传 Media，无法直接引用外部 CDN 图片 URL 的问题。",
+      "🐛 修复外部图片如果强行写入上传媒体字段，会误导为需要抓取远程文件或上传到 S3 的问题。",
+      "🐛 修复 Storefront 产品增强只读取 block.image.url，外部图片 URL 不会在商品详情增强区展示的问题。",
+      "🐛 修复外部图片缺少单独 alt 字段，导致图片说明只能依赖标题或上传媒体 alt 的问题。",
+      "🐛 修复已有 image_blocks 缺少 image_source 字段时无法明确区分上传媒体和外部 URL 的数据结构问题。",
+    ],
+  },
+  {
     version: "v1.19.1",
     date: "2026-09-26 15:45:43 EDT",
     title: "🖼️ 商品媒体与详情标题显示修复",

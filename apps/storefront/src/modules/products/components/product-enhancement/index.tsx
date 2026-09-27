@@ -9,6 +9,20 @@ type ProductEnhancementProps = {
   enhancement: ProductEnhancementType | null
 }
 
+type ImageBlock = NonNullable<ProductEnhancementType["image_blocks"]>[number]
+
+function getImageBlockUrl(block: ImageBlock) {
+  if (block.image_source === "external" && block.image_url) {
+    return block.image_url
+  }
+
+  return block.image?.url || block.image_url || ""
+}
+
+function isExternalImageBlock(block: ImageBlock) {
+  return Boolean(block.image_url && getImageBlockUrl(block) === block.image_url)
+}
+
 function renderTextNode(
   node: PayloadRichTextNode,
   key: string,
@@ -201,7 +215,7 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
     ) || []
   const imageBlocks =
     enhancement.image_blocks?.filter(
-      (block) => block.image?.url || block.title || block.description,
+      (block) => getImageBlockUrl(block) || block.title || block.description,
     ) || []
   const specifications =
     enhancement.specifications?.filter((spec) => spec.label || spec.value) || []
@@ -324,16 +338,36 @@ const ProductEnhancement = ({ enhancement }: ProductEnhancementProps) => {
                 key={`${block.title || "image"}-${index}`}
                 className="overflow-hidden rounded-[22px] border border-grey-20 bg-white"
               >
-                {block.image?.url && (
-                  <Image
-                    src={block.image.url}
-                    alt={block.image.alt || block.title || ""}
-                    width={block.image.width || 720}
-                    height={block.image.height || 720}
-                    sizes="(min-width: 640px) 33vw, 100vw"
-                    className="aspect-square h-auto w-full object-cover"
-                  />
-                )}
+                {(() => {
+                  const imageUrl = getImageBlockUrl(block)
+
+                  if (!imageUrl) {
+                    return null
+                  }
+
+                  const imageAlt =
+                    block.image_alt || block.image?.alt || block.title || ""
+
+                  return isExternalImageBlock(block) ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={imageUrl}
+                      alt={imageAlt}
+                      loading="lazy"
+                      decoding="async"
+                      className="aspect-square h-auto w-full object-cover"
+                    />
+                  ) : (
+                    <Image
+                      src={imageUrl}
+                      alt={imageAlt}
+                      width={block.image?.width || 720}
+                      height={block.image?.height || 720}
+                      sizes="(min-width: 640px) 33vw, 100vw"
+                      className="aspect-square h-auto w-full object-cover"
+                    />
+                  )
+                })()}
                 {(block.title || block.description) && (
                   <figcaption className="p-5">
                     {block.title && (

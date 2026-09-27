@@ -61,7 +61,10 @@ export type ProductEnhancement = {
   care_notes?: string
   video_url?: string
   image_blocks?: {
+    image_source?: "upload" | "external"
     image?: PayloadMedia
+    image_url?: string | null
+    image_alt?: string | null
     title?: string
     description?: string
   }[]
@@ -150,6 +153,7 @@ function normalizeEnhancement(
     })),
     image_blocks: enhancement.image_blocks?.map((block) => ({
       ...block,
+      image_url: normalizeMediaUrl(block.image_url || undefined),
       image: withPayloadUrl(block.image),
     })),
   }

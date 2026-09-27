@@ -6,9 +6,27 @@ export const Media: CollectionConfig = {
     read: () => true,
   },
   admin: {
+    defaultColumns: [
+      "filename",
+      "preview",
+      "alt",
+      "mimeType",
+      "filesize",
+      "updatedAt",
+    ],
     useAsTitle: "alt",
   },
   fields: [
+    {
+      name: "preview",
+      type: "ui",
+      label: "缩略图 / Thumbnail",
+      admin: {
+        components: {
+          Cell: "/admin/components/MediaPreviewCell#MediaPreviewCell",
+        },
+      },
+    },
     {
       name: "alt",
       type: "text",
@@ -16,6 +34,22 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
+    pasteURL: {
+      allowList: [
+        {
+          hostname: "cdn.larumsport.com",
+          protocol: "https",
+        },
+        {
+          hostname: "media.6769.net",
+          protocol: "https",
+        },
+        {
+          hostname: "s3.6769.net",
+          protocol: "https",
+        },
+      ],
+    },
     imageSizes: [
       {
         name: "thumbnail",

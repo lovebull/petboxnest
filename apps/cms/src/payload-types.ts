@@ -270,7 +270,19 @@ export interface ProductEnhancement {
   video_url?: string | null;
   image_blocks?:
     | {
+        image_source: 'upload' | 'external';
+        /**
+         * 上传到 Payload Media，并按媒体库配置保存。 / Upload to Payload Media using the configured media storage.
+         */
         image?: (number | null) | Media;
+        /**
+         * 只保存图片 URL，不会抓取远程文件、不会写入 Media，也不会上传到 S3。 / Stores the URL only. It will not fetch the remote file, create Media, or upload to S3.
+         */
+        image_url?: string | null;
+        /**
+         * 可选。外部图片的无障碍和 SEO 文本。 / Optional alt text for the external image.
+         */
+        image_alt?: string | null;
         title?: string | null;
         description?: string | null;
         id?: string | null;
@@ -611,7 +623,10 @@ export interface ProductEnhancementsSelect<T extends boolean = true> {
   image_blocks?:
     | T
     | {
+        image_source?: T;
         image?: T;
+        image_url?: T;
+        image_alt?: T;
         title?: T;
         description?: T;
         id?: T;

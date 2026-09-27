@@ -1,3 +1,4 @@
+import { MediaPreviewCell as MediaPreviewCell_4e2338efd8bdf268b0e9605d0af65093 } from '../../../admin/components/MediaPreviewCell'
 import { MedusaProductPicker as MedusaProductPicker_c1beba43d00015338da70404720406ed } from '../../../admin/components/MedusaProductPicker'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -23,6 +24,7 @@ import { RelationshipFeatureClient as RelationshipFeatureClient_e70f5e05f09f93e0
 import { BlockquoteFeatureClient as BlockquoteFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { InlineToolbarFeatureClient as InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { ExternalImageUrlField as ExternalImageUrlField_6347326069c7cc612e7be63a2aab41d9 } from '../../../admin/components/ExternalImageUrlField'
 import { ContactSubmissionActionsCell as ContactSubmissionActionsCell_73ecc835f719ee8003c9c471ba73c54d } from '../../../admin/components/ContactSubmissionActions'
 import { ContactSubmissionActionsField as ContactSubmissionActionsField_73ecc835f719ee8003c9c471ba73c54d } from '../../../admin/components/ContactSubmissionActions'
 import { WhatsNewNavLink as WhatsNewNavLink_0ea4c6b38bdf58c4b1c95fee3f2dc334 } from '../../../admin/components/WhatsNewNavLink'
@@ -32,6 +34,7 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 
 /** @type import('payload').ImportMap */
 export const importMap = {
+  "/admin/components/MediaPreviewCell#MediaPreviewCell": MediaPreviewCell_4e2338efd8bdf268b0e9605d0af65093,
   "/admin/components/MedusaProductPicker#MedusaProductPicker": MedusaProductPicker_c1beba43d00015338da70404720406ed,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -57,6 +60,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BlockquoteFeatureClient": BlockquoteFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#InlineToolbarFeatureClient": InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "/admin/components/ExternalImageUrlField#ExternalImageUrlField": ExternalImageUrlField_6347326069c7cc612e7be63a2aab41d9,
   "/admin/components/ContactSubmissionActions#ContactSubmissionActionsCell": ContactSubmissionActionsCell_73ecc835f719ee8003c9c471ba73c54d,
   "/admin/components/ContactSubmissionActions#ContactSubmissionActionsField": ContactSubmissionActionsField_73ecc835f719ee8003c9c471ba73c54d,
   "/admin/components/WhatsNewNavLink#WhatsNewNavLink": WhatsNewNavLink_0ea4c6b38bdf58c4b1c95fee3f2dc334,

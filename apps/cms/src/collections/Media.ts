@@ -1,9 +1,14 @@
 import type { CollectionConfig } from "payload"
 
+import { deleteMediaFilesFromS3 } from "../hooks/deleteMediaFilesFromS3"
+
 export const Media: CollectionConfig = {
   slug: "media",
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterDelete: [deleteMediaFilesFromS3],
   },
   admin: {
     defaultColumns: [

@@ -148,6 +148,9 @@ importers:
 
   apps/cms:
     dependencies:
+      '@aws-sdk/client-s3':
+        specifier: 3.1093.0
+        version: 3.1093.0
       '@payloadcms/db-postgres':
         specifier: 3.88.0
         version: 3.88.0(@opentelemetry/api@1.9.1)(knex@3.2.10(pg@8.20.0))(payload@3.88.0(graphql@16.14.2)(typescript@5.9.3))

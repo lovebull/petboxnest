@@ -67,3 +67,4 @@ apps/cms/next.config.mjs
 
 # Local database safety backups
 apps/backend/backups/*.dump
+deliverables/*

@@ -346,6 +346,11 @@ const AutomationListSchema = z.object({
   q: z.string().trim().max(160).optional(),
   status: z.string().trim().max(40).optional(),
 });
+const MediaLibraryListSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(24),
+  q: z.string().trim().max(160).optional(),
+});
 const CreateRestockSubscriptionSchema = z.strictObject({
   variant_id: z.string().min(1).max(120),
   email: z.email().max(320),
@@ -371,6 +376,11 @@ export const GetReferralConversionsSchema = z.object({
 
 export default defineMiddlewares({
   routes: [
+    {
+      matcher: "/admin/media-library",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(MediaLibraryListSchema, {})],
+    },
     {
       matcher: "/store/restock-subscriptions",
       method: "POST",

@@ -120,6 +120,9 @@ module.exports = defineConfig({
       resolve: "./src/modules/product-review",
     },
     {
+      resolve: "./src/modules/media-library",
+    },
+    {
       resolve: "./src/modules/cashback",
     },
     {

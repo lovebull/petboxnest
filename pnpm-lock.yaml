@@ -33,6 +33,9 @@ importers:
 
   apps/backend:
     dependencies:
+      '@aws-sdk/client-s3':
+        specifier: 3.1093.0
+        version: 3.1093.0
       '@medusajs/admin-sdk':
         specifier: 2.19.0
         version: 2.19.0

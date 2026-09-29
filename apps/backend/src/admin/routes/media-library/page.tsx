@@ -6,12 +6,29 @@ import {
   Container,
   Heading,
   Input,
+  Select,
   Text,
   toast,
 } from "@medusajs/ui"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { ChangeEvent, useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { sdk } from "../../lib/sdk"
+
+type MediaProductReference = {
+  id: string
+  title: string
+  roles: Array<"gallery" | "thumbnail">
+}
+
+type MediaVariantReference = {
+  id: string
+  title: string
+  sku: string | null
+  product_id: string | null
+  product_title: string | null
+  roles: Array<"image" | "thumbnail">
+}
 
 type MediaAsset = {
   id: string
@@ -23,6 +40,12 @@ type MediaAsset = {
   uploaded_by: string | null
   source: "admin_upload"
   created_at: string
+  references: {
+    products: MediaProductReference[]
+    variants: MediaVariantReference[]
+    total_count: number
+    is_orphan: boolean
+  }
 }
 
 type MediaLibraryResponse = {
@@ -44,6 +67,7 @@ const MediaLibraryPage = () => {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState("")
   const [query, setQuery] = useState("")
+  const [usage, setUsage] = useState<"all" | "referenced" | "orphan">("all")
   const limit = 24
 
   useEffect(() => {
@@ -56,13 +80,14 @@ const MediaLibraryPage = () => {
   }, [search])
 
   const mediaQuery = useQuery({
-    queryKey: ["media-library", page, query],
+    queryKey: ["media-library", page, query, usage],
     queryFn: () =>
       sdk.client.fetch<MediaLibraryResponse>("/admin/media-library", {
         query: {
           page,
           limit,
           q: query || undefined,
+          usage,
         },
       }),
   })
@@ -142,13 +167,49 @@ const MediaLibraryPage = () => {
           </label>
         </div>
 
-        <div className="flex flex-col gap-3 border-b px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <Input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="搜索文件名或存储键"
-            className="sm:max-w-sm"
-          />
+        <div className="flex flex-col gap-3 border-b px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <Input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="搜索文件名或存储键"
+              className="sm:w-80"
+            />
+            <Select
+              value={usage}
+              onValueChange={(value) => {
+                setUsage(value as "all" | "referenced" | "orphan")
+                setPage(1)
+              }}
+            >
+              <Select.Trigger className="sm:w-52">
+                <Select.Value />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="all">全部图片 / All</Select.Item>
+                <Select.Item value="referenced">
+                  已被引用 / Referenced
+                </Select.Item>
+                <Select.Item value="orphan">
+                  孤立图片 / Orphaned
+                </Select.Item>
+              </Select.Content>
+            </Select>
+            {(query || usage !== "all") && (
+              <Button
+                size="small"
+                variant="secondary"
+                onClick={() => {
+                  setSearch("")
+                  setQuery("")
+                  setUsage("all")
+                  setPage(1)
+                }}
+              >
+                清除筛选
+              </Button>
+            )}
+          </div>
           <Text size="small" className="text-ui-fg-subtle">
             共 {mediaQuery.data?.count || 0} 张图片
           </Text>
@@ -192,6 +253,14 @@ const MediaLibraryPage = () => {
                     </Text>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
+                    <Badge
+                      size="2xsmall"
+                      color={asset.references.is_orphan ? "green" : "blue"}
+                    >
+                      {asset.references.is_orphan
+                        ? "孤立图片"
+                        : `${asset.references.total_count} 个引用`}
+                    </Badge>
                     <Badge size="2xsmall">{asset.mime_type}</Badge>
                     <Text size="xsmall" className="text-ui-fg-subtle">
                       {formatFileSize(asset.size)}
@@ -199,6 +268,89 @@ const MediaLibraryPage = () => {
                     <Text size="xsmall" className="text-ui-fg-subtle">
                       {new Date(asset.created_at).toLocaleString()}
                     </Text>
+                  </div>
+                  <div className="rounded-md bg-ui-bg-subtle p-3">
+                    <Text size="small" leading="compact" weight="plus">
+                      图片媒体引用 / References
+                    </Text>
+                    {asset.references.is_orphan ? (
+                      <Text
+                        size="small"
+                        leading="compact"
+                        className="mt-1 text-ui-fg-subtle"
+                      >
+                        未被任何商品或变体引用
+                      </Text>
+                    ) : (
+                      <div className="mt-2 flex flex-col gap-2">
+                        {asset.references.products.map((product) => (
+                          <Link
+                            key={product.id}
+                            to={`/products/${product.id}`}
+                            className="rounded-md outline-none hover:text-ui-fg-interactive focus:shadow-borders-interactive-with-focus"
+                          >
+                            <Text size="small" leading="compact" weight="plus">
+                              商品：{product.title}
+                            </Text>
+                            <Text
+                              size="xsmall"
+                              leading="compact"
+                              className="text-ui-fg-subtle"
+                            >
+                              {product.roles.includes("gallery")
+                                ? "商品图库"
+                                : ""}
+                              {product.roles.length === 2 ? " · " : ""}
+                              {product.roles.includes("thumbnail")
+                                ? "商品缩略图"
+                                : ""}
+                            </Text>
+                          </Link>
+                        ))}
+                        {asset.references.variants.map((variant) => {
+                          const content = (
+                            <>
+                              <Text
+                                size="small"
+                                leading="compact"
+                                weight="plus"
+                              >
+                                变体：{variant.title}
+                              </Text>
+                              <Text
+                                size="xsmall"
+                                leading="compact"
+                                className="text-ui-fg-subtle"
+                              >
+                                {variant.product_title
+                                  ? `${variant.product_title} · `
+                                  : ""}
+                                {variant.sku ? `SKU ${variant.sku} · ` : ""}
+                                {variant.roles.includes("image")
+                                  ? "变体图片"
+                                  : ""}
+                                {variant.roles.length === 2 ? " · " : ""}
+                                {variant.roles.includes("thumbnail")
+                                  ? "变体缩略图"
+                                  : ""}
+                              </Text>
+                            </>
+                          )
+
+                          return variant.product_id ? (
+                            <Link
+                              key={variant.id}
+                              to={`/products/${variant.product_id}/variants/${variant.id}`}
+                              className="rounded-md outline-none hover:text-ui-fg-interactive focus:shadow-borders-interactive-with-focus"
+                            >
+                              {content}
+                            </Link>
+                          ) : (
+                            <div key={variant.id}>{content}</div>
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
                   <Button
                     size="small"

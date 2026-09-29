@@ -5,6 +5,7 @@ import {
   validateAndTransformQuery,
 } from "@medusajs/framework/http";
 import { z } from "@medusajs/framework/zod";
+import { MediaLibraryListSchema } from "./admin/media-library/validators";
 
 export const UpdateCashbackSettingsSchema = z
   .strictObject({
@@ -345,11 +346,6 @@ const AutomationListSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
   q: z.string().trim().max(160).optional(),
   status: z.string().trim().max(40).optional(),
-});
-const MediaLibraryListSchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(24),
-  q: z.string().trim().max(160).optional(),
 });
 const CreateRestockSubscriptionSchema = z.strictObject({
   variant_id: z.string().min(1).max(120),

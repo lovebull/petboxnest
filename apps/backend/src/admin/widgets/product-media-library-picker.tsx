@@ -67,19 +67,31 @@ const ProductMediaLibraryPicker = ({
     return () => window.clearTimeout(timer);
   }, [search]);
 
+  const currentProductQuery = useQuery({
+    queryKey: ["media-library-product-picker-current-product", product.id],
+    queryFn: () =>
+      sdk.admin.product.retrieve(product.id, {
+        fields: "id,thumbnail,*images",
+      }),
+    enabled: open,
+    refetchOnMount: "always",
+  });
+
+  const currentProduct = currentProductQuery.data?.product ?? product;
+
   const currentImageUrls = useMemo(() => {
     const urls = new Set(
-      (product.images || [])
+      (currentProduct.images || [])
         .map((image) => image.url)
         .filter((url): url is string => Boolean(url)),
     );
 
-    if (product.thumbnail) {
-      urls.add(product.thumbnail);
+    if (currentProduct.thumbnail) {
+      urls.add(currentProduct.thumbnail);
     }
 
     return urls;
-  }, [product.images, product.thumbnail]);
+  }, [currentProduct.images, currentProduct.thumbnail]);
 
   const mediaQuery = useQuery({
     queryKey: ["media-library-product-picker", page, query, usage],
@@ -108,13 +120,13 @@ const ProductMediaLibraryPicker = ({
 
       await sdk.admin.product.update(product.id, {
         images: [
-          ...(product.images || []).map((image) => ({
+          ...(currentProduct.images || []).map((image) => ({
             id: image.id,
             url: image.url,
           })),
           ...newImages,
         ],
-        thumbnail: product.thumbnail || null,
+        thumbnail: currentProduct.thumbnail || null,
       });
 
       return { addedCount: newImages.length };
@@ -125,6 +137,12 @@ const ProductMediaLibraryPicker = ({
         queryClient.invalidateQueries({ queryKey: ["media-library"] }),
         queryClient.invalidateQueries({
           queryKey: ["media-library-product-picker"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [
+            "media-library-product-picker-current-product",
+            product.id,
+          ],
         }),
       ]);
 
@@ -201,7 +219,7 @@ const ProductMediaLibraryPicker = ({
 
       <div className="flex items-center justify-between gap-3 px-6 py-4">
         <Text size="small" leading="compact" className="text-ui-fg-subtle">
-          当前商品共有 {product.images?.length || 0}{" "}
+          当前商品共有 {currentProduct.images?.length || 0}{" "}
           张图库图片；已有图片不会重复添加。
         </Text>
         <Badge size="2xsmall" color="grey">
@@ -300,24 +318,29 @@ const ProductMediaLibraryPicker = ({
               </div>
 
               <div className="flex-1 overflow-y-auto">
-                {mediaQuery.isLoading ? (
+                {mediaQuery.isLoading || currentProductQuery.isLoading ? (
                   <div className="flex min-h-80 items-center justify-center">
                     <Spinner />
                   </div>
-                ) : mediaQuery.isError ? (
+                ) : mediaQuery.isError || currentProductQuery.isError ? (
                   <div className="flex min-h-80 flex-col items-center justify-center gap-3 px-6 text-center">
                     <Text size="small" weight="plus">
                       媒体库加载失败
                     </Text>
                     <Text size="small" className="text-ui-fg-subtle">
-                      {mediaQuery.error instanceof Error
-                        ? mediaQuery.error.message
-                        : "请稍后重试"}
+                      {currentProductQuery.error instanceof Error
+                        ? currentProductQuery.error.message
+                        : mediaQuery.error instanceof Error
+                          ? mediaQuery.error.message
+                          : "请稍后重试"}
                     </Text>
                     <Button
                       size="small"
                       variant="secondary"
-                      onClick={() => mediaQuery.refetch()}
+                      onClick={() => {
+                        void mediaQuery.refetch();
+                        void currentProductQuery.refetch();
+                      }}
                     >
                       重新加载
                     </Button>
@@ -365,7 +388,16 @@ const ProductMediaLibraryPicker = ({
                               color="green"
                               className="absolute right-2 top-2 z-10"
                             >
-                              已在商品中
+                              已在当前商品
+                            </Badge>
+                          )}
+                          {!alreadyUsed && asset.references.total_count > 0 && (
+                            <Badge
+                              size="2xsmall"
+                              color="blue"
+                              className="absolute right-2 top-2 z-10"
+                            >
+                              可复用
                             </Badge>
                           )}
                           <div className="flex aspect-square items-center justify-center bg-ui-bg-subtle">
@@ -391,9 +423,11 @@ const ProductMediaLibraryPicker = ({
                               leading="compact"
                               className="text-ui-fg-subtle"
                             >
-                              {asset.references.is_orphan
-                                ? "未引用 / Orphaned"
-                                : `${asset.references.total_count} 个引用 / References`}
+                              {alreadyUsed
+                                ? "当前商品已使用 / In this product"
+                                : asset.references.is_orphan
+                                  ? "未引用，可使用 / Available"
+                                  : `${asset.references.total_count} 个其他引用，可复用`}
                             </Text>
                           </div>
                         </div>

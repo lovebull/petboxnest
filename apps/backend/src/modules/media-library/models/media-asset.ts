@@ -1,4 +1,4 @@
-import { model } from "@medusajs/framework/utils"
+import { model } from "@medusajs/framework/utils";
 
 const MediaAsset = model
   .define(
@@ -10,9 +10,10 @@ const MediaAsset = model
       filename: model.text(),
       mime_type: model.text(),
       size: model.number(),
+      sha256: model.text().nullable(),
       uploaded_by: model.text().nullable(),
       source: model.enum(["admin_upload"]).default("admin_upload"),
-    }
+    },
   )
   .indexes([
     {
@@ -27,6 +28,12 @@ const MediaAsset = model
       name: "IDX_pbn_media_asset_filename",
       on: ["filename"],
     },
-  ])
+    {
+      name: "IDX_pbn_media_asset_sha256_unique",
+      on: ["sha256"],
+      unique: true,
+      where: "sha256 IS NOT NULL",
+    },
+  ]);
 
-export default MediaAsset
+export default MediaAsset;

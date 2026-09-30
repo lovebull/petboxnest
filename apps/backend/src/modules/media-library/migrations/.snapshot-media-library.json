@@ -102,6 +102,22 @@
           "enumItems": [],
           "mappedType": "integer"
         },
+        "sha256": {
+          "name": "sha256",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
         "uploaded_by": {
           "name": "uploaded_by",
           "type": "text",
@@ -232,6 +248,15 @@
           "primary": false,
           "unique": false,
           "expression": "CREATE INDEX IF NOT EXISTS \"IDX_pbn_media_asset_filename\" ON \"pbn_media_asset\" (\"filename\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_pbn_media_asset_sha256_unique",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_pbn_media_asset_sha256_unique\" ON \"pbn_media_asset\" (\"sha256\") WHERE sha256 IS NOT NULL AND deleted_at IS NULL"
         },
         {
           "keyName": "pbn_media_asset_pkey",

@@ -4,6 +4,7 @@ import { CatalogFilters } from "@lib/util/catalog-filters"
 import { OptionValueIds } from "@lib/util/product-option-filters"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { clx } from "@modules/common/components/ui"
 import ProductPreview from "@modules/products/components/product-preview"
 import { Pagination } from "@modules/store/components/pagination"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
@@ -28,6 +29,7 @@ export default async function PaginatedProducts({
   optionValueIds,
   filters,
   searchQuery,
+  productLayout = "default",
   emptyTitle = "No products found",
   emptyDescription = "Try clearing a filter or browse all PetBoxNest finds.",
 }: {
@@ -40,6 +42,7 @@ export default async function PaginatedProducts({
   optionValueIds?: OptionValueIds
   filters?: CatalogFilters
   searchQuery?: string
+  productLayout?: "default" | "best-sellers"
   emptyTitle?: string
   emptyDescription?: string
 }) {
@@ -126,13 +129,25 @@ export default async function PaginatedProducts({
         )}
       </div>
       <ul
-        className="grid w-full grid-cols-2 gap-x-4 gap-y-8 small:grid-cols-3 small:gap-x-6 medium:grid-cols-4"
+        className={clx(
+          "grid w-full grid-cols-2 gap-x-4 small:gap-x-6",
+          productLayout === "best-sellers"
+            ? "gap-y-9 small:grid-cols-2 medium:grid-cols-[repeat(3,minmax(0,286px))] medium:justify-start"
+            : "gap-y-8 small:grid-cols-3 medium:grid-cols-4"
+        )}
         data-testid="products-list"
       >
         {products.map((p) => {
           return (
             <li key={p.id}>
-              <ProductPreview product={p} region={region} />
+              <ProductPreview
+                product={p}
+                region={region}
+                isFeatured={productLayout === "best-sellers"}
+                imageFit={
+                  productLayout === "best-sellers" ? "contain" : undefined
+                }
+              />
             </li>
           )
         })}

@@ -1,4 +1,5 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { clx } from "@modules/common/components/ui"
 import type React from "react"
 
 type CatalogBreadcrumb = {
@@ -15,6 +16,7 @@ type CatalogPageShellProps = {
   children: React.ReactNode
   refinement: React.ReactNode
   subnav?: CatalogBreadcrumb[]
+  productLayout?: "default" | "best-sellers"
 }
 
 export default function CatalogPageShell({
@@ -26,6 +28,7 @@ export default function CatalogPageShell({
   children,
   refinement,
   subnav = [],
+  productLayout = "default",
 }: CatalogPageShellProps) {
   return (
     <main className="bg-cream text-ink" data-testid="category-container">
@@ -110,9 +113,23 @@ export default function CatalogPageShell({
       </section>
 
       <section className="bg-mist py-10 small:py-14 medium:py-16">
-        <div className="pbn-container grid gap-7 small:grid-cols-[280px_minmax(0,1fr)] small:items-start medium:grid-cols-[320px_minmax(0,1fr)] medium:gap-10">
+        <div
+          className={clx(
+            "pbn-container grid gap-7 small:items-start",
+            productLayout === "best-sellers"
+              ? "!max-w-[1440px] small:grid-cols-[280px_minmax(0,1fr)] medium:grid-cols-[320px_minmax(0,1fr)] medium:gap-10"
+              : "small:grid-cols-[280px_minmax(0,1fr)] medium:grid-cols-[320px_minmax(0,1fr)] medium:gap-10"
+          )}
+        >
           {refinement}
-          <div className="min-w-0 rounded-[28px] border border-grey-20 bg-white p-4 shadow-[0_8px_24px_rgba(32,36,51,0.05)] xsmall:p-6 small:p-8">
+          <div
+            className={clx(
+              "min-w-0 rounded-[28px] border border-grey-20 bg-white p-4 shadow-[0_8px_24px_rgba(32,36,51,0.05)]",
+              productLayout === "best-sellers"
+                ? "small:p-4"
+                : "xsmall:p-6 small:p-8"
+            )}
+          >
             {children}
           </div>
         </div>

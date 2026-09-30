@@ -44,32 +44,36 @@ const StoreTemplate = ({
       currentLabel={isSearch ? `Searching "${searchQuery}"` : "All products"}
       breadcrumbs={[{ label: "Shop", href: "/store" }, { label: "All products" }]}
       refinement={<RefinementList sortBy={sort} />}
+      productLayout="best-sellers"
       subnav={[
         { label: "All products" },
         { label: "For cats", href: "/store?pet=cats" },
         { label: "For dogs", href: "/store?pet=dogs" },
       ]}
     >
-        <Suspense fallback={<SkeletonProductGrid />}>
-          <PaginatedProducts
-            sortBy={sort}
-            page={pageNumber}
-            countryCode={countryCode}
-            optionValueIds={optionValueIds}
-            filters={filters}
-            searchQuery={searchQuery}
-            emptyTitle={
-              isSearch
-                ? `No products found for "${searchQuery}"`
-                : "No products matched those filters"
-            }
-            emptyDescription={
-              isSearch
-                ? "Check the spelling, try a broader product name, SKU, or category, or browse all products."
-                : "Clear a filter or switch pet type to keep exploring PetBoxNest finds."
-            }
-          />
-        </Suspense>
+      <Suspense
+        fallback={<SkeletonProductGrid productLayout="best-sellers" />}
+      >
+        <PaginatedProducts
+          sortBy={sort}
+          page={pageNumber}
+          countryCode={countryCode}
+          optionValueIds={optionValueIds}
+          filters={filters}
+          searchQuery={searchQuery}
+          productLayout="best-sellers"
+          emptyTitle={
+            isSearch
+              ? `No products found for "${searchQuery}"`
+              : "No products matched those filters"
+          }
+          emptyDescription={
+            isSearch
+              ? "Check the spelling, try a broader product name, SKU, or category, or browse all products."
+              : "Clear a filter or switch pet type to keep exploring PetBoxNest finds."
+          }
+        />
+      </Suspense>
     </CatalogPageShell>
   )
 }

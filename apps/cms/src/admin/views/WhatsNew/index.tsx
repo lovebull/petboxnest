@@ -4,6 +4,26 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.21.5",
+    date: "2026-09-30 14:22:55 EDT",
+    title: "🛍️ Store 商品网格与加载骨架屏体验优化",
+    items: [
+      "🛍️ Store 商品列表新增 best-sellers 布局模式，商品卡片改为更宽的三列展示节奏。",
+      "🖼️ Store 商品卡片在 best-sellers 布局下复用 featured 尺寸，并使用 contain 图片模式完整展示商品主图。",
+      "📐 CatalogPageShell 支持 productLayout 参数，可按目录场景调整容器宽度和内容内边距。",
+      "💀 商品加载骨架屏新增 productLayout 参数，Store 页面加载态会匹配实际商品网格列数和图片比例。",
+      "✨ SkeletonProductPreview 支持 featured 图片比例，减少加载态到真实卡片之间的视觉跳动。",
+      "🔎 Store 页 Suspense fallback 与 PaginatedProducts 使用同一布局配置，搜索、筛选和翻页时保持一致展示。",
+    ],
+    fixes: [
+      "🐛 修复 Store 商品列表仍使用四列窄卡片，商品图在新版 contain 展示策略下显得偏小的问题。",
+      "🐛 修复商品加载骨架屏比例固定为 9:16，和 featured 商品卡片比例不一致导致加载切换时跳动的问题。",
+      "🐛 修复目录页内容卡片在 best-sellers 布局下内边距过大，导致商品网格可用空间不足的问题。",
+      "🐛 修复 Store 页 fallback 骨架屏与真实商品列表列数不一致，加载完成后布局明显变化的问题。",
+      "🐛 修复 Store 商品卡片没有向 ProductPreview 传递 imageFit，目录商品图仍可能被默认 cover 裁切的问题。",
+    ],
+  },
+  {
     version: "v1.21.4",
     date: "2026-09-30 13:58:42 EDT",
     title: "🖼️ Storefront 商品图片展示与缓存刷新修复",

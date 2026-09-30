@@ -57,7 +57,12 @@ export default async function LatestProducts({
         >
           {products.slice(0, 4).map((product) => (
             <li key={product.id}>
-              <ProductPreview product={product} region={region} isFeatured />
+              <ProductPreview
+                product={product}
+                region={region}
+                isFeatured
+                imageFit="contain"
+              />
             </li>
           ))}
         </ul>

@@ -8,10 +8,12 @@ import PreviewPrice from "./price"
 export default async function ProductPreview({
   product,
   isFeatured,
+  imageFit,
   region: _region,
 }: {
   product: HttpTypes.StoreProduct
   isFeatured?: boolean
+  imageFit?: "cover" | "contain"
   region: HttpTypes.StoreRegion
 }) {
   // const pricedProduct = await listProducts({
@@ -38,8 +40,11 @@ export default async function ProductPreview({
           images={product.images}
           size="full"
           isFeatured={isFeatured}
+          imageFit={imageFit}
           alt={product.title}
-          className="!rounded-[22px] !border !border-[#E6E8EC] !bg-mist !p-0 !shadow-none transition-transform duration-200 group-hover:-translate-y-1 group-hover:!shadow-[0_8px_24px_rgba(32,36,51,0.08)] motion-reduce:transition-none"
+          className={`!rounded-[22px] !border !border-[#E6E8EC] !p-0 !shadow-none transition-transform duration-200 group-hover:-translate-y-1 group-hover:!shadow-[0_8px_24px_rgba(32,36,51,0.08)] motion-reduce:transition-none ${
+            imageFit === "contain" ? "!bg-white" : "!bg-mist"
+          }`}
         />
         <div className="mt-4 flex items-start justify-between gap-3 text-sm">
           <Text

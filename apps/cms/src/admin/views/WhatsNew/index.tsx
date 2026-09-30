@@ -4,6 +4,28 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.21.4",
+    date: "2026-09-30 13:58:42 EDT",
+    title: "🖼️ Storefront 商品图片展示与缓存刷新修复",
+    items: [
+      "🖼️ Storefront 商品缩略图组件新增 imageFit 模式，支持 cover 与 contain 两种图片适配方式。",
+      "🏠 首页 Latest Products 改用 contain 图片展示，让商品主图完整显示并使用白色背景。",
+      "🛍️ 商品预览卡片新增 imageFit 透传能力，可按场景切换商品图裁切或完整展示。",
+      "✨ contain 模式提高图片质量并使用更合适的 responsive sizes，减少首页商品图被裁切的问题。",
+      "🔄 Medusa Backend 新增商品变更 subscriber，监听 product.created、product.updated 和 product.deleted 事件。",
+      "🧹 商品变更后会调用 Storefront revalidate 接口刷新 products、categories、collections 标签和关键商品路径缓存。",
+      "⚙️ 缓存刷新支持 STOREFRONT_REVALIDATE_URL 自定义地址，并在缺少 REVALIDATE_SECRET 时记录跳过日志。",
+    ],
+    fixes: [
+      "🐛 修复首页 Latest Products 商品图使用 cover 时容易裁切主体，影响商品完整展示的问题。",
+      "🐛 修复 ProductPreview 无法按页面场景控制缩略图适配方式，所有商品卡片只能共用一种裁切策略的问题。",
+      "🐛 修复 contain 图片缺少内边距和白底时，透明或留白素材在商品卡片中观感不稳定的问题。",
+      "🐛 修复 Medusa 商品创建、更新或删除后 Storefront force-cache 内容不会自动刷新，前台可能继续显示旧商品数据的问题。",
+      "🐛 修复商品缓存刷新没有统一覆盖首页、Store、Category 等关键入口，商品列表和分类页可能不同步的问题。",
+      "🐛 修复缓存刷新接口异常时缺少清晰日志，排查商品前台更新延迟问题不够直观的问题。",
+    ],
+  },
+  {
     version: "v1.21.3",
     date: "2026-09-30 12:20:49 EDT",
     title: "♻️ 媒体库上传内容去重与商品图片同步修复",

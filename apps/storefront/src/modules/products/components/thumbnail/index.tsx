@@ -8,6 +8,7 @@ type ThumbnailProps = {
   thumbnail?: string | null
   images?: { url?: string }[] | null
   size?: "small" | "medium" | "large" | "full" | "square"
+  imageFit?: "cover" | "contain"
   isFeatured?: boolean
   className?: string
   alt?: string
@@ -18,6 +19,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   thumbnail,
   images,
   size = "small",
+  imageFit = "cover",
   isFeatured,
   className,
   alt,
@@ -42,7 +44,12 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       )}
       data-testid={dataTestid}
     >
-      <ImageOrPlaceholder image={initialImage} size={size} alt={alt} />
+      <ImageOrPlaceholder
+        image={initialImage}
+        size={size}
+        imageFit={imageFit}
+        alt={alt}
+      />
     </Container>
   )
 }
@@ -50,18 +57,37 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
 const ImageOrPlaceholder = ({
   image,
   size,
+  imageFit,
   alt,
-}: Pick<ThumbnailProps, "size" | "alt"> & { image?: string }) => {
+}: Pick<ThumbnailProps, "size" | "imageFit" | "alt"> & {
+  image?: string
+}) => {
   return image ? (
-    <Image
-      src={image}
-      alt={alt || "Product image"}
-      className="absolute inset-0 object-cover object-center"
-      draggable={false}
-      quality={50}
-      sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
-      fill
-    />
+    imageFit === "contain" ? (
+      <div className="absolute inset-0 flex items-center justify-center p-2 xsmall:p-3 small:p-4">
+        <div className="relative h-full w-full">
+          <Image
+            src={image}
+            alt={alt || "Product image"}
+            className="object-contain object-center"
+            draggable={false}
+            quality={65}
+            sizes="(max-width: 576px) 42vw, (max-width: 1024px) 40vw, 280px"
+            fill
+          />
+        </div>
+      </div>
+    ) : (
+      <Image
+        src={image}
+        alt={alt || "Product image"}
+        className="absolute inset-0 object-cover object-center"
+        draggable={false}
+        quality={50}
+        sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
+        fill
+      />
+    )
   ) : (
     <div className="w-full h-full absolute inset-0 flex items-center justify-center">
       <PlaceholderImage size={size === "small" ? 16 : 24} />

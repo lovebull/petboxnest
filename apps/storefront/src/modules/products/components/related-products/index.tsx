@@ -38,7 +38,7 @@ export default async function RelatedProducts({
     countryCode,
   }).then(({ response }) => {
     return response.products.filter(
-      (responseProduct) => responseProduct.id !== product.id
+      (responseProduct) => responseProduct.id !== product.id,
     )
   })
 
@@ -50,22 +50,27 @@ export default async function RelatedProducts({
     <div>
       <div className="mb-10 flex flex-col small:mb-12 small:flex-row small:items-end small:justify-between">
         <div>
-          <span className="text-xs font-bold uppercase tracking-[0.14em] text-brand">
-            Keep exploring
+          <span className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
+            You may also like
           </span>
-          <h2 className="mt-2 max-w-2xl font-display text-3xl font-bold leading-tight text-ink xsmall:text-4xl">
-            More finds for their favorite corner
+          <h2 className="mt-2 max-w-2xl font-display text-[32px] font-bold leading-[1.08] tracking-[-0.025em] text-ink xsmall:text-[36px] small:text-[42px]">
+            More for their favorite corner
           </h2>
         </div>
-        <p className="mt-3 max-w-md text-sm leading-6 text-muted small:mt-0 small:text-right">
-          Related products selected from the same collection and product tags.
+        <p className="mt-3 max-w-md text-[15px] leading-6 text-muted xsmall:text-base xsmall:leading-7 small:mt-0 small:text-right">
+          A few more practical picks for happier pets and calmer homes.
         </p>
       </div>
 
-      <ul className="grid grid-cols-2 gap-x-4 gap-y-8 small:grid-cols-3 small:gap-x-6 medium:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-x-4 gap-y-9 small:grid-cols-4 small:gap-x-6">
         {products.map((product) => (
           <li key={product.id}>
-            <Product region={region} product={product} />
+            <Product
+              region={region}
+              product={product}
+              isFeatured
+              imageFit="contain"
+            />
           </li>
         ))}
       </ul>

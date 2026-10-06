@@ -48,6 +48,10 @@ module.exports = defineConfig({
       resolve: "@medusajs/loyalty-plugin",
       options: {},
     },
+    {
+      resolve: "@easypayment/medusa-payment-paypal",
+      options: {},
+    },
   ],
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -101,6 +105,26 @@ module.exports = defineConfig({
     },
   },
   modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "@easypayment/medusa-payment-paypal/providers/paypal",
+            id: "paypal",
+            options: {},
+            dependencies: ["paypal_onboarding"],
+          },
+          {
+            resolve:
+              "@easypayment/medusa-payment-paypal/providers/paypal_card",
+            id: "paypal_card",
+            options: {},
+            dependencies: ["paypal_onboarding"],
+          },
+        ],
+      },
+    },
     {
       resolve: "./src/modules/restock",
     },

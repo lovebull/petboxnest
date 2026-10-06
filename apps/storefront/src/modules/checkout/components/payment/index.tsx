@@ -1,7 +1,14 @@
 "use client"
 import { RadioGroup } from "@headlessui/react"
 import { isStripeLike, paymentInfoMap } from "@lib/constants"
-import { initiatePaymentSession } from "@lib/data/cart"
+import { initiatePaymentSession, placeOrder } from "@lib/data/cart"
+import {
+  PAYPAL_CARD_PROVIDER_ID,
+  PAYPAL_WALLET_PROVIDER_ID,
+  PayPalPaymentSection,
+  isPayPalProviderId,
+  usePayPalPaymentMethods,
+} from "@easypayment/medusa-paypal-ui"
 import {
   CheckCircleSolid,
   CreditCard,
@@ -21,8 +28,13 @@ import {
 } from "@modules/common/components/ui"
 import { HttpTypes } from "@medusajs/types"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { getCreditLineAmounts, getGiftCards } from "@lib/types/loyalty"
+
+const paypalBackendUrl =
+  process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL?.replace(/\/$/, "") ?? ""
+const paypalPublishableKey =
+  process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ?? ""
 
 const Payment = ({
   cart,
@@ -38,6 +50,7 @@ const Payment = ({
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [paymentComplete, setPaymentComplete] = useState(false)
+  const [paypalSessionLoading, setPaypalSessionLoading] = useState(false)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? ""
   )
@@ -47,6 +60,22 @@ const Payment = ({
   const pathname = usePathname()
 
   const isOpen = searchParams.get("step") === "payment"
+  const paypalRuntimeConfigured = Boolean(
+    paypalBackendUrl && paypalPublishableKey
+  )
+  const {
+    paypalEnabled,
+    paypalTitle,
+    cardEnabled,
+    cardTitle,
+    loading: paypalConfigLoading,
+    error: paypalConfigError,
+  } = usePayPalPaymentMethods({
+    baseUrl: paypalBackendUrl,
+    publishableApiKey: paypalPublishableKey,
+    cartId: cart.id,
+    enabled: isOpen && paypalRuntimeConfigured,
+  })
   const hasPaymentReturnError =
     searchParams.get("payment_error") === "payment_failed"
 
@@ -60,12 +89,77 @@ const Payment = ({
   const setPaymentMethod = async (method: string) => {
     setError(null)
     setSelectedPaymentMethod(method)
-    if (isStripeLike(method)) {
+
+    if (!isStripeLike(method) && !isPayPalProviderId(method)) {
+      return
+    }
+
+    if (isPayPalProviderId(method)) {
+      setPaypalSessionLoading(true)
+    }
+
+    try {
       await initiatePaymentSession(cart, {
         provider_id: method,
       })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      if (isPayPalProviderId(method)) {
+        setPaypalSessionLoading(false)
+      }
     }
   }
+
+  const filteredPaymentMethods = useMemo(
+    () =>
+      availablePaymentMethods.filter((paymentMethod) => {
+        if (!isPayPalProviderId(paymentMethod.id)) {
+          return true
+        }
+
+        if (
+          !paypalRuntimeConfigured ||
+          paypalConfigLoading ||
+          paypalConfigError
+        ) {
+          return false
+        }
+
+        if (paymentMethod.id === PAYPAL_WALLET_PROVIDER_ID) {
+          return paypalEnabled
+        }
+
+        if (paymentMethod.id === PAYPAL_CARD_PROVIDER_ID) {
+          return cardEnabled
+        }
+
+        return false
+      }),
+    [
+      availablePaymentMethods,
+      cardEnabled,
+      paypalConfigError,
+      paypalConfigLoading,
+      paypalEnabled,
+      paypalRuntimeConfigured,
+    ]
+  )
+
+  const resolvedPaymentInfoMap = useMemo<typeof paymentInfoMap>(
+    () => ({
+      ...paymentInfoMap,
+      [PAYPAL_WALLET_PROVIDER_ID]: {
+        ...paymentInfoMap[PAYPAL_WALLET_PROVIDER_ID],
+        title: paypalTitle,
+      },
+      [PAYPAL_CARD_PROVIDER_ID]: {
+        ...paymentInfoMap[PAYPAL_CARD_PROVIDER_ID],
+        title: cardTitle,
+      },
+    }),
+    [cardTitle, paypalTitle]
+  )
 
   const giftCards = getGiftCards(cart)
   const creditLineAmounts = getCreditLineAmounts(cart)
@@ -216,25 +310,25 @@ const Payment = ({
               </button>
             </div>
           )}
-          {!paidWithoutProvider && availablePaymentMethods?.length && (
+          {!paidWithoutProvider && filteredPaymentMethods.length > 0 && (
             <>
               <RadioGroup
                 value={selectedPaymentMethod}
                 onChange={(value: string) => setPaymentMethod(value)}
               >
-                {availablePaymentMethods.map((paymentMethod) => (
+                {filteredPaymentMethods.map((paymentMethod) => (
                   <div key={paymentMethod.id}>
                     {isStripeLike(paymentMethod.id) ? (
                       <StripePaymentContainer
                         paymentProviderId={paymentMethod.id}
                         selectedPaymentOptionId={selectedPaymentMethod}
-                        paymentInfoMap={paymentInfoMap}
+                        paymentInfoMap={resolvedPaymentInfoMap}
                         setError={setError}
                         setPaymentComplete={setPaymentComplete}
                       />
                     ) : (
                       <PaymentContainer
-                        paymentInfoMap={paymentInfoMap}
+                        paymentInfoMap={resolvedPaymentInfoMap}
                         paymentProviderId={paymentMethod.id}
                         selectedPaymentOptionId={selectedPaymentMethod}
                       />
@@ -242,8 +336,36 @@ const Payment = ({
                   </div>
                 ))}
               </RadioGroup>
+              {isPayPalProviderId(selectedPaymentMethod) && (
+                <div className="mt-4 rounded-[16px] border border-[#E6E8EC] bg-cream/40 p-4">
+                  <PayPalPaymentSection
+                    cartId={cart.id}
+                    selectedProviderId={selectedPaymentMethod}
+                    baseUrl={paypalBackendUrl}
+                    publishableApiKey={paypalPublishableKey}
+                    sessionLoading={paypalSessionLoading}
+                    onSuccess={async (cartId) => {
+                      await placeOrder(cartId)
+                    }}
+                    onError={setError}
+                  />
+                </div>
+              )}
             </>
           )}
+
+          {!paidWithoutProvider &&
+            availablePaymentMethods.length > 0 &&
+            filteredPaymentMethods.length === 0 &&
+            !paypalConfigLoading && (
+              <div
+                role="status"
+                className="rounded-[16px] border border-danger/25 bg-[#FFF0EE] p-4 text-sm leading-6 text-ink"
+              >
+                The configured payment method is temporarily unavailable.
+                Please choose another method or try again shortly.
+              </div>
+            )}
 
           {paidWithoutProvider && (
             <div className="flex flex-col rounded-[16px] bg-cream p-4 xsmall:max-w-sm">
@@ -264,21 +386,23 @@ const Payment = ({
             data-testid="payment-method-error-message"
           />
 
-          <Button
-            size="large"
-            className="mt-6 min-h-12 w-full rounded-[14px] !bg-brand px-6 text-base font-bold !text-white hover:!bg-brand-dark xsmall:w-auto"
-            onClick={handleSubmit}
-            isLoading={isLoading}
-            disabled={
-              (isStripeLike(selectedPaymentMethod) && !paymentComplete) ||
-              (!selectedPaymentMethod && !paidWithoutProvider)
-            }
-            data-testid="submit-payment-button"
-          >
-            {!activeSession && isStripeLike(selectedPaymentMethod)
-              ? "Enter payment details"
-              : "Continue to review"}
-          </Button>
+          {!isPayPalProviderId(selectedPaymentMethod) && (
+            <Button
+              size="large"
+              className="mt-6 min-h-12 w-full rounded-[14px] !bg-brand px-6 text-base font-bold !text-white hover:!bg-brand-dark xsmall:w-auto"
+              onClick={handleSubmit}
+              isLoading={isLoading}
+              disabled={
+                (isStripeLike(selectedPaymentMethod) && !paymentComplete) ||
+                (!selectedPaymentMethod && !paidWithoutProvider)
+              }
+              data-testid="submit-payment-button"
+            >
+              {!activeSession && isStripeLike(selectedPaymentMethod)
+                ? "Enter payment details"
+                : "Continue to review"}
+            </Button>
+          )}
         </div>
 
         <div className={isOpen ? "hidden" : "block"}>
@@ -292,7 +416,7 @@ const Payment = ({
                   className="break-words text-sm text-muted"
                   data-testid="payment-method-summary"
                 >
-                  {paymentInfoMap[activeSession?.provider_id]?.title ||
+                  {resolvedPaymentInfoMap[activeSession?.provider_id]?.title ||
                     activeSession?.provider_id}
                 </Text>
               </div>
@@ -305,7 +429,7 @@ const Payment = ({
                   data-testid="payment-details-summary"
                 >
                   <Container className="flex h-9 w-fit items-center rounded-xl bg-white p-2">
-                    {paymentInfoMap[selectedPaymentMethod]?.icon || (
+                    {resolvedPaymentInfoMap[selectedPaymentMethod]?.icon || (
                       <CreditCard />
                     )}
                   </Container>

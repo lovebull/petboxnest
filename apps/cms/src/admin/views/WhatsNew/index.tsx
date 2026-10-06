@@ -4,6 +4,30 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.0",
+    date: "2026-10-06 09:56:19 EDT",
+    title: "💳 PayPal 钱包与卡支付接入",
+    items: [
+      "💳 Medusa Backend 接入 EasyPayment PayPal 插件，新增 PayPal Wallet 与 PayPal Card 两个支付 provider。",
+      "🧾 Backend 环境模板新增 PAYPAL_ENCRYPTION_KEY、PAYPAL_SELLER_NONCE、PAYPAL_ENCRYPTION_STRICT 和 PAYPAL_WEBHOOK_COMPLETE_CART 配置提示。",
+      "🛠️ 新增 enable-paypal-wallet 脚本，可为 USD region 自动启用 PayPal Wallet 支付 provider。",
+      "🧩 Storefront Checkout 接入 @easypayment/medusa-paypal-ui，可按后台配置动态显示 PayPal 钱包和信用卡/借记卡支付。",
+      "🧠 Checkout 会读取 PayPal 运行时配置与可用支付方式，隐藏未配置或不可用的 PayPal 选项。",
+      "🚀 PayPal 支付成功后会直接调用 placeOrder，避免 PayPal 授权完成后仍停留在普通 Continue to review 流程。",
+      "🌐 PayPal Admin 设置页面补丁新增中英文双语标签、按钮和错误提示，方便后台运营配置。",
+      "📦 pnpm workspace 新增 EasyPayment PayPal 插件补丁注册，确保依赖安装后自动应用本地修复。",
+    ],
+    fixes: [
+      "🐛 修复 Checkout 只支持 Stripe-like 支付会话初始化，PayPal provider 选中后无法正确创建支付会话的问题。",
+      "🐛 修复 PayPal 钱包和 PayPal Card 没有独立标题与图标映射，支付方式列表显示不清晰的问题。",
+      "🐛 修复 PayPal 运行时配置缺失时仍显示支付选项，客户可能选择到不可用支付方式的问题。",
+      "🐛 修复 PayPal 支付流程仍显示普通提交按钮，容易与 PayPal 按钮流程重复或冲突的问题。",
+      "🐛 修复 PayPal Admin 插件默认英文界面和错误提示不便于中文后台操作的问题。",
+      "🐛 修复 USD region 缺少脚本化启用 PayPal Wallet 的入口，部署后需要手动修改支付 provider 的问题。",
+      "🐛 修复 PayPal 相关环境变量未进入模板，生产或沙盒配置容易遗漏加密密钥、seller nonce 和 webhook 行为的问题。",
+    ],
+  },
+  {
     version: "v1.21.6",
     date: "2026-10-01 11:00:35 EDT",
     title: "🧩 商品详情相关商品区块展示优化",

@@ -9,6 +9,7 @@ overrides:
   '@types/react-dom': 19.0.5
 
 patchedDependencies:
+  '@easypayment/medusa-payment-paypal@1.2.8': ac4e821d50951dc8d4cd403d78aabe650cb12da8bf513d7b14620cd66740322c
   '@medusajs/loyalty-plugin@2.19.0': 2fdf70c754c49f493c015dc28fe88bab42d153fa9a363df2ceadb27c0d21e38f
 
 importers:
@@ -36,6 +37,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: 3.1093.0
         version: 3.1093.0
+      '@easypayment/medusa-payment-paypal':
+        specifier: 1.2.8
+        version: 1.2.8(patch_hash=ac4e821d50951dc8d4cd403d78aabe650cb12da8bf513d7b14620cd66740322c)(@medusajs/admin-sdk@2.19.0)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.19.26))(@types/node@20.19.26)(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.26)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))(zod@4.2.0))(@medusajs/icons@2.19.0(react@18.3.1))(@medusajs/medusa@2.19.0)(@medusajs/ui@4.2.1(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))
       '@medusajs/admin-sdk':
         specifier: 2.19.0
         version: 2.19.0
@@ -206,6 +210,9 @@ importers:
 
   apps/storefront:
     dependencies:
+      '@easypayment/medusa-paypal-ui':
+        specifier: 1.2.8
+        version: 1.2.8(next@15.5.21(@babel/core@7.28.5)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(react-dom@19.0.5(react@19.0.5))(react@19.0.5)(sass@1.77.4))(react-dom@19.0.5(react@19.0.5))(react@19.0.5)
       '@headlessui/react':
         specifier: ^2.2.0
         version: 2.2.10(react-dom@19.0.5(react@19.0.5))(react@19.0.5)
@@ -266,7 +273,7 @@ importers:
         version: 3.3.5
       '@medusajs/types':
         specifier: 2.19.0
-        version: 2.19.0(ioredis@5.8.2)(vite@7.3.6(@types/node@17.0.21)(jiti@1.21.7)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 2.19.0(ioredis@5.8.2)(vite@7.3.6(@types/node@17.0.21)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))
       '@playwright/test':
         specifier: 1.62.1
         version: 1.62.1
@@ -857,6 +864,33 @@ packages:
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
 
+  '@easypayment/medusa-payment-paypal@1.2.8':
+    resolution: {integrity: sha512-oZVUR+QV0pooeNXtDcL47Fu3n9rUysV0rQeflAzaEsiKHI/H0sxy2y3FehQExEdA8Q1KlS2ZaWpb0AF49/hwKw==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@medusajs/admin-sdk': ^2.12.0
+      '@medusajs/framework': ^2.12.0
+      '@medusajs/icons': ^2.12.0
+      '@medusajs/medusa': ^2.12.0
+      '@medusajs/ui': ^4.0.0
+    peerDependenciesMeta:
+      '@medusajs/admin-sdk':
+        optional: true
+      '@medusajs/icons':
+        optional: true
+      '@medusajs/ui':
+        optional: true
+
+  '@easypayment/medusa-paypal-ui@1.2.8':
+    resolution: {integrity: sha512-pP6NeIBukO208cQQV5kPgmelR9Td56udR73d2xhIHGZqqSvl/IyDAuHSf/uUND3E2cic72CXA6sHZaaH1N3dOw==}
+    peerDependencies:
+      next: '>=14'
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      next:
+        optional: true
+
   '@emnapi/core@1.7.1':
     resolution: {integrity: sha512-o1uhUASyo921r2XtHYOHy7gdkGLge8ghBEQHMWmyJFoXlpU58kIrhhN3w26lpQb6dspetweapMn2CSNwQ8I4wg==}
 
@@ -909,11 +943,11 @@ packages:
 
   '@esbuild-kit/core-utils@3.3.2':
     resolution: {integrity: sha512-sPRAnw9CdSsRmEtnsl2WXWdyquogVpB3yZ3dgwJfe8zrOzTsV7cJvmwrKVa+0ma5BoiGJ+BoqkMvawbayKUsqQ==}
-    deprecated: 'Merged into tsx: https://tsx.is'
+    deprecated: 'Merged into tsx: https://tsx.hirok.io'
 
   '@esbuild-kit/esm-loader@2.6.5':
     resolution: {integrity: sha512-FxEMIkJKnodyA1OaCUoEvbYRkoZlLZ4d/eXFu9Fh8CbBBgP5EmZxrfTRyN0qpXZ4vOvqnE5YdRdcrmUUXuU+dA==}
-    deprecated: 'Merged into tsx: https://tsx.is'
+    deprecated: 'Merged into tsx: https://tsx.hirok.io'
 
   '@esbuild/aix-ppc64@0.25.4':
     resolution: {integrity: sha512-1VCICWypeQKhVbE9oW/sJaAmjLxhVqacdkvPLEjwlttjfwENRSClS8EjBz0KzRyFSCPDIkuXW34Je/vk7zdB7Q==}
@@ -3170,6 +3204,18 @@ packages:
       payload: 3.88.0
       react: ^19.0.1 || ^19.1.2 || ^19.2.1
       react-dom: ^19.0.1 || ^19.1.2 || ^19.2.1
+
+  '@paypal/paypal-js@9.8.0':
+    resolution: {integrity: sha512-qZ+jq36Y10MA2E28lnCh4nCNX3uH9s4TKUw6UkjenRkGYJD94z4vkZ2uUKzIYqgCIRZTDlacdU4274API5WzjA==}
+
+  '@paypal/react-paypal-js@9.3.0':
+    resolution: {integrity: sha512-QSLGVFoymBy0wSjRKLCH8xu829vcLhh1wmmdJ8FYMEHNO05xlCOLWdeWCm6r5PPVRpE0zJfLqxbAxhrN3C2g6g==}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+      react-dom: ^16.8.0 || ^17 || ^18 || ^19
+
+  '@paypal/sdk-constants@1.0.158':
+    resolution: {integrity: sha512-OrX2kN4gsBl6fG1GS1ewsNk7TTqYmdtUMVaJ+wAzPhsv9M7dfni95WuJdt4pMALOo5ioZeJ05a16BUSca5IC+Q==}
 
   '@pinojs/redact@0.4.0':
     resolution: {integrity: sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==}
@@ -6941,6 +6987,9 @@ packages:
   help-me@5.0.0:
     resolution: {integrity: sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg==}
 
+  hi-base32@0.5.1:
+    resolution: {integrity: sha512-EmBBpvdYh/4XxsnUybsPag6VikPYnN30td+vQk+GI3qpahVEG9+gTkG0aXVxTjBqQ5T6ijbWIu77O+C5WFWsnA==}
+
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
@@ -8627,6 +8676,9 @@ packages:
 
   process-warning@5.1.0:
     resolution: {integrity: sha512-jQSaVHsPgtyw60e1rQ/A+/ArPEj/S8pS/vFnyGa/gYFXrKk/6RuDkoqVDQ5NI5MmS01698ltlAk0NoDBNLujRw==}
+
+  promise-polyfill@8.3.0:
+    resolution: {integrity: sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg==}
 
   prompts@2.4.2:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}
@@ -10888,6 +10940,23 @@ snapshots:
 
   '@drizzle-team/brocli@0.10.2': {}
 
+  '@easypayment/medusa-payment-paypal@1.2.8(patch_hash=ac4e821d50951dc8d4cd403d78aabe650cb12da8bf513d7b14620cd66740322c)(@medusajs/admin-sdk@2.19.0)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.19.26))(@types/node@20.19.26)(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.26)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))(zod@4.2.0))(@medusajs/icons@2.19.0(react@18.3.1))(@medusajs/medusa@2.19.0)(@medusajs/ui@4.2.1(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))':
+    dependencies:
+      '@medusajs/framework': 2.19.0(@medusajs/cli@2.19.0(@types/node@20.19.26))(@types/node@20.19.26)(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.26)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))(zod@4.2.0)
+      '@medusajs/medusa': 2.19.0(57e0dfc58b626e8c1f6fb2dc8c31d24c)
+    optionalDependencies:
+      '@medusajs/admin-sdk': 2.19.0
+      '@medusajs/icons': 2.19.0(react@18.3.1)
+      '@medusajs/ui': 4.2.1(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)
+
+  '@easypayment/medusa-paypal-ui@1.2.8(next@15.5.21(@babel/core@7.28.5)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(react-dom@19.0.5(react@19.0.5))(react@19.0.5)(sass@1.77.4))(react-dom@19.0.5(react@19.0.5))(react@19.0.5)':
+    dependencies:
+      '@paypal/react-paypal-js': 9.3.0(react-dom@19.0.5(react@19.0.5))(react@19.0.5)
+      react: 19.0.5
+      react-dom: 19.0.5(react@19.0.5)
+    optionalDependencies:
+      next: 15.5.21(@babel/core@7.28.5)(@opentelemetry/api@1.9.1)(@playwright/test@1.62.1)(react-dom@19.0.5(react@19.0.5))(react@19.0.5)(sass@1.77.4)
+
   '@emnapi/core@1.7.1':
     dependencies:
       '@emnapi/wasi-threads': 1.1.0
@@ -12931,12 +13000,12 @@ snapshots:
     dependencies:
       '@medusajs/framework': 2.19.0(@medusajs/cli@2.19.0(@types/node@20.19.26))(@types/node@20.19.26)(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.26)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))(zod@4.2.0)
 
-  '@medusajs/types@2.19.0(ioredis@5.8.2)(vite@7.3.6(@types/node@17.0.21)(jiti@1.21.7)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))':
+  '@medusajs/types@2.19.0(ioredis@5.8.2)(vite@7.3.6(@types/node@17.0.21)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))':
     dependencies:
       bignumber.js: 9.3.1
     optionalDependencies:
       ioredis: 5.8.2
-      vite: 7.3.6(@types/node@17.0.21)(jiti@1.21.7)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0)
+      vite: 7.3.6(@types/node@17.0.21)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0)
 
   '@medusajs/types@2.19.0(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.26)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))':
     dependencies:
@@ -13795,6 +13864,22 @@ snapshots:
       - monaco-editor
       - supports-color
       - typescript
+
+  '@paypal/paypal-js@9.8.0':
+    dependencies:
+      promise-polyfill: 8.3.0
+
+  '@paypal/react-paypal-js@9.3.0(react-dom@19.0.5(react@19.0.5))(react@19.0.5)':
+    dependencies:
+      '@paypal/paypal-js': 9.8.0
+      '@paypal/sdk-constants': 1.0.158
+      react: 19.0.5
+      react-dom: 19.0.5(react@19.0.5)
+      server-only: 0.0.1
+
+  '@paypal/sdk-constants@1.0.158':
+    dependencies:
+      hi-base32: 0.5.1
 
   '@pinojs/redact@0.4.0': {}
 
@@ -17827,6 +17912,8 @@ snapshots:
 
   help-me@5.0.0: {}
 
+  hi-base32@0.5.1: {}
+
   hoist-non-react-statics@3.3.2:
     dependencies:
       react-is: 16.13.1
@@ -19873,6 +19960,8 @@ snapshots:
 
   process-warning@5.1.0: {}
 
+  promise-polyfill@8.3.0: {}
+
   prompts@2.4.2:
     dependencies:
       kleur: 3.0.3
@@ -21326,7 +21415,7 @@ snapshots:
       '@types/unist': 3.0.3
       unist-util-stringify-position: 4.0.0
 
-  vite@7.3.6(@types/node@17.0.21)(jiti@1.21.7)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0):
+  vite@7.3.6(@types/node@17.0.21)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0):
     dependencies:
       esbuild: 0.28.1
       fdir: 6.5.0(picomatch@4.0.5)
@@ -21337,7 +21426,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 17.0.21
       fsevents: 2.3.3
-      jiti: 1.21.7
+      jiti: 2.7.0
       sass: 1.77.4
       terser: 5.49.0
       tsx: 4.22.4

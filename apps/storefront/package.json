@@ -18,6 +18,7 @@
     "test:e2e:reviews": "playwright test tests/product-reviews.spec.ts"
   },
   "dependencies": {
+    "@easypayment/medusa-paypal-ui": "1.2.8",
     "@headlessui/react": "^2.2.0",
     "@medusajs/icons": "2.19.0",
     "@medusajs/js-sdk": "2.19.0",

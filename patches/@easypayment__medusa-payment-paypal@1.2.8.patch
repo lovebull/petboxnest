@@ -1,0 +1,850 @@
+diff --git a/.medusa/server/src/admin/index.mjs b/.medusa/server/src/admin/index.mjs
+index 0f95c87b15dd3f3d7c897d351feac298ff0d5bb7..588904b5815b55f1c00653a0cca1122b82b4fcba 100644
+--- a/.medusa/server/src/admin/index.mjs
++++ b/.medusa/server/src/admin/index.mjs
+@@ -10,10 +10,10 @@ const PayPalSettingsIndexRoute = () => {
+ };
+ const BASE = "/settings/paypal";
+ const TABS = [
+-  { label: "PayPal Connection", to: `${BASE}/connection` },
+-  { label: "PayPal Settings", to: `${BASE}/paypal-settings` },
+-  { label: "Advanced Card Payments", to: `${BASE}/advanced-card-payments` },
+-  { label: "Additional Settings", to: `${BASE}/additional-settings` }
++  { labelZh: "PayPal 连接", labelEn: "PayPal Connection", to: `${BASE}/connection` },
++  { labelZh: "PayPal 设置", labelEn: "PayPal Settings", to: `${BASE}/paypal-settings` },
++  { labelZh: "高级卡支付", labelEn: "Advanced Card Payments", to: `${BASE}/advanced-card-payments` },
++  { labelZh: "其他设置", labelEn: "Additional Settings", to: `${BASE}/additional-settings` }
+ ];
+ function isActive(pathname, to) {
+   return pathname === to || pathname.startsWith(to + "/");
+@@ -27,7 +27,10 @@ function PayPalTabs() {
+       {
+         to: t.to,
+         className: active ? "border-b-2 border-ui-fg-base pb-2 font-medium text-ui-fg-base" : "pb-2 text-ui-fg-subtle hover:text-ui-fg-base",
+-        children: t.label
++        children: /* @__PURE__ */ jsxs("span", { className: "flex flex-col leading-tight", children: [
++          /* @__PURE__ */ jsx("span", { children: t.labelZh }),
++          /* @__PURE__ */ jsx("span", { className: "text-xs font-normal text-ui-fg-subtle", children: t.labelEn })
++        ] })
+       },
+       t.to
+     );
+@@ -518,8 +521,14 @@ function AdvancedCardPaymentsTab() {
+   ] }) });
+ }
+ const config = defineRouteConfig({
+-  label: "PayPal Connection"
++  label: "PayPal 连接 / PayPal Connection"
+ });
++function BilingualText({ zh, en }) {
++  return /* @__PURE__ */ jsxs("span", { className: "flex flex-col leading-tight", children: [
++    /* @__PURE__ */ jsx("span", { children: zh }),
++    /* @__PURE__ */ jsx("span", { className: "text-xs font-normal text-ui-fg-subtle", children: en })
++  ] });
++}
+ const PARTNER_JS_URL = "https://www.paypal.com/webapps/merchantboarding/js/lib/lightbox/partner.js";
+ const SERVICE_URL = "/admin/paypal/onboarding-link";
+ const CACHE_PREFIX = "pp_onboard_cache";
+@@ -676,7 +685,7 @@ function PayPalConnectionPage() {
+         });
+         if (!res.ok) {
+           const txt = await res.text().catch(() => "");
+-          throw new Error(txt || `Onboarding exchange failed (${res.status})`);
++          throw new Error(txt || `接入凭据交换失败（${res.status}）。 / Onboarding exchange failed (${res.status})`);
+         }
+         closeMiniBrowser();
+         clearCachedUrl(activeEnv);
+@@ -696,7 +705,7 @@ function PayPalConnectionPage() {
+         completedRef.current = false;
+         console.error(e);
+         setConnState("error");
+-        setError((e == null ? void 0 : e.message) || "Exchange failed while saving credentials.");
++        setError((e == null ? void 0 : e.message) || "保存凭据时交换失败。 / Exchange failed while saving credentials.");
+       } finally {
+         setOnboardingInProgress(false);
+       }
+@@ -757,7 +766,7 @@ function PayPalConnectionPage() {
+         attempts++;
+         if (attempts >= MAX_ATTEMPTS) {
+           showError(
+-            "PayPal partner script failed to load. Please refresh and try again."
++            "PayPal 合作伙伴脚本加载失败，请刷新页面后重试。 / PayPal partner script failed to load. Please refresh and try again."
+           );
+           return;
+         }
+@@ -772,7 +781,7 @@ function PayPalConnectionPage() {
+       if (initLoaderRef.current) {
+         const loaderText = initLoaderRef.current.querySelector("#loader-text");
+         if (loaderText)
+-          loaderText.textContent = "Generating onboarding session...";
++          loaderText.textContent = "正在生成接入会话…\nGenerating onboarding session...";
+       }
+       try {
+         const res = await fetch(SERVICE_URL, {
+@@ -788,7 +797,7 @@ function PayPalConnectionPage() {
+         if (runId !== currentRunId.current) return;
+         const href = data == null ? void 0 : data.onboarding_url;
+         if (!href) {
+-          showError("Onboarding URL not returned.");
++          showError("未返回接入网址。 / Onboarding URL was not returned.");
+           return;
+         }
+         const url = href + (href.includes("?") ? "&" : "?") + "displayMode=minibrowser";
+@@ -796,7 +805,7 @@ function PayPalConnectionPage() {
+         activatePayPal(url, runId);
+       } catch (err) {
+         if (runId !== currentRunId.current) return;
+-        showError((err == null ? void 0 : err.message) || "Unable to connect to service.");
++        showError((err == null ? void 0 : err.message) || "无法连接到服务。 / Unable to connect to the service.");
+       }
+     },
+     [activatePayPal, showError]
+@@ -927,7 +936,7 @@ function PayPalConnectionPage() {
+       });
+       if (!res.ok) {
+         const txt = await res.text().catch(() => "");
+-        throw new Error(txt || `Save credentials failed (${res.status})`);
++        throw new Error(txt || `保存凭据失败（${res.status}）。 / Save credentials failed (${res.status})`);
+       }
+       const statusRes = await fetch(`${STATUS_ENDPOINT}?environment=${env}`, {
+         method: "GET",
+@@ -941,14 +950,14 @@ function PayPalConnectionPage() {
+     } catch (e) {
+       console.error(e);
+       setConnState("error");
+-      setError((e == null ? void 0 : e.message) || "Failed to save credentials.");
++      setError((e == null ? void 0 : e.message) || "保存凭据失败。 / Failed to save credentials.");
+     } finally {
+       setOnboardingInProgress(false);
+     }
+   };
+   const handleDisconnect = async () => {
+     if (onboardingInProgress) return;
+-    if (!window.confirm("Disconnect PayPal for this environment?")) return;
++    if (!window.confirm("要断开当前环境的 PayPal 连接吗？\nDisconnect PayPal for this environment?")) return;
+     stopStatusPolling();
+     setOnboardingInProgress(true);
+     setConnState("loading");
+@@ -965,7 +974,7 @@ function PayPalConnectionPage() {
+       });
+       if (!res.ok) {
+         const t = await res.text().catch(() => "");
+-        throw new Error(t || `Disconnect failed (${res.status})`);
++        throw new Error(t || `断开连接失败（${res.status}）。 / Disconnect failed (${res.status})`);
+       }
+       clearCachedUrl(env);
+       completedRef.current = false;
+@@ -974,7 +983,7 @@ function PayPalConnectionPage() {
+     } catch (e) {
+       console.error(e);
+       setConnState("error");
+-      setError((e == null ? void 0 : e.message) || "Failed to disconnect.");
++      setError((e == null ? void 0 : e.message) || "断开连接失败。 / Failed to disconnect.");
+     } finally {
+       setOnboardingInProgress(false);
+     }
+@@ -999,10 +1008,10 @@ function PayPalConnectionPage() {
+   };
+   return /* @__PURE__ */ jsxs("div", { className: "p-6", children: [
+     /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-6", children: [
+-      /* @__PURE__ */ jsx("div", { className: "flex items-start justify-between gap-4", children: /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx("h1", { className: "text-xl font-semibold text-ui-fg-base", children: "PayPal Gateway By Easy Payment" }) }) }),
++      /* @__PURE__ */ jsx("div", { className: "flex items-start justify-between gap-4", children: /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx("h1", { className: "text-xl font-semibold text-ui-fg-base", children: /* @__PURE__ */ jsx(BilingualText, { zh: "Easy Payment 提供的 PayPal 支付网关", en: "PayPal Gateway by Easy Payment" }) }) }) }),
+       /* @__PURE__ */ jsx(PayPalTabs, {}),
+       /* @__PURE__ */ jsx("div", { className: "rounded-xl border border-ui-border-base bg-ui-bg-base shadow-sm", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 gap-y-6 p-4 md:grid-cols-[260px_1fr] md:items-start", children: [
+-        /* @__PURE__ */ jsx("div", { className: "text-sm font-medium pt-2", children: "Environment" }),
++        /* @__PURE__ */ jsx("div", { className: "pt-2 text-sm font-medium", children: /* @__PURE__ */ jsx(BilingualText, { zh: "运行环境", en: "Environment" }) }),
+         /* @__PURE__ */ jsx("div", { className: "max-w-xl", children: /* @__PURE__ */ jsxs(
+           "select",
+           {
+@@ -1011,15 +1020,15 @@ function PayPalConnectionPage() {
+             disabled: onboardingInProgress,
+             className: "w-full rounded-md border border-ui-border-base bg-transparent px-3 py-2 text-sm",
+             children: [
+-              /* @__PURE__ */ jsx("option", { value: "sandbox", children: "Sandbox (Test Mode)" }),
+-              /* @__PURE__ */ jsx("option", { value: "live", children: "Live (Production)" })
++              /* @__PURE__ */ jsx("option", { value: "sandbox", children: "沙盒（测试模式） / Sandbox (Test Mode)" }),
++              /* @__PURE__ */ jsx("option", { value: "live", children: "正式环境（生产模式） / Live (Production)" })
+             ]
+           }
+         ) }),
+-        /* @__PURE__ */ jsx("div", { className: "text-sm font-medium pt-2", children: env === "sandbox" ? "Connect to PayPal (Sandbox)" : "Connect to PayPal" }),
++        /* @__PURE__ */ jsx("div", { className: "text-sm font-medium pt-2", children: env === "sandbox" ? /* @__PURE__ */ jsx(BilingualText, { zh: "连接 PayPal（沙盒）", en: "Connect to PayPal (Sandbox)" }) : /* @__PURE__ */ jsx(BilingualText, { zh: "连接 PayPal", en: "Connect to PayPal" }) }),
+         /* @__PURE__ */ jsx("div", { className: "max-w-xl", children: connState === "connected" ? /* @__PURE__ */ jsxs("div", { children: [
+           /* @__PURE__ */ jsxs("div", { className: "text-sm text-green-600 bg-green-50 p-3 rounded border border-green-200", children: [
+-            "✅ Successfully connected to PayPal!",
++            /* @__PURE__ */ jsx(BilingualText, { zh: "✅ 已成功连接 PayPal！", en: "Successfully connected to PayPal!" }),
+             /* @__PURE__ */ jsx(
+               "a",
+               {
+@@ -1032,11 +1041,11 @@ function PayPalConnectionPage() {
+             )
+           ] }),
+           /* @__PURE__ */ jsxs("div", { className: "mt-3 rounded-md border border-ui-border-base bg-ui-bg-subtle p-3 text-xs text-ui-fg-subtle", children: [
+-            /* @__PURE__ */ jsx("div", { className: "font-medium text-ui-fg-base", children: "Connected PayPal account" }),
++            /* @__PURE__ */ jsx("div", { className: "font-medium text-ui-fg-base", children: /* @__PURE__ */ jsx(BilingualText, { zh: "已连接的 PayPal 账户", en: "Connected PayPal account" }) }),
+             /* @__PURE__ */ jsxs("div", { className: "mt-1", children: [
+-              "Email:",
++              "邮箱 / Email:",
+               " ",
+-              /* @__PURE__ */ jsx("span", { className: "font-mono text-ui-fg-base", children: (statusInfo == null ? void 0 : statusInfo.seller_email) || "Unavailable" })
++              /* @__PURE__ */ jsx("span", { className: "font-mono text-ui-fg-base", children: (statusInfo == null ? void 0 : statusInfo.seller_email) || "暂不可用 / Unavailable" })
+             ] })
+           ] }),
+           /* @__PURE__ */ jsx("div", { className: "mt-3 flex items-center gap-2", children: /* @__PURE__ */ jsx(
+@@ -1046,7 +1055,7 @@ function PayPalConnectionPage() {
+               onClick: handleDisconnect,
+               disabled: onboardingInProgress,
+               className: "transition-fg relative inline-flex w-fit items-center justify-center overflow-hidden rounded-md outline-none shadow-buttons-neutral text-ui-fg-base bg-ui-button-neutral after:transition-fg after:absolute after:inset-0 after:content-[''] after:button-neutral-gradient hover:bg-ui-button-neutral-hover hover:after:button-neutral-hover-gradient active:bg-ui-button-neutral-pressed active:after:button-neutral-pressed-gradient focus-visible:shadow-buttons-neutral-focus disabled:bg-ui-bg-disabled disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral disabled:after:hidden txt-compact-small-plus px-3 py-1.5",
+-              children: "Disconnect"
++              children: /* @__PURE__ */ jsx(BilingualText, { zh: "断开连接", en: "Disconnect" })
+             }
+           ) })
+         ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+@@ -1058,7 +1067,7 @@ function PayPalConnectionPage() {
+               className: `status-msg mb-4 ${connState !== "loading" ? "hidden" : "block"}`,
+               children: [
+                 /* @__PURE__ */ jsx("div", { className: "loader inline-block align-middle mr-2" }),
+-                /* @__PURE__ */ jsx("span", { id: "loader-text", className: "text-sm", children: onboardingInProgress ? "Configuring connection to PayPal…" : "Checking connection..." })
++                /* @__PURE__ */ jsx("span", { id: "loader-text", className: "whitespace-pre-line text-sm", children: onboardingInProgress ? "正在配置 PayPal 连接…\nConfiguring connection to PayPal…" : "正在检查连接…\nChecking connection..." })
+               ]
+             }
+           ),
+@@ -1085,7 +1094,7 @@ function PayPalConnectionPage() {
+                       opacity: onboardingInProgress ? 0.6 : 1,
+                       pointerEvents: onboardingInProgress ? "none" : "auto"
+                     },
+-                    children: "Connect to PayPal"
++                    children: /* @__PURE__ */ jsx(BilingualText, { zh: "连接 PayPal", en: "Connect to PayPal" })
+                   }
+                 ),
+                 /* @__PURE__ */ jsx(
+@@ -1097,7 +1106,7 @@ function PayPalConnectionPage() {
+                       marginTop: "20px",
+                       marginBottom: "10px"
+                     },
+-                    children: /* @__PURE__ */ jsx("div", { className: "flex justify-center", children: /* @__PURE__ */ jsx("span", { className: "text-[11px] text-ui-fg-muted leading-none", children: "OR" }) })
++                    children: /* @__PURE__ */ jsx("div", { className: "flex justify-center", children: /* @__PURE__ */ jsx("span", { className: "text-[11px] text-ui-fg-muted leading-none", children: "或 / OR" }) })
+                   }
+                 ),
+                 /* @__PURE__ */ jsx("div", { className: "mt-1", children: /* @__PURE__ */ jsx(
+@@ -1107,7 +1116,7 @@ function PayPalConnectionPage() {
+                     onClick: () => setShowManual(!showManual),
+                     disabled: onboardingInProgress,
+                     className: "text-sm text-ui-fg-interactive underline whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed",
+-                    children: "Click here to insert credentials manually"
++                    children: /* @__PURE__ */ jsx(BilingualText, { zh: "点击此处手动输入凭据", en: "Click here to insert credentials manually" })
+                   }
+                 ) })
+               ]
+@@ -1124,7 +1133,7 @@ function PayPalConnectionPage() {
+                   onClick: () => setShowManual(!showManual),
+                   disabled: onboardingInProgress,
+                   className: "text-sm text-ui-fg-interactive underline whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed",
+-                  children: "Click here to insert credentials manually"
++                  children: /* @__PURE__ */ jsx(BilingualText, { zh: "点击此处手动输入凭据", en: "Click here to insert credentials manually" })
+                 }
+               )
+             }
+@@ -1146,7 +1155,7 @@ function PayPalConnectionPage() {
+               {
+                 htmlFor: "pp-manual-client-id",
+                 className: "text-sm font-medium",
+-                children: "Client ID"
++                children: /* @__PURE__ */ jsx(BilingualText, { zh: "客户端 ID", en: "Client ID" })
+               }
+             ),
+             /* @__PURE__ */ jsx(
+@@ -1158,7 +1167,7 @@ function PayPalConnectionPage() {
+                 onChange: (e) => setClientId(e.target.value),
+                 disabled: onboardingInProgress,
+                 className: "rounded-md border border-ui-border-base bg-transparent px-3 py-2 text-sm disabled:opacity-50",
+-                placeholder: env === "sandbox" ? "Sandbox Client ID" : "Live Client ID"
++                placeholder: env === "sandbox" ? "沙盒客户端 ID / Sandbox Client ID" : "正式环境客户端 ID / Live Client ID"
+               }
+             )
+           ] }),
+@@ -1168,7 +1177,7 @@ function PayPalConnectionPage() {
+               {
+                 htmlFor: "pp-manual-secret",
+                 className: "text-sm font-medium",
+-                children: "Secret"
++                children: /* @__PURE__ */ jsx(BilingualText, { zh: "客户端密钥", en: "Secret" })
+               }
+             ),
+             /* @__PURE__ */ jsx(
+@@ -1180,15 +1189,15 @@ function PayPalConnectionPage() {
+                 onChange: (e) => setSecret(e.target.value),
+                 disabled: onboardingInProgress,
+                 className: "rounded-md border border-ui-border-base bg-transparent px-3 py-2 text-sm disabled:opacity-50",
+-                placeholder: env === "sandbox" ? "Sandbox Secret" : "Live Secret"
++                placeholder: env === "sandbox" ? "沙盒密钥 / Sandbox Secret" : "正式环境密钥 / Live Secret"
+               }
+             )
+           ] }),
+           /* @__PURE__ */ jsxs("div", { className: "md:col-span-2 rounded-md border border-ui-border-base bg-ui-bg-subtle p-4 text-sm text-ui-fg-subtle", children: [
+-            /* @__PURE__ */ jsx("p", { className: "font-medium text-ui-fg-base", children: "Get your Client ID and Secret in 3 steps:" }),
++            /* @__PURE__ */ jsx("div", { className: "font-medium text-ui-fg-base", children: /* @__PURE__ */ jsx(BilingualText, { zh: "分 3 步获取客户端 ID 和密钥：", en: "Get your Client ID and Secret in 3 steps:" }) }),
+             /* @__PURE__ */ jsxs("ol", { className: "mt-2 list-decimal space-y-2 pl-5", children: [
+               /* @__PURE__ */ jsxs("li", { children: [
+-                "Open",
++                "打开",
+                 " ",
+                 /* @__PURE__ */ jsx(
+                   "a",
+@@ -1197,34 +1206,35 @@ function PayPalConnectionPage() {
+                     target: "_blank",
+                     rel: "noreferrer",
+                     className: "text-ui-fg-interactive underline",
+-                    children: "Log in to Dashboard"
++                    children: "登录 PayPal 开发者控制台"
+                   }
+                 ),
+-                " ",
+-                "and sign in or create an account."
++                "，登录或创建账户。",
++                /* @__PURE__ */ jsx("span", { className: "mt-1 block text-xs", children: "Open the PayPal Developer Dashboard and sign in or create an account." })
+               ] }),
+               /* @__PURE__ */ jsxs("li", { children: [
+-                "Select",
++                "选择",
+                 " ",
+                 /* @__PURE__ */ jsx("span", { className: "font-medium text-ui-fg-base", children: "Apps & Credentials" }),
+-                ", then choose",
++                "，如需新项目，再选择",
+                 " ",
+                 /* @__PURE__ */ jsx("span", { className: "font-medium text-ui-fg-base", children: "Create App" }),
+-                " ",
+-                "if you need a new project."
++                "。",
++                /* @__PURE__ */ jsx("span", { className: "mt-1 block text-xs", children: "Select Apps & Credentials, then choose Create App if you need a new project." })
+               ] }),
+               /* @__PURE__ */ jsxs("li", { children: [
+-                "Copy your app's",
++                "复制应用的",
+                 " ",
+                 /* @__PURE__ */ jsx("span", { className: "font-medium text-ui-fg-base", children: "Client ID" }),
+                 " ",
+-                "and",
++                "和",
+                 " ",
+                 /* @__PURE__ */ jsx("span", { className: "font-medium text-ui-fg-base", children: "Secret" }),
+-                ", paste them above, then click",
++                "，粘贴到上方，然后点击",
+                 " ",
+-                /* @__PURE__ */ jsx("span", { className: "font-medium text-ui-fg-base", children: "Save credentials" }),
+-                "."
++                /* @__PURE__ */ jsx("span", { className: "font-medium text-ui-fg-base", children: "保存凭据" }),
++                "。",
++                /* @__PURE__ */ jsx("span", { className: "mt-1 block text-xs", children: "Copy your app's Client ID and Secret, paste them above, then click Save credentials." })
+               ] })
+             ] })
+           ] }),
+@@ -1236,7 +1246,7 @@ function PayPalConnectionPage() {
+                 className: "transition-fg relative inline-flex w-fit items-center justify-center overflow-hidden rounded-md outline-none shadow-buttons-neutral text-ui-fg-base bg-ui-button-neutral after:transition-fg after:absolute after:inset-0 after:content-[''] after:button-neutral-gradient hover:bg-ui-button-neutral-hover hover:after:button-neutral-hover-gradient active:bg-ui-button-neutral-pressed active:after:button-neutral-pressed-gradient focus-visible:shadow-buttons-neutral-focus disabled:bg-ui-bg-disabled disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral disabled:after:hidden txt-compact-small-plus px-3 py-1.5",
+                 onClick: () => setShowManual(false),
+                 disabled: onboardingInProgress,
+-                children: "Cancel"
++                children: /* @__PURE__ */ jsx(BilingualText, { zh: "取消", en: "Cancel" })
+               }
+             ),
+             /* @__PURE__ */ jsx(
+@@ -1246,7 +1256,7 @@ function PayPalConnectionPage() {
+                 className: "transition-fg relative inline-flex w-fit items-center justify-center overflow-hidden rounded-md outline-none shadow-buttons-neutral text-ui-fg-base bg-ui-button-neutral after:transition-fg after:absolute after:inset-0 after:content-[''] after:button-neutral-gradient hover:bg-ui-button-neutral-hover hover:after:button-neutral-hover-gradient active:bg-ui-button-neutral-pressed active:after:button-neutral-pressed-gradient focus-visible:shadow-buttons-neutral-focus disabled:bg-ui-bg-disabled disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral disabled:after:hidden txt-compact-small-plus px-3 py-1.5",
+                 disabled: !canSaveManual || onboardingInProgress,
+                 onClick: handleSaveManual,
+-                children: "Save credentials"
++                children: /* @__PURE__ */ jsx(BilingualText, { zh: "保存凭据", en: "Save credentials" })
+               }
+             )
+           ] })
+diff --git a/src/admin/routes/settings/paypal/_components/Tabs.tsx b/src/admin/routes/settings/paypal/_components/Tabs.tsx
+index 54d1b588f1b43a1adb03f4507c8141bb550ad9a5..6a0c75c4eb42638daf0a1721d4fd6b5e4edbbcbc 100644
+--- a/src/admin/routes/settings/paypal/_components/Tabs.tsx
++++ b/src/admin/routes/settings/paypal/_components/Tabs.tsx
+@@ -2,17 +2,34 @@ import React from "react"
+ import { Link, useLocation } from "react-router-dom"
+
+ type Tab = {
+-  label: string
++  labelZh: string
++  labelEn: string
+   to: string
+ }
+
+ const BASE = "/settings/paypal"
+
+ const TABS: Tab[] = [
+-  { label: "PayPal Connection", to: `${BASE}/connection` },
+-  { label: "PayPal Settings", to: `${BASE}/paypal-settings` },
+-  { label: "Advanced Card Payments", to: `${BASE}/advanced-card-payments` },
+-  { label: "Additional Settings", to: `${BASE}/additional-settings` },
++  {
++    labelZh: "PayPal 连接",
++    labelEn: "PayPal Connection",
++    to: `${BASE}/connection`,
++  },
++  {
++    labelZh: "PayPal 设置",
++    labelEn: "PayPal Settings",
++    to: `${BASE}/paypal-settings`,
++  },
++  {
++    labelZh: "高级卡支付",
++    labelEn: "Advanced Card Payments",
++    to: `${BASE}/advanced-card-payments`,
++  },
++  {
++    labelZh: "其他设置",
++    labelEn: "Additional Settings",
++    to: `${BASE}/additional-settings`,
++  },
+ ]
+
+ function isActive(pathname: string, to: string) {
+@@ -39,7 +56,12 @@ export default function PayPalTabs() {
+                   : "pb-2 text-ui-fg-subtle hover:text-ui-fg-base"
+               }
+             >
+-              {t.label}
++              <span className="flex flex-col leading-tight">
++                <span>{t.labelZh}</span>
++                <span className="text-xs font-normal text-ui-fg-subtle">
++                  {t.labelEn}
++                </span>
++              </span>
+             </Link>
+           )
+         })}
+diff --git a/src/admin/routes/settings/paypal/connection/page.tsx b/src/admin/routes/settings/paypal/connection/page.tsx
+index a3046b0e56d0dbadbb9ca89a30e4b285185cab96..b67f8825de439f7006a33d65e2fb971a38411875 100644
+--- a/src/admin/routes/settings/paypal/connection/page.tsx
++++ b/src/admin/routes/settings/paypal/connection/page.tsx
+@@ -10,9 +10,18 @@ import { defineRouteConfig } from "@medusajs/admin-sdk"
+ import PayPalTabs from "../_components/Tabs"
+
+ export const config = defineRouteConfig({
+-  label: "PayPal Connection",
++  label: "PayPal 连接 / PayPal Connection",
+ })
+
++function BilingualText({ zh, en }: { zh: string; en: string }) {
++  return (
++    <span className="flex flex-col leading-tight">
++      <span>{zh}</span>
++      <span className="text-xs font-normal text-ui-fg-subtle">{en}</span>
++    </span>
++  )
++}
++
+ // Let partner.js own the entire onboarding flow: it opens PayPal's mini-browser
+ // itself (synchronously inside the click, so no new tab / no popup block), it
+ // receives PayPal's completion postMessage, and it invokes the callback named in
+@@ -256,7 +265,10 @@ export default function PayPalConnectionPage() {
+
+         if (!res.ok) {
+           const txt = await res.text().catch(() => "")
+-          throw new Error(txt || `Onboarding exchange failed (${res.status})`)
++          throw new Error(
++            txt ||
++              `接入凭据交换失败（${res.status}）。 / Onboarding exchange failed (${res.status})`
++          )
+         }
+
+         closeMiniBrowser()
+@@ -280,7 +292,10 @@ export default function PayPalConnectionPage() {
+         // The bridge may have already saved credentials server-side; if so the
+         // poll will surface "connected". Don't strand the user on an error.
+         setConnState("error")
+-        setError(e?.message || "Exchange failed while saving credentials.")
++        setError(
++          e?.message ||
++            "保存凭据时交换失败。 / Exchange failed while saving credentials."
++        )
+       } finally {
+         setOnboardingInProgress(false)
+       }
+@@ -357,7 +372,7 @@ export default function PayPalConnectionPage() {
+         attempts++
+         if (attempts >= MAX_ATTEMPTS) {
+           showError(
+-            "PayPal partner script failed to load. Please refresh and try again."
++            "PayPal 合作伙伴脚本加载失败，请刷新页面后重试。 / PayPal partner script failed to load. Please refresh and try again."
+           )
+           return
+         }
+@@ -374,7 +389,8 @@ export default function PayPalConnectionPage() {
+       if (initLoaderRef.current) {
+         const loaderText = initLoaderRef.current.querySelector("#loader-text")
+         if (loaderText)
+-          loaderText.textContent = "Generating onboarding session..."
++          loaderText.textContent =
++            "正在生成接入会话…\nGenerating onboarding session..."
+       }
+
+       try {
+@@ -394,7 +410,9 @@ export default function PayPalConnectionPage() {
+
+         const href = data?.onboarding_url
+         if (!href) {
+-          showError("Onboarding URL not returned.")
++          showError(
++            "未返回接入网址。 / Onboarding URL was not returned."
++          )
+           return
+         }
+
+@@ -405,7 +423,10 @@ export default function PayPalConnectionPage() {
+         activatePayPal(url, runId)
+       } catch (err: any) {
+         if (runId !== currentRunId.current) return
+-        showError(err?.message || "Unable to connect to service.")
++        showError(
++          err?.message ||
++            "无法连接到服务。 / Unable to connect to the service."
++        )
+       }
+     },
+     [activatePayPal, showError]
+@@ -587,7 +608,10 @@ export default function PayPalConnectionPage() {
+
+       if (!res.ok) {
+         const txt = await res.text().catch(() => "")
+-        throw new Error(txt || `Save credentials failed (${res.status})`)
++        throw new Error(
++          txt ||
++            `保存凭据失败（${res.status}）。 / Save credentials failed (${res.status})`
++        )
+       }
+
+       const statusRes = await fetch(`${STATUS_ENDPOINT}?environment=${env}`, {
+@@ -604,7 +628,10 @@ export default function PayPalConnectionPage() {
+     } catch (e: any) {
+       console.error(e)
+       setConnState("error")
+-      setError(e?.message || "Failed to save credentials.")
++      setError(
++        e?.message ||
++          "保存凭据失败。 / Failed to save credentials."
++      )
+     } finally {
+       setOnboardingInProgress(false)
+     }
+@@ -612,7 +639,12 @@ export default function PayPalConnectionPage() {
+
+   const handleDisconnect = async () => {
+     if (onboardingInProgress) return
+-    if (!window.confirm("Disconnect PayPal for this environment?")) return
++    if (
++      !window.confirm(
++        "要断开当前环境的 PayPal 连接吗？\nDisconnect PayPal for this environment?"
++      )
++    )
++      return
+
+     stopStatusPolling()
+     setOnboardingInProgress(true)
+@@ -632,7 +664,10 @@ export default function PayPalConnectionPage() {
+
+       if (!res.ok) {
+         const t = await res.text().catch(() => "")
+-        throw new Error(t || `Disconnect failed (${res.status})`)
++        throw new Error(
++          t ||
++            `断开连接失败（${res.status}）。 / Disconnect failed (${res.status})`
++        )
+       }
+
+       clearCachedUrl(env)
+@@ -643,7 +678,7 @@ export default function PayPalConnectionPage() {
+     } catch (e: any) {
+       console.error(e)
+       setConnState("error")
+-      setError(e?.message || "Failed to disconnect.")
++      setError(e?.message || "断开连接失败。 / Failed to disconnect.")
+     } finally {
+       setOnboardingInProgress(false)
+     }
+@@ -676,7 +711,10 @@ export default function PayPalConnectionPage() {
+         <div className="flex items-start justify-between gap-4">
+           <div>
+             <h1 className="text-xl font-semibold text-ui-fg-base">
+-              PayPal Gateway By Easy Payment
++              <BilingualText
++                zh="Easy Payment 提供的 PayPal 支付网关"
++                en="PayPal Gateway by Easy Payment"
++              />
+             </h1>
+           </div>
+         </div>
+@@ -685,7 +723,9 @@ export default function PayPalConnectionPage() {
+
+         <div className="rounded-xl border border-ui-border-base bg-ui-bg-base shadow-sm">
+           <div className="grid grid-cols-1 gap-y-6 p-4 md:grid-cols-[260px_1fr] md:items-start">
+-            <div className="text-sm font-medium pt-2">Environment</div>
++            <div className="pt-2 text-sm font-medium">
++              <BilingualText zh="运行环境" en="Environment" />
++            </div>
+             <div className="max-w-xl">
+               <select
+                 value={env}
+@@ -693,22 +733,34 @@ export default function PayPalConnectionPage() {
+                 disabled={onboardingInProgress}
+                 className="w-full rounded-md border border-ui-border-base bg-transparent px-3 py-2 text-sm"
+               >
+-                <option value="sandbox">Sandbox (Test Mode)</option>
+-                <option value="live">Live (Production)</option>
++                <option value="sandbox">
++                  沙盒（测试模式） / Sandbox (Test Mode)
++                </option>
++                <option value="live">
++                  正式环境（生产模式） / Live (Production)
++                </option>
+               </select>
+             </div>
+
+             <div className="text-sm font-medium pt-2">
+-              {env === "sandbox"
+-                ? "Connect to PayPal (Sandbox)"
+-                : "Connect to PayPal"}
++              {env === "sandbox" ? (
++                <BilingualText
++                  zh="连接 PayPal（沙盒）"
++                  en="Connect to PayPal (Sandbox)"
++                />
++              ) : (
++                <BilingualText zh="连接 PayPal" en="Connect to PayPal" />
++              )}
+             </div>
+
+             <div className="max-w-xl">
+               {connState === "connected" ? (
+                 <div>
+                   <div className="text-sm text-green-600 bg-green-50 p-3 rounded border border-green-200">
+-                    ✅ Successfully connected to PayPal!
++                    <BilingualText
++                      zh="✅ 已成功连接 PayPal！"
++                      en="Successfully connected to PayPal!"
++                    />
+                     <a
+                       data-paypal-button="true"
+                       data-paypal-onboard-complete="onboardingCallback"
+@@ -720,12 +772,15 @@ export default function PayPalConnectionPage() {
+                   </div>
+                   <div className="mt-3 rounded-md border border-ui-border-base bg-ui-bg-subtle p-3 text-xs text-ui-fg-subtle">
+                     <div className="font-medium text-ui-fg-base">
+-                      Connected PayPal account
++                      <BilingualText
++                        zh="已连接的 PayPal 账户"
++                        en="Connected PayPal account"
++                      />
+                     </div>
+                     <div className="mt-1">
+-                      Email:{" "}
++                      邮箱 / Email:{" "}
+                       <span className="font-mono text-ui-fg-base">
+-                        {statusInfo?.seller_email || "Unavailable"}
++                        {statusInfo?.seller_email || "暂不可用 / Unavailable"}
+                       </span>
+                     </div>
+                   </div>
+@@ -736,7 +791,7 @@ export default function PayPalConnectionPage() {
+                       disabled={onboardingInProgress}
+                       className="transition-fg relative inline-flex w-fit items-center justify-center overflow-hidden rounded-md outline-none shadow-buttons-neutral text-ui-fg-base bg-ui-button-neutral after:transition-fg after:absolute after:inset-0 after:content-[''] after:button-neutral-gradient hover:bg-ui-button-neutral-hover hover:after:button-neutral-hover-gradient active:bg-ui-button-neutral-pressed active:after:button-neutral-pressed-gradient focus-visible:shadow-buttons-neutral-focus disabled:bg-ui-bg-disabled disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral disabled:after:hidden txt-compact-small-plus px-3 py-1.5"
+                     >
+-                      Disconnect
++                      <BilingualText zh="断开连接" en="Disconnect" />
+                     </button>
+                   </div>
+                 </div>
+@@ -750,10 +805,13 @@ export default function PayPalConnectionPage() {
+                     }`}
+                   >
+                     <div className="loader inline-block align-middle mr-2"></div>
+-                    <span id="loader-text" className="text-sm">
++                    <span
++                      id="loader-text"
++                      className="whitespace-pre-line text-sm"
++                    >
+                       {onboardingInProgress
+-                        ? "Configuring connection to PayPal…"
+-                        : "Checking connection..."}
++                        ? "正在配置 PayPal 连接…\nConfiguring connection to PayPal…"
++                        : "正在检查连接…\nChecking connection..."}
+                     </span>
+                   </div>
+
+@@ -779,7 +837,7 @@ export default function PayPalConnectionPage() {
+                         pointerEvents: onboardingInProgress ? "none" : "auto",
+                       }}
+                     >
+-                      Connect to PayPal
++                      <BilingualText zh="连接 PayPal" en="Connect to PayPal" />
+                     </a>
+
+                     <div
+@@ -792,7 +850,7 @@ export default function PayPalConnectionPage() {
+                     >
+                       <div className="flex justify-center">
+                         <span className="text-[11px] text-ui-fg-muted leading-none">
+-                          OR
++                          或 / OR
+                         </span>
+                       </div>
+                     </div>
+@@ -804,7 +862,10 @@ export default function PayPalConnectionPage() {
+                         disabled={onboardingInProgress}
+                         className="text-sm text-ui-fg-interactive underline whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                       >
+-                        Click here to insert credentials manually
++                        <BilingualText
++                          zh="点击此处手动输入凭据"
++                          en="Click here to insert credentials manually"
++                        />
+                       </button>
+                     </div>
+                   </div>
+@@ -818,7 +879,10 @@ export default function PayPalConnectionPage() {
+                       disabled={onboardingInProgress}
+                       className="text-sm text-ui-fg-interactive underline whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                     >
+-                      Click here to insert credentials manually
++                      <BilingualText
++                        zh="点击此处手动输入凭据"
++                        en="Click here to insert credentials manually"
++                      />
+                     </button>
+                   </div>
+
+@@ -843,7 +907,7 @@ export default function PayPalConnectionPage() {
+                       htmlFor="pp-manual-client-id"
+                       className="text-sm font-medium"
+                     >
+-                      Client ID
++                      <BilingualText zh="客户端 ID" en="Client ID" />
+                     </label>
+                     <input
+                       id="pp-manual-client-id"
+@@ -854,8 +918,8 @@ export default function PayPalConnectionPage() {
+                       className="rounded-md border border-ui-border-base bg-transparent px-3 py-2 text-sm disabled:opacity-50"
+                       placeholder={
+                         env === "sandbox"
+-                          ? "Sandbox Client ID"
+-                          : "Live Client ID"
++                          ? "沙盒客户端 ID / Sandbox Client ID"
++                          : "正式环境客户端 ID / Live Client ID"
+                       }
+                     />
+                   </div>
+@@ -865,7 +929,7 @@ export default function PayPalConnectionPage() {
+                       htmlFor="pp-manual-secret"
+                       className="text-sm font-medium"
+                     >
+-                      Secret
++                      <BilingualText zh="客户端密钥" en="Secret" />
+                     </label>
+                     <input
+                       id="pp-manual-secret"
+@@ -875,53 +939,70 @@ export default function PayPalConnectionPage() {
+                       disabled={onboardingInProgress}
+                       className="rounded-md border border-ui-border-base bg-transparent px-3 py-2 text-sm disabled:opacity-50"
+                       placeholder={
+-                        env === "sandbox" ? "Sandbox Secret" : "Live Secret"
++                        env === "sandbox"
++                          ? "沙盒密钥 / Sandbox Secret"
++                          : "正式环境密钥 / Live Secret"
+                       }
+                     />
+                   </div>
+
+                   <div className="md:col-span-2 rounded-md border border-ui-border-base bg-ui-bg-subtle p-4 text-sm text-ui-fg-subtle">
+-                    <p className="font-medium text-ui-fg-base">
+-                      Get your Client ID and Secret in 3 steps:
+-                    </p>
++                    <div className="font-medium text-ui-fg-base">
++                      <BilingualText
++                        zh="分 3 步获取客户端 ID 和密钥："
++                        en="Get your Client ID and Secret in 3 steps:"
++                      />
++                    </div>
+                     <ol className="mt-2 list-decimal space-y-2 pl-5">
+                       <li>
+-                        Open{" "}
++                        打开{" "}
+                         <a
+                           href="https://developer.paypal.com/dashboard/"
+                           target="_blank"
+                           rel="noreferrer"
+                           className="text-ui-fg-interactive underline"
+                         >
+-                          Log in to Dashboard
++                          登录 PayPal 开发者控制台
+                         </a>{" "}
+-                        and sign in or create an account.
++                        ，登录或创建账户。
++                        <span className="mt-1 block text-xs">
++                          Open the PayPal Developer Dashboard and sign in or
++                          create an account.
++                        </span>
+                       </li>
+                       <li>
+-                        Select{" "}
++                        选择{" "}
+                         <span className="font-medium text-ui-fg-base">
+                           Apps & Credentials
+                         </span>
+-                        , then choose{" "}
++                        ，如需新项目，再选择{" "}
+                         <span className="font-medium text-ui-fg-base">
+                           Create App
+-                        </span>{" "}
+-                        if you need a new project.
++                        </span>
++                        。
++                        <span className="mt-1 block text-xs">
++                          Select Apps & Credentials, then choose Create App if
++                          you need a new project.
++                        </span>
+                       </li>
+                       <li>
+-                        Copy your app's{" "}
++                        复制应用的{" "}
+                         <span className="font-medium text-ui-fg-base">
+                           Client ID
+                         </span>{" "}
+-                        and{" "}
++                        和{" "}
+                         <span className="font-medium text-ui-fg-base">
+                           Secret
+                         </span>
+-                        , paste them above, then click{" "}
++                        ，粘贴到上方，然后点击{" "}
+                         <span className="font-medium text-ui-fg-base">
+-                          Save credentials
++                          保存凭据
+                         </span>
+                         .
++                        <span className="mt-1 block text-xs">
++                          Copy your app&apos;s Client ID and Secret, paste them
++                          above, then click Save credentials.
++                        </span>
+                       </li>
+                     </ol>
+                   </div>
+@@ -933,7 +1014,7 @@ export default function PayPalConnectionPage() {
+                       onClick={() => setShowManual(false)}
+                       disabled={onboardingInProgress}
+                     >
+-                      Cancel
++                      <BilingualText zh="取消" en="Cancel" />
+                     </button>
+
+                     <button
+@@ -942,7 +1023,7 @@ export default function PayPalConnectionPage() {
+                       disabled={!canSaveManual || onboardingInProgress}
+                       onClick={handleSaveManual}
+                     >
+-                      Save credentials
++                      <BilingualText zh="保存凭据" en="Save credentials" />
+                     </button>
+                   </div>
+                 </div>

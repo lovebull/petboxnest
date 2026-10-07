@@ -9,7 +9,7 @@ overrides:
   '@types/react-dom': 19.0.5
 
 patchedDependencies:
-  '@easypayment/medusa-payment-paypal@1.2.8': ac4e821d50951dc8d4cd403d78aabe650cb12da8bf513d7b14620cd66740322c
+  '@easypayment/medusa-payment-paypal@1.2.8': 13626c996375f9c6be5df6f8f00782adbb02983d54925ddb79ff2bf013579936
   '@medusajs/loyalty-plugin@2.19.0': 2fdf70c754c49f493c015dc28fe88bab42d153fa9a363df2ceadb27c0d21e38f
 
 importers:
@@ -39,7 +39,7 @@ importers:
         version: 3.1093.0
       '@easypayment/medusa-payment-paypal':
         specifier: 1.2.8
-        version: 1.2.8(patch_hash=ac4e821d50951dc8d4cd403d78aabe650cb12da8bf513d7b14620cd66740322c)(@medusajs/admin-sdk@2.19.0)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.19.26))(@types/node@20.19.26)(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.26)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))(zod@4.2.0))(@medusajs/icons@2.19.0(react@18.3.1))(@medusajs/medusa@2.19.0)(@medusajs/ui@4.2.1(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))
+        version: 1.2.8(patch_hash=13626c996375f9c6be5df6f8f00782adbb02983d54925ddb79ff2bf013579936)(@medusajs/admin-sdk@2.19.0)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.19.26))(@types/node@20.19.26)(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.26)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))(zod@4.2.0))(@medusajs/icons@2.19.0(react@18.3.1))(@medusajs/medusa@2.19.0)(@medusajs/ui@4.2.1(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))
       '@medusajs/admin-sdk':
         specifier: 2.19.0
         version: 2.19.0
@@ -10940,7 +10940,7 @@ snapshots:
 
   '@drizzle-team/brocli@0.10.2': {}
 
-  '@easypayment/medusa-payment-paypal@1.2.8(patch_hash=ac4e821d50951dc8d4cd403d78aabe650cb12da8bf513d7b14620cd66740322c)(@medusajs/admin-sdk@2.19.0)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.19.26))(@types/node@20.19.26)(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.26)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))(zod@4.2.0))(@medusajs/icons@2.19.0(react@18.3.1))(@medusajs/medusa@2.19.0)(@medusajs/ui@4.2.1(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))':
+  '@easypayment/medusa-payment-paypal@1.2.8(patch_hash=13626c996375f9c6be5df6f8f00782adbb02983d54925ddb79ff2bf013579936)(@medusajs/admin-sdk@2.19.0)(@medusajs/framework@2.19.0(@medusajs/cli@2.19.0(@types/node@20.19.26))(@types/node@20.19.26)(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.26)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))(zod@4.2.0))(@medusajs/icons@2.19.0(react@18.3.1))(@medusajs/medusa@2.19.0)(@medusajs/ui@4.2.1(@types/react-dom@19.0.5(@types/react@19.0.5))(@types/react@19.0.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))':
     dependencies:
       '@medusajs/framework': 2.19.0(@medusajs/cli@2.19.0(@types/node@20.19.26))(@types/node@20.19.26)(ioredis@5.8.2)(vite@7.3.6(@types/node@20.19.26)(jiti@2.7.0)(sass@1.77.4)(terser@5.49.0)(tsx@4.22.4)(yaml@2.9.0))(zod@4.2.0)
       '@medusajs/medusa': 2.19.0(57e0dfc58b626e8c1f6fb2dc8c31d24c)

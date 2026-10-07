@@ -4,6 +4,26 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.1",
+    date: "2026-10-06 22:30:22 EDT",
+    title: "🌐 PayPal Admin 设置页面双语补丁完善",
+    items: [
+      "🌐 扩展 EasyPayment PayPal Admin 补丁，将 PayPal Settings、Advanced Card Payments 和 Additional Settings 页面补充中英文双语文案。",
+      "🧩 新增 BilingualText 组件补丁，用于 PayPal Admin 设置页统一展示中文主文案和英文辅助文案。",
+      "⚙️ PayPal 按钮颜色、形状、宽度、高度、标签等配置项新增中文选项说明。",
+      "🔐 Advanced Card Payments 的 3D Secure 策略选项和说明补充中文提示，方便运营理解 SCA 与责任转移设置。",
+      "🧾 Additional Settings 的付款操作、登录页、即时付款、发送商品明细、发票前缀等表单项补充中文标签和说明。",
+      "📦 pnpm lockfile 同步更新 EasyPayment PayPal 插件 patch hash，确保安装时应用新版补丁。",
+    ],
+    fixes: [
+      "🐛 修复 PayPal Admin 只有连接页部分中文化，其他设置页仍以英文为主，后台操作体验不一致的问题。",
+      "🐛 修复 PayPal 设置保存、加载、错误提示缺少中文说明，运营人员排查配置问题不够直观的问题。",
+      "🐛 修复按钮外观配置项只有英文枚举，容易误解颜色、形状、尺寸和按钮文字含义的问题。",
+      "🐛 修复 3D Secure 触发策略说明不够清晰，可能导致高级卡支付风控配置误选的问题。",
+      "🐛 修复补丁内容更新后 lockfile patch hash 未同步会导致 pnpm 安装时补丁校验不一致的问题。",
+    ],
+  },
+  {
     version: "v1.22.0",
     date: "2026-10-06 09:56:19 EDT",
     title: "💳 PayPal 钱包与卡支付接入",

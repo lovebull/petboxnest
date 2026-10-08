@@ -38,6 +38,7 @@ yarn-error.log*
 **/.env.local
 **/.env.development.local
 **/.env.test.local
+**/.env.production
 **/.env.production.local
 信息说明.md
 
@@ -68,3 +69,5 @@ apps/cms/next.config.mjs
 # Local database safety backups
 apps/backend/backups/*.dump
 deliverables/*
+
+logs/*

@@ -4,6 +4,25 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.2",
+    date: "2026-10-08 15:29:44 EDT",
+    title: "🚀 生产部署配置与商品缓存刷新修复",
+    items: [
+      "🚀 新增 PM2 ecosystem 配置，统一管理 Medusa Backend、Payload CMS 和 Storefront 的生产启动入口。",
+      "🧾 后端域名环境模板统一使用 petboxnest 小写域名和数据库名，减少 Linux 生产环境路径与连接配置差异。",
+      "🪵 .gitignore 新增 logs 目录忽略规则，避免 PM2 运行日志进入版本库。",
+      "🔐 .gitignore 新增 .env.production 忽略规则，降低生产环境变量文件被误提交的风险。",
+      "🔄 商品变更缓存刷新 subscriber 改用 Medusa 事件对象的 name 字段读取事件名。",
+    ],
+    fixes: [
+      "🐛 修复生产环境商品创建、更新或删除后，缓存刷新日志中的事件名可能读取不到，影响排查 Storefront 缓存刷新问题。",
+      "🐛 修复域名模板中 Petboxnest 大小写不统一，可能导致生产 CORS、URL、数据库名和路径配置不一致的问题。",
+      "🐛 修复生产进程缺少统一 PM2 配置，Backend、CMS、Storefront 启动和日志路径不够集中管理的问题。",
+      "🐛 修复 logs 目录未忽略时运行日志可能污染 Git 工作树的问题。",
+      "🐛 修复 .env.production 未被忽略时生产密钥文件存在误提交风险的问题。",
+    ],
+  },
+  {
     version: "v1.22.1",
     date: "2026-10-06 22:30:22 EDT",
     title: "🌐 PayPal Admin 设置页面双语补丁完善",

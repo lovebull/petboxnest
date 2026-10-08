@@ -24,7 +24,7 @@ const getStorefrontRevalidateUrl = () => {
 }
 
 export default async function productStorefrontCacheHandler({
-  event: { data, eventName },
+  event: { data, name: eventName },
   container,
 }: SubscriberArgs<ProductChangedEvent>) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)

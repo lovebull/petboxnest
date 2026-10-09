@@ -243,18 +243,18 @@ export default function ShippingPolicyPage() {
               </p>
               <ul className="list-disc space-y-2 pl-5 marker:text-brand">
                 <li>Free U.S. standard shipping on orders of $100 or more.</li>
-                <li>
-                  $9.99 U.S. standard shipping on orders under $100.
-                </li>
+                <li>$9.99 U.S. standard shipping on orders under $100.</li>
                 <li>
                   $20 flat-rate international shipping where an eligible
                   destination is available at checkout.
                 </li>
               </ul>
               <p>
-                Express rates are calculated at checkout. International duties,
-                taxes, customs fees, or brokerage charges are not included
-                unless checkout expressly states otherwise.
+                Express rates are calculated at checkout. Product prices include
+                the charges shown at checkout. For international orders, import
+                duties, taxes, customs fees, or brokerage charges may be
+                collected upon delivery and are the buyer&apos;s responsibility
+                unless checkout states otherwise.
               </p>
             </PolicyCard>
 
@@ -286,8 +286,8 @@ export default function ShippingPolicyPage() {
               <p>
                 Our customer care team will coordinate any necessary carrier
                 investigation. For a confirmed shipping issue, PetBoxNest will
-                arrange an appropriate replacement or refund and cover reasonable
-                replacement or return shipping costs.
+                arrange an appropriate replacement or refund and cover
+                reasonable replacement or return shipping costs.
               </p>
             </PolicyCard>
 
@@ -297,12 +297,13 @@ export default function ShippingPolicyPage() {
               index={4}
             >
               <p>
-                Review the shipping address before placing your order and contact
-                us promptly if it needs to change. We can update an address only
-                before fulfillment begins. Once an order has shipped, an address
-                change is not guaranteed. If a carrier returns an order because
-                of an incorrect customer-provided address, additional shipping
-                charges may apply before it is sent again.
+                Review the shipping address before placing your order and
+                contact us promptly if it needs to change. We can update an
+                address only before fulfillment begins. Once an order has
+                shipped, an address change is not guaranteed. If a carrier
+                returns an order because of an incorrect customer-provided
+                address, additional shipping charges may apply before it is sent
+                again.
               </p>
             </PolicyCard>
 

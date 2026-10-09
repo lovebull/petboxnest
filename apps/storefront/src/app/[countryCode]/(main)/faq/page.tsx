@@ -86,6 +86,15 @@ const faqGroups = [
         },
       },
       {
+        question: "Will I have to pay import duties or taxes?",
+        answer:
+          "For international orders, import duties, taxes, customs fees, or brokerage charges may be collected upon delivery and are the buyer's responsibility unless checkout states otherwise.",
+        detailLink: {
+          href: "/shipping-policy",
+          label: "Read the Shipping Policy.",
+        },
+      },
+      {
         question: "What should I do if tracking says delivered?",
         answer:
           "Check the delivery area, household members, neighbors, and carrier notices, then allow up to 48 hours. If it is still missing, contact us with your order number and tracking details.",

@@ -4,6 +4,26 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.3",
+    date: "2026-10-09 04:44:48 EDT",
+    title: "🛒 商品采购链接与国际订单提示优化",
+    items: [
+      "🛒 Medusa Admin 商品详情页新增采购供应商地址 widget，可维护 1688、淘宝和京东内部采购链接。",
+      "🔗 采购链接保存到商品 metadata，不展示在 Storefront，方便后台运营追踪商品来源。",
+      "🌍 FAQ 新增国际订单进口关税、税费、清关费和经纪费说明，并链接到 Shipping Policy。",
+      "📦 Shipping Policy 更新国际运费和税费责任说明，明确相关费用可能在派送时收取。",
+      "🧾 Checkout Summary 会在非美国收货地址时显示国际订单税费提醒。",
+      "✉️ Medusa 后端配置注释掉 customer emailpass 邮箱验证要求，避免客户流程被强制邮箱验证阻断。",
+    ],
+    fixes: [
+      "🐛 修复后台商品缺少集中维护供应商采购地址入口，运营需要在 metadata 中手动查找和编辑链接的问题。",
+      "🐛 修复国际订单税费责任说明不够明确，客户在结账和帮助页面可能无法提前理解额外费用的问题。",
+      "🐛 修复非美国订单 Checkout Summary 缺少进口关税和税费提醒，可能导致下单前信息提示不足的问题。",
+      "🐛 修复 Shipping Policy 中部分文案换行和责任说明不够清晰的问题。",
+      "🐛 修复 customer emailpass 邮箱验证要求可能在生产注册或登录流程中造成额外阻断的问题。",
+    ],
+  },
+  {
     version: "v1.22.2",
     date: "2026-10-08 15:29:44 EDT",
     title: "🚀 生产部署配置与商品缓存刷新修复",

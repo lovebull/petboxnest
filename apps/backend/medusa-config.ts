@@ -77,15 +77,15 @@ module.exports = defineConfig({
       ),
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
-
-      authVerificationsPerActor: {
-        customer: [
-          {
-            entity_type: "email",
-            auth_provider: "emailpass",
-          },
-        ],
-      },
+      ////注释掉客户 emailpass 邮箱验证要求
+      // authVerificationsPerActor: {
+      //   customer: [
+      //     {
+      //       entity_type: "email",
+      //       auth_provider: "emailpass",
+      //     },
+      //   ],
+      // },
     },
     sessionOptions: {
       name: "petboxnest.sid",

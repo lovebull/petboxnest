@@ -8,6 +8,11 @@ import Divider from "@modules/common/components/divider"
 import { HttpTypes } from "@medusajs/types"
 
 const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
+  const shippingCountryCode = cart.shipping_address?.country_code?.toLowerCase()
+  const isInternationalOrder = Boolean(
+    shippingCountryCode && shippingCountryCode !== "us",
+  )
+
   return (
     <aside className="small:sticky small:top-6" aria-label="Order summary">
       <details
@@ -45,6 +50,14 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
           <div className="mt-3">
             <GiftCardCode cart={cart} />
           </div>
+          {isInternationalOrder && (
+            <div className="mt-4 rounded-[16px] border border-yellow bg-yellow/20 p-4 text-sm leading-5 text-ink">
+              <p className="font-bold">International order</p>
+              <p className="mt-1 text-muted">
+                Import duties and taxes may be collected upon delivery.
+              </p>
+            </div>
+          )}
           <div className="mt-4 flex items-start gap-3 rounded-[16px] bg-mint/60 p-4 text-sm leading-5 text-ink">
             <ShieldCheck
               className="mt-0.5 shrink-0 text-brand"

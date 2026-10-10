@@ -4,6 +4,27 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.4",
+    date: "2026-10-10 12:09:15 EDT",
+    title: "🏭 商品采购来源模块与后台管理升级",
+    items: [
+      "🏭 新增 productSupplier Medusa 模块，将商品 1688、淘宝和京东采购链接从商品 metadata 拆分为独立采购来源数据表。",
+      "🗂️ 新增 pbn_product_supplier_source 数据模型、迁移文件和 Product 到采购来源的 module link，支持按商品独立维护采购来源。",
+      "🔄 新增 upsert product supplier source workflow，统一校验商品存在、保存采购链接并创建模块关联。",
+      "🛠️ 新增 Admin API：支持按商品读取/保存采购来源，并支持采购来源列表分页、搜索、平台筛选和配置状态筛选。",
+      "📋 Medusa Admin 新增采购供应商地址管理页，可集中查看商品 SKU、采购平台状态并批量进入编辑。",
+      "🧩 商品详情采购链接 widget 改为使用新的 Admin API 和 React Query，同步显示加载、错误、保存和缓存刷新状态。",
+      "🚚 新增迁移脚本，可把旧商品 metadata 中的 supplier_1688_url、supplier_taobao_url、supplier_jd_url 迁移到新采购来源模块。",
+    ],
+    fixes: [
+      "🐛 修复采购链接直接存放在商品 metadata 中，后台缺少独立数据模型和集中管理入口的问题。",
+      "🐛 修复商品详情采购链接保存后只更新本地状态，无法和集中列表页、后端模块数据保持一致的问题。",
+      "🐛 修复后台无法按采购平台或是否已配置采购来源筛选商品，运营排查缺失链接效率低的问题。",
+      "🐛 修复旧 metadata 采购链接迁移缺少校验和清理流程，历史数据可能长期残留在商品 metadata 中的问题。",
+      "🐛 修复采购链接接口缺少统一请求校验，URL 格式、分页参数和筛选参数容易进入不一致状态的问题。",
+    ],
+  },
+  {
     version: "v1.22.3",
     date: "2026-10-09 04:44:48 EDT",
     title: "🛒 商品采购链接与国际订单提示优化",

@@ -147,6 +147,9 @@ module.exports = defineConfig({
       resolve: "./src/modules/media-library",
     },
     {
+      resolve: "./src/modules/product-supplier",
+    },
+    {
       resolve: "./src/modules/cashback",
     },
     {

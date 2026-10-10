@@ -6,6 +6,10 @@ import {
 } from "@medusajs/framework/http";
 import { z } from "@medusajs/framework/zod";
 import { MediaLibraryListSchema } from "./admin/media-library/validators";
+import {
+  ProductSupplierSourceListSchema,
+  UpdateProductSupplierSourceSchema,
+} from "./admin/product-supplier-sources/validators";
 
 export const UpdateCashbackSettingsSchema = z
   .strictObject({
@@ -372,6 +376,20 @@ export const GetReferralConversionsSchema = z.object({
 
 export default defineMiddlewares({
   routes: [
+    {
+      matcher: "/admin/product-supplier-sources",
+      method: "GET",
+      middlewares: [
+        validateAndTransformQuery(ProductSupplierSourceListSchema, {}),
+      ],
+    },
+    {
+      matcher: "/admin/product-supplier-sources/:productId",
+      method: "POST",
+      middlewares: [
+        validateAndTransformBody(UpdateProductSupplierSourceSchema),
+      ],
+    },
     {
       matcher: "/admin/media-library",
       method: "GET",

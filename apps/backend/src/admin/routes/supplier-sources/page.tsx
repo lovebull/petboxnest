@@ -1,5 +1,10 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { BuildingStorefront, PencilSquare, Spinner } from "@medusajs/icons"
+import {
+  ArrowUpRightOnBox,
+  BuildingStorefront,
+  PencilSquare,
+  Spinner,
+} from "@medusajs/icons"
 import {
   Badge,
   Button,
@@ -51,6 +56,11 @@ type SupplierDraft = {
   supplier_jd_url: string
 }
 
+type SupplierLink = {
+  label: string
+  url: string
+}
+
 const emptyDraft: SupplierDraft = {
   supplier_1688_url: "",
   supplier_taobao_url: "",
@@ -91,6 +101,42 @@ const configuredCount = (source: SupplierSource | null) =>
         source.supplier_jd_url,
       ].filter(Boolean).length
     : 0
+
+const getSafeExternalUrl = (value: string | null) => {
+  if (!value) {
+    return null
+  }
+
+  try {
+    const url = new URL(value)
+    return url.protocol === "http:" || url.protocol === "https:"
+      ? url.toString()
+      : null
+  } catch {
+    return null
+  }
+}
+
+const getSupplierLinks = (source: SupplierSource | null): SupplierLink[] => {
+  const candidates = [
+    { label: "1688", value: source?.supplier_1688_url || null },
+    { label: "淘宝", value: source?.supplier_taobao_url || null },
+    { label: "京东", value: source?.supplier_jd_url || null },
+  ]
+
+  return candidates.reduce<SupplierLink[]>((links, candidate) => {
+    const url = getSafeExternalUrl(candidate.value)
+
+    if (url) {
+      links.push({
+        label: candidate.label,
+        url,
+      })
+    }
+
+    return links
+  }, [])
+}
 
 const SupplierSourcesPage = () => {
   const queryClient = useQueryClient()
@@ -256,6 +302,9 @@ const SupplierSourcesPage = () => {
               <Table.Body>
                 {rows.map((product) => {
                   const count = configuredCount(product.supplier_source)
+                  const supplierLinks = getSupplierLinks(
+                    product.supplier_source
+                  )
 
                   return (
                     <Table.Row key={product.id}>
@@ -291,11 +340,34 @@ const SupplierSourcesPage = () => {
                         </Text>
                       </Table.Cell>
                       <Table.Cell>
-                        <div className="flex flex-wrap gap-1">
-                          {product.supplier_source?.supplier_1688_url && <Badge size="2xsmall">1688</Badge>}
-                          {product.supplier_source?.supplier_taobao_url && <Badge size="2xsmall">淘宝</Badge>}
-                          {product.supplier_source?.supplier_jd_url && <Badge size="2xsmall">京东</Badge>}
-                          {!count && <Text className="text-ui-fg-muted" size="small">—</Text>}
+                        <div className="flex min-w-64 flex-col gap-2 py-1">
+                          {supplierLinks.map((link) => (
+                            <a
+                              className="group flex items-center gap-2 rounded-md outline-none hover:text-ui-fg-interactive focus:shadow-borders-interactive-with-focus"
+                              href={link.url}
+                              key={link.label}
+                              rel="noreferrer noopener"
+                              target="_blank"
+                            >
+                              <Badge className="shrink-0" size="2xsmall">
+                                {link.label}
+                              </Badge>
+                              <Text
+                                className="text-ui-fg-interactive group-hover:underline"
+                                leading="compact"
+                                size="small"
+                                weight="plus"
+                              >
+                                打开 / Open
+                              </Text>
+                              <ArrowUpRightOnBox className="shrink-0 text-ui-fg-muted" />
+                            </a>
+                          ))}
+                          {!supplierLinks.length && (
+                            <Text className="text-ui-fg-muted" size="small">
+                              未设置供应商链接 / Not set
+                            </Text>
+                          )}
                         </div>
                       </Table.Cell>
                       <Table.Cell>

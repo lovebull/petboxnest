@@ -1,0 +1,76 @@
+{
+  "name": "@petboxnest/medusa-plugin-bundle-offers",
+  "version": "0.1.0",
+  "description": "Reusable hybrid bundle offer management for Medusa v2.",
+  "license": "UNLICENSED",
+  "private": true,
+  "files": [
+    ".medusa/server"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./modules/bundle-offers/*": "./.medusa/server/src/modules/bundle-offers/index.js",
+    "./.medusa/server/src/modules/bundle-offers": "./.medusa/server/src/modules/bundle-offers/index.js",
+    "./workflows": {
+      "import": "./.medusa/server/src/workflows/index.js",
+      "types": "./.medusa/server/src/workflows/index.d.ts",
+      "require": "./.medusa/server/src/workflows/index.js"
+    },
+    "./types": {
+      "import": "./.medusa/server/src/types/index.js",
+      "types": "./.medusa/server/src/types/index.d.ts",
+      "require": "./.medusa/server/src/types/index.js"
+    },
+    "./admin": {
+      "import": "./.medusa/server/src/admin/index.mjs",
+      "require": "./.medusa/server/src/admin/index.js",
+      "default": "./.medusa/server/src/admin/index.js"
+    },
+    "./.medusa/server/src/*": "./.medusa/server/src/**/*.js"
+  },
+  "scripts": {
+    "build:plugin": "medusa plugin:build",
+    "dev": "medusa plugin:develop",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@medusajs/admin-sdk": "2.19.0",
+    "@medusajs/admin-shared": "2.19.0",
+    "@medusajs/cli": "2.19.0",
+    "@medusajs/dashboard": "2.19.0",
+    "@medusajs/framework": "2.19.0",
+    "@medusajs/icons": "2.19.0",
+    "@medusajs/js-sdk": "2.19.0",
+    "@medusajs/medusa": "2.19.0",
+    "@medusajs/ui": "4.2.1",
+    "@tanstack/react-query": "5.64.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.0.0",
+    "zod": "4.2.0"
+  },
+  "devDependencies": {
+    "@medusajs/admin-sdk": "2.19.0",
+    "@medusajs/admin-shared": "2.19.0",
+    "@medusajs/cli": "2.19.0",
+    "@medusajs/dashboard": "2.19.0",
+    "@medusajs/framework": "2.19.0",
+    "@medusajs/icons": "2.19.0",
+    "@medusajs/js-sdk": "2.19.0",
+    "@medusajs/medusa": "2.19.0",
+    "@medusajs/ui": "4.2.1",
+    "@tanstack/react-query": "5.64.2",
+    "@types/node": "^20.12.11",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.2.25",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "7.18.2",
+    "typescript": "^5.6.2",
+    "zod": "4.2.0"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "packageManager": "pnpm@11.5.2"
+}

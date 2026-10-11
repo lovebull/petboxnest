@@ -11,6 +11,8 @@ import OptionSelect from "./option-select"
 import { HttpTypes } from "@medusajs/types"
 import { isSimpleProduct } from "@lib/util/product"
 import { ExclamationCircle } from "@medusajs/icons"
+import type { StoreBundleOffer } from "@lib/data/bundle-offers"
+import BundleOfferSelector from "./bundle-offer-selector"
 
 type MobileActionsProps = {
   product: HttpTypes.StoreProduct
@@ -23,6 +25,8 @@ type MobileActionsProps = {
   addError?: string | null
   show: boolean
   optionsDisabled: boolean
+  bundleOffer?: StoreBundleOffer | null
+  updateBundleVariant: (variantId: string) => void
 }
 
 const MobileActions: React.FC<MobileActionsProps> = ({
@@ -36,6 +40,8 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   addError,
   show,
   optionsDisabled,
+  bundleOffer,
+  updateBundleVariant,
 }) => {
   const { state, open, close } = useToggleState()
 
@@ -54,6 +60,9 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   }, [price])
 
   const isSimple = isSimpleProduct(product)
+  const bundleOption = bundleOffer?.options.find(
+    (option) => option.variant_id === variant?.id
+  )
   return (
     <>
       <div
@@ -132,7 +141,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                   <div className="flex w-full items-center justify-between gap-2">
                     <span className="truncate">
                       {variant
-                        ? Object.values(options).join(" / ")
+                        ? bundleOption?.title || Object.values(options).join(" / ")
                         : "Select options"}
                     </span>
                     <ChevronDown />
@@ -202,7 +211,21 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                     <Dialog.Title className="font-display text-2xl font-bold text-ink">
                       Choose your options
                     </Dialog.Title>
-                    {(product.variants?.length ?? 0) > 1 && (
+                    {bundleOffer?.options.length ? (
+                      <div className="mt-6">
+                        <BundleOfferSelector
+                          compact
+                          offer={bundleOffer}
+                          product={product}
+                          selectedVariantId={variant?.id}
+                          onSelect={(variantId) => {
+                            updateBundleVariant(variantId)
+                            close()
+                          }}
+                          disabled={optionsDisabled}
+                        />
+                      </div>
+                    ) : (product.variants?.length ?? 0) > 1 ? (
                       <div className="mt-6 flex flex-col gap-y-6">
                         {(product.options || []).map((option) => {
                           return (
@@ -218,7 +241,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                           )
                         })}
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

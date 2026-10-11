@@ -14,11 +14,14 @@ import { useRouter } from "next/navigation"
 import { notifyLayoutSessionChanged } from "@modules/layout/components/layout-session-provider"
 import RestockForm from "./restock-form"
 import { ExclamationCircle } from "@medusajs/icons"
+import type { StoreBundleOffer } from "@lib/data/bundle-offers"
+import BundleOfferSelector from "./bundle-offer-selector"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
   disabled?: boolean
+  bundleOffer?: StoreBundleOffer | null
 }
 
 const optionsAsKeymap = (
@@ -33,6 +36,7 @@ const optionsAsKeymap = (
 export default function ProductActions({
   product,
   disabled,
+  bundleOffer,
 }: ProductActionsProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -44,11 +48,32 @@ export default function ProductActions({
   const countryCode = useParams().countryCode as string
   // If there is only 1 variant, preselect the options
   useEffect(() => {
-    if (product.variants?.length === 1) {
+    if (!bundleOffer && product.variants?.length === 1) {
       const variantOptions = optionsAsKeymap(product.variants[0].options)
       setOptions(variantOptions ?? {})
     }
-  }, [product.variants])
+  }, [bundleOffer, product.variants])
+
+  useEffect(() => {
+    if (!bundleOffer?.options.length || !product.variants?.length) {
+      return
+    }
+
+    const requestedVariantId = searchParams.get("v_id")
+    const selectedOffer =
+      bundleOffer.options.find(
+        (option) => option.variant_id === requestedVariantId
+      ) ||
+      bundleOffer.options.find((option) => option.is_default) ||
+      bundleOffer.options[0]
+    const variant = product.variants.find(
+      (item) => item.id === selectedOffer?.variant_id
+    )
+
+    if (variant) {
+      setOptions(optionsAsKeymap(variant.options) ?? {})
+    }
+  }, [bundleOffer, product.variants, searchParams])
 
   const selectedVariant = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
@@ -68,6 +93,15 @@ export default function ProductActions({
       ...prev,
       [optionId]: value,
     }))
+  }
+
+  const setBundleVariant = (variantId: string) => {
+    const variant = product.variants?.find((item) => item.id === variantId)
+    if (!variant) {
+      return
+    }
+    setAddError(null)
+    setOptions(optionsAsKeymap(variant.options) ?? {})
   }
 
   //check if the selected options produce a valid variant
@@ -173,7 +207,15 @@ export default function ProductActions({
     <>
       <div className="flex flex-col gap-y-5" ref={actionsRef}>
         <div>
-          {(product.variants?.length ?? 0) > 1 && (
+          {bundleOffer?.options.length ? (
+            <BundleOfferSelector
+              offer={bundleOffer}
+              product={product}
+              selectedVariantId={selectedVariant?.id}
+              onSelect={setBundleVariant}
+              disabled={!!disabled || isAdding}
+            />
+          ) : (product.variants?.length ?? 0) > 1 ? (
             <div className="flex flex-col gap-y-4">
               {(product.options || []).map((option) => {
                 return (
@@ -190,7 +232,7 @@ export default function ProductActions({
                 )
               })}
             </div>
-          )}
+          ) : null}
         </div>
 
         <div className="flex items-center justify-between gap-4">
@@ -261,6 +303,8 @@ export default function ProductActions({
           addError={addError}
           show={!inView}
           optionsDisabled={!!disabled || isAdding}
+          bundleOffer={bundleOffer}
+          updateBundleVariant={setBundleVariant}
         />
       </div>
     </>

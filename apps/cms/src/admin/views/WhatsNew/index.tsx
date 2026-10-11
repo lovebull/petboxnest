@@ -4,6 +4,27 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.7",
+    date: "2026-10-11 06:39:10 EDT",
+    title: "🎁 组合套餐插件与商品详情选择器接入",
+    items: [
+      "🎁 新增 @petboxnest/medusa-plugin-bundle-offers 本地 Medusa 插件，用于管理商品组合套餐展示与库存组件绑定。",
+      "🗂️ 插件新增 pbn_bundle_offer、pbn_bundle_offer_option、pbn_bundle_offer_component 数据表和迁移，支持套餐、选项、库存组件分层管理。",
+      "🔄 新增套餐创建、更新、删除 workflow，会校验商品变体和库存项，并同步 Medusa 原生 variant-inventory required_quantity 链接。",
+      "🛠️ 新增 Admin API 和 Store API，后台可管理套餐配置，Storefront 可按商品读取已启用且在有效期内的套餐展示数据。",
+      "📋 Medusa Admin 新增套餐管理页面和商品详情套餐 widget，可创建、编辑、归档和删除商品套餐配置。",
+      "🛍️ Storefront 商品详情页新增 BundleOfferSelector，支持桌面和移动端选择套餐选项，并自动切换到绑定的可购买变体。",
+      "📦 Backend 注册 bundle offers 插件并同步 workspace 依赖与 pnpm lockfile。",
+    ],
+    fixes: [
+      "🐛 修复商品详情页只能展示普通变体选项，无法以套餐、赠品或补货周期等业务文案包装变体选择的问题。",
+      "🐛 修复后台缺少集中管理商品套餐展示、选项、赠品标签和对比价的入口，运营需要依赖手工配置的问题。",
+      "🐛 修复套餐展示和库存扣减没有统一关联，容易出现前台展示套餐但库存组件数量未同步的问题。",
+      "🐛 修复移动端浮层选择商品选项时无法展示套餐标题、徽标、赠品说明和对比价的问题。",
+      "🐛 修复套餐过期、草稿或归档状态仍可能被前台读取展示的问题。",
+    ],
+  },
+  {
     version: "v1.22.6",
     date: "2026-10-11 00:59:53 EDT",
     title: "🏷️ Admin 促销创建流程双语翻译补充",

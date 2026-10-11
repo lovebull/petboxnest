@@ -45,6 +45,10 @@ module.exports = defineConfig({
   },
   plugins: [
     {
+      resolve: "@petboxnest/medusa-plugin-bundle-offers",
+      options: {},
+    },
+    {
       resolve: "@medusajs/loyalty-plugin",
       options: {},
     },

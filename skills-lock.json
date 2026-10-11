@@ -17,13 +17,19 @@
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-dev/skills/building-with-medusa/SKILL.md",
-      "computedHash": "e8a523a6f33e7aae2ef6b451187dd0553dbb5f18e8ee15ed240c10cf3e1f2713"
+      "computedHash": "875e4fffda0f54341e70b729803c8effaa157d6eb80b56fca26f5ad55791d740"
     },
     "creating-agents-in-medusa": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-dev/skills/creating-internal-agents/SKILL.md",
       "computedHash": "2b76cede98433a050244fbc4913f23580a984720a1fcf61f95811c36d15e8e23"
+    },
+    "creating-internal-agents": {
+      "source": "medusajs/medusa-agent-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/medusa-dev/skills/creating-internal-agents/SKILL.md",
+      "computedHash": "354335f4fc8ebbffae596f145e245d8b6f56e6897d2dd668fb9701fc03e3a69c"
     },
     "db-generate": {
       "source": "medusajs/medusa-agent-skills",
@@ -41,7 +47,13 @@
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/learn-medusa/skills/learning-medusa/SKILL.md",
-      "computedHash": "71755c0b2531080d547a7ddacf840e6a1cdd394dc5af92879cfc604ce1be1102"
+      "computedHash": "91b3052ed98edd42039c279b6f52fc8e34ab88c3b9cdce25c5279f39b1d555c0"
+    },
+    "mcloud-auth": {
+      "source": "medusajs/medusa-agent-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/medusa-cloud/skills/mcloud-auth/SKILL.md",
+      "computedHash": "4e5c59ed500dc162b15f2d6200472efde3dd0d7a4a900d5fbf12dcef64720b75"
     },
     "mcloud-deployments": {
       "source": "medusajs/medusa-agent-skills",
@@ -95,7 +107,7 @@
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/ecommerce-storefront/skills/storefront-best-practices/SKILL.md",
-      "computedHash": "ce76ccbdfdf2d9ce99851e3bc70ad78f86e48b39a9a7eb3a24ea58bd52a5c995"
+      "computedHash": "a2a2d7ad7faac1f99df9cdecd526c73d0f0ddb8bc2829165a6486495418a88ab"
     },
     "using-medusa-cloud": {
       "source": "medusajs/medusa-agent-skills",

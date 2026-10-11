@@ -4,6 +4,25 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.8",
+    date: "2026-10-11 07:46:09 EDT",
+    title: "🧠 Agent Skills 文档与 Medusa 指南同步",
+    items: [
+      "🧠 新增 creating-internal-agents 技能文档，覆盖 Medusa 内部 Admin AI Agent 的数据模型、服务、API 路由、流式响应、Admin 扩展和 MedusaExec 使用规范。",
+      "☁️ 新增 mcloud-auth 技能文档，补充 Medusa Cloud CLI 登录、上下文切换、认证检查和版本查询的操作说明。",
+      "🔐 Medusa 查询、定时任务和事件订阅示例改用 ContainerRegistrationKeys 与 Modules 常量解析核心服务，减少字符串服务名带来的维护风险。",
+      "📚 Storefront 最佳实践文档统一将 Medusa MCP 表述更新为 Docs MCP，并修正 Query Guide、Request Query Config Middleware 等官方文档链接。",
+      "🔒 同步 skills-lock.json 中 building-with-medusa、learning-medusa、storefront-best-practices 以及新增技能的锁定哈希，保持技能清单与本地文档一致。",
+    ],
+    fixes: [
+      "🐛 修复 Medusa 示例中直接使用字符串解析 query、logger、product、order、notification 服务，容易与官方推荐容器注册键不一致的问题。",
+      "🐛 修复学习文档中的 Query Guide 链接仍指向旧的 module-links/query 路径，导致查阅官方资料时可能跳转到过期页面的问题。",
+      "🐛 修复 Storefront 技能文档中 MCP 命名不统一，容易把 Docs MCP 与旧 Medusa MCP 表述混淆的问题。",
+      "🐛 修复内部 Admin AI Agent 缺少完整项目级实施指南，后续开发容易遗漏认证、NDJSON 流式响应、共享会话模型和 MedusaExec 安全约束的问题。",
+      "🐛 修复 Medusa Cloud 认证与上下文命令缺少独立技能入口，排查云端登录状态和环境作用域时步骤不够集中清晰的问题。",
+    ],
+  },
+  {
     version: "v1.22.7",
     date: "2026-10-11 06:39:10 EDT",
     title: "🎁 组合套餐插件与商品详情选择器接入",

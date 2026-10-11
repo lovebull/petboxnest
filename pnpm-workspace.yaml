@@ -5,6 +5,7 @@ packages:
 overrides:
   "@types/react": "19.0.5"
   "@types/react-dom": "19.0.5"
+  "tsconfig-paths": "^4.2.0"
 
 allowBuilds:
   "@medusajs/telemetry": true
@@ -18,4 +19,4 @@ allowBuilds:
 
 patchedDependencies:
   '@easypayment/medusa-payment-paypal@1.2.8': patches/@easypayment__medusa-payment-paypal@1.2.8.patch
-  '@medusajs/loyalty-plugin@2.19.0': patches/@medusajs__loyalty-plugin@2.19.0.patch
+  '@medusajs/loyalty-plugin@2.21.2': patches/@medusajs__loyalty-plugin@2.21.2.patch

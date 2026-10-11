@@ -1,5 +1,6 @@
 import {
   authenticate,
+  configureStoreSearch,
   defineMiddlewares,
   validateAndTransformBody,
   validateAndTransformQuery,
@@ -376,6 +377,17 @@ export const GetReferralConversionsSchema = z.object({
 
 export default defineMiddlewares({
   routes: [
+    {
+      method: ["POST"],
+      matcher: "/store/search",
+      middlewares: [
+        configureStoreSearch({
+          allowed_indexes: {
+            product: true,
+          },
+        }),
+      ],
+    },
     {
       matcher: "/admin/product-supplier-sources",
       method: "GET",

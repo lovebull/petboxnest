@@ -8,6 +8,7 @@ import AccountButton, {
 } from "@modules/layout/components/account-button"
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
+import Search from "@modules/layout/components/search"
 
 export default async function Nav() {
   const regions = await listRegions().then(
@@ -65,13 +66,7 @@ export default async function Nav() {
           </div>
 
           <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-2 xsmall:gap-x-4">
-            {/* Top navigation search is intentionally disabled for now.
-            <ProductSearchForm
-              targetPath="/store"
-              variant="nav"
-              className="hidden medium:flex"
-            />
-            */}
+            <Search />
             <LocalizedClientLink
               href="/about-us"
               className="pbn-focus hidden rounded-lg py-3 hover:text-brand small:block"

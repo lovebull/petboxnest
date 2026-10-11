@@ -1,8 +1,8 @@
 diff --git a/.medusa/server/src/admin/index.mjs b/.medusa/server/src/admin/index.mjs
-index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc35c86a428 100644
+index 38b090d1b9ec46baba146465147b165adc43bd65..a18285f7a93a0bb14f9533f7e107f4c1404d08e6 100644
 --- a/.medusa/server/src/admin/index.mjs
 +++ b/.medusa/server/src/admin/index.mjs
-@@ -5796,6 +5796,10 @@ const GiftCardIcon = (props) => {
+@@ -5838,6 +5838,10 @@ const GiftCardIcon = (props) => {
      }
    );
  };
@@ -13,7 +13,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
  const GiftCardProductsSection = () => {
    const { products: giftCardProducts, count: count2 = 0 } = useProducts({
      is_giftcard: true
-@@ -5803,13 +5807,13 @@ const GiftCardProductsSection = () => {
+@@ -5845,13 +5849,13 @@ const GiftCardProductsSection = () => {
    const slicedProducts = giftCardProducts?.slice(0, 3) ?? [];
    return /* @__PURE__ */ jsxs(Container$1, { className: "p-0", children: [
      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
@@ -29,7 +29,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          }
        )
      ] }),
-@@ -5817,11 +5821,11 @@ const GiftCardProductsSection = () => {
+@@ -5859,11 +5863,11 @@ const GiftCardProductsSection = () => {
        NoRecords,
        {
          className: "px-10 py-4 h-[200px]",
@@ -44,7 +44,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          }
        }
      ),
-@@ -5839,7 +5843,7 @@ const GiftCardProductsSection = () => {
+@@ -5881,7 +5885,7 @@ const GiftCardProductsSection = () => {
        {
          to: "/gift-cards/gift-card-products",
          className: "text-ui-fg-muted text-sm px-6 py-4 flex items-center justify-center",
@@ -53,7 +53,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
        }
      )
    ] });
-@@ -5939,23 +5943,23 @@ const useGiftCardTableColumns = () => {
+@@ -5981,23 +5985,23 @@ const useGiftCardTableColumns = () => {
    return useMemo(() => {
      return [
        columnHelper$a.accessor("code", {
@@ -82,7 +82,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          cell: ({ row }) => {
            return formatAmount(row.original.value, row.original.currency_code);
          }
-@@ -5999,7 +6003,7 @@ const useCustomerFilters = () => {
+@@ -6041,7 +6045,7 @@ const useCustomerFilters = () => {
      return [
        filterHelper$2.accessor("customer_id", {
          type: "select",
@@ -91,7 +91,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          options: customerFilterOptions ?? []
        })
      ];
-@@ -6058,21 +6062,21 @@ function GiftCardsTable() {
+@@ -6100,21 +6104,21 @@ function GiftCardsTable() {
          isLoading: isPending,
          pageSize: PAGE_SIZE$6,
          rowCount: count2,
@@ -119,7 +119,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
              to: "create"
            }
          ]
-@@ -6098,7 +6102,7 @@ const GiftCardsPage = () => {
+@@ -6140,7 +6144,7 @@ const GiftCardsPage = () => {
    ] });
  };
  const config$3 = defineRouteConfig({
@@ -128,7 +128,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
    icon: GiftCardIcon
  });
  function setRef$2(ref, value) {
-@@ -22934,14 +22938,14 @@ const GiftCardCreateForm = ({
+@@ -22976,14 +22980,14 @@ const GiftCardCreateForm = ({
      return currencies[selectedCurrency.toUpperCase()];
    }, [selectedCurrency, currencies]);
    if (!currentCurrency) {
@@ -146,7 +146,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
        ] }),
        /* @__PURE__ */ jsx(Divider, { variant: "dashed" }),
        /* @__PURE__ */ jsxs(
-@@ -22951,8 +22955,8 @@ const GiftCardCreateForm = ({
+@@ -22993,8 +22997,8 @@ const GiftCardCreateForm = ({
            className: "grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2",
            children: [
              /* @__PURE__ */ jsxs("div", { children: [
@@ -157,7 +157,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
              ] }),
              /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-y-4", children: [
                /* @__PURE__ */ jsx(
-@@ -22962,7 +22966,7 @@ const GiftCardCreateForm = ({
+@@ -23004,7 +23008,7 @@ const GiftCardCreateForm = ({
                    name: "currency_code",
                    render: ({ field }) => {
                      return /* @__PURE__ */ jsxs(Form$2.Item, { className: "w-full", children: [
@@ -166,7 +166,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
                        /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
                          Combobox,
                          {
-@@ -22971,7 +22975,7 @@ const GiftCardCreateForm = ({
+@@ -23013,7 +23017,7 @@ const GiftCardCreateForm = ({
                            searchValue: currencySearchValue,
                            onSearchValueChange: setCurrencySearchValue,
                            options: currencyOptions,
@@ -175,7 +175,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
                          }
                        ) }),
                        /* @__PURE__ */ jsx(Form$2.ErrorMessage, {})
-@@ -22986,7 +22990,7 @@ const GiftCardCreateForm = ({
+@@ -23028,7 +23032,7 @@ const GiftCardCreateForm = ({
                    name: "value",
                    render: ({ field }) => {
                      return /* @__PURE__ */ jsxs(Form$2.Item, { className: "w-full", children: [
@@ -184,7 +184,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
                        /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
                          CurrencyInput$1,
                          {
-@@ -23017,7 +23021,7 @@ const GiftCardCreateForm = ({
+@@ -23059,7 +23063,7 @@ const GiftCardCreateForm = ({
                    name: "expires_at",
                    render: ({ field }) => {
                      return /* @__PURE__ */ jsxs(Form$2.Item, { children: [
@@ -193,7 +193,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
                        /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
                          DatePicker,
                          {
-@@ -23039,11 +23043,11 @@ const GiftCardCreateForm = ({
+@@ -23081,11 +23085,11 @@ const GiftCardCreateForm = ({
                    name: "note",
                    render: ({ field }) => {
                      return /* @__PURE__ */ jsxs(Form$2.Item, { className: "w-full", children: [
@@ -207,7 +207,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
                            ...field
                          }
                        ) }),
-@@ -23058,7 +23062,7 @@ const GiftCardCreateForm = ({
+@@ -23100,7 +23104,7 @@ const GiftCardCreateForm = ({
        )
      ] }) }) }),
      /* @__PURE__ */ jsxs(RouteFocusModal.Footer, { children: [
@@ -216,7 +216,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
        /* @__PURE__ */ jsx(
          Button,
          {
-@@ -23066,7 +23070,7 @@ const GiftCardCreateForm = ({
+@@ -23108,7 +23112,7 @@ const GiftCardCreateForm = ({
            size: "small",
            onClick: handleSubmit,
            disabled: isPending,
@@ -225,7 +225,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          }
        )
      ] })
-@@ -23075,8 +23079,8 @@ const GiftCardCreateForm = ({
+@@ -23117,8 +23121,8 @@ const GiftCardCreateForm = ({
  const GiftCardCreate = () => {
    const { store, isLoading } = useStore$2({});
    return /* @__PURE__ */ jsxs(RouteFocusModal, { children: [
@@ -236,7 +236,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
      !isLoading && /* @__PURE__ */ jsx(GiftCardCreateForm, { store })
    ] });
  };
-@@ -23139,19 +23143,19 @@ const useStoreCreditAccountTableColumns = () => {
+@@ -23181,19 +23185,19 @@ const useStoreCreditAccountTableColumns = () => {
    return useMemo(() => {
      return [
        columnHelper$9.accessor("currency_code", {
@@ -259,7 +259,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          cell: ({ row }) => {
            return formatAmount(
              row.original.balance,
-@@ -23160,7 +23164,7 @@ const useStoreCreditAccountTableColumns = () => {
+@@ -23202,7 +23206,7 @@ const useStoreCreditAccountTableColumns = () => {
          }
        }),
        columnHelper$9.accessor("credits", {
@@ -268,7 +268,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          cell: ({ row }) => {
            return formatAmount(
              row.original.credits,
-@@ -23169,7 +23173,7 @@ const useStoreCreditAccountTableColumns = () => {
+@@ -23211,7 +23215,7 @@ const useStoreCreditAccountTableColumns = () => {
          }
        }),
        columnHelper$9.accessor("debits", {
@@ -277,7 +277,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          cell: ({ row }) => {
            return formatAmount(
              row.original.debits,
-@@ -23178,7 +23182,7 @@ const useStoreCreditAccountTableColumns = () => {
+@@ -23220,7 +23224,7 @@ const useStoreCreditAccountTableColumns = () => {
          }
        }),
        columnHelper$9.accessor("created_at", {
@@ -286,7 +286,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          cell: ({ row }) => getRelativeDate(row.original.created_at)
        })
      ];
-@@ -23245,21 +23249,21 @@ function StoreCreditAccountsTable() {
+@@ -23287,21 +23291,21 @@ function StoreCreditAccountsTable() {
          pageSize: PAGE_SIZE$5,
          rowCount: count2,
          enableSearch: false,
@@ -314,7 +314,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
              to: "/store-credit-accounts/create"
            }
          ]
-@@ -23284,7 +23288,7 @@ const StoreCreditAccountsPage = () => {
+@@ -23326,7 +23330,7 @@ const StoreCreditAccountsPage = () => {
    ] });
  };
  const config$1 = defineRouteConfig({
@@ -323,7 +323,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
    icon: StoreCreditIcon
  });
  var isObject_1;
-@@ -23651,7 +23655,7 @@ const useComboboxData = ({
+@@ -23693,7 +23697,7 @@ const useComboboxData = ({
    };
  };
  const formSchema = z.object({
@@ -332,7 +332,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
    customer_id: z.string().optional()
  });
  const StoreCreditAccountCreateForm = () => {
-@@ -23670,7 +23674,7 @@ const StoreCreditAccountCreateForm = () => {
+@@ -23714,7 +23718,7 @@ const StoreCreditAccountCreateForm = () => {
      }
      await createStoreCreditAccount(data, {
        onSuccess: (data2) => {
@@ -341,7 +341,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          handleSuccess(`../${data2.store_credit_account.id}`);
        },
        onError: (error) => {
-@@ -23718,8 +23722,8 @@ const StoreCreditAccountCreateForm = () => {
+@@ -23763,8 +23767,8 @@ const StoreCreditAccountCreateForm = () => {
      /* @__PURE__ */ jsx(RouteFocusModal.Header, { children: /* @__PURE__ */ jsx("div", { className: "-my-2 w-full border-l" }) }),
      /* @__PURE__ */ jsx(RouteFocusModal.Body, { className: "size-full overflow-hidden", children: /* @__PURE__ */ jsx("div", { className: "flex flex-col items-center p-16", children: /* @__PURE__ */ jsxs("div", { className: "flex w-full max-w-[720px] flex-col gap-y-8", children: [
        /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
@@ -352,7 +352,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
        ] }),
        /* @__PURE__ */ jsxs("div", { className: "flex gap-x-4", children: [
          /* @__PURE__ */ jsx(
-@@ -23729,7 +23733,7 @@ const StoreCreditAccountCreateForm = () => {
+@@ -23774,7 +23778,7 @@ const StoreCreditAccountCreateForm = () => {
              name: "currency_code",
              render: ({ field }) => {
                return /* @__PURE__ */ jsxs(Form$2.Item, { className: "w-full", children: [
@@ -361,7 +361,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
                  /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
                    Combobox,
                    {
-@@ -23738,7 +23742,7 @@ const StoreCreditAccountCreateForm = () => {
+@@ -23783,7 +23787,7 @@ const StoreCreditAccountCreateForm = () => {
                      searchValue: currencySearchValue,
                      onSearchValueChange: setCurrencySearchValue,
                      options: currencyOptions,
@@ -370,7 +370,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
                    }
                  ) }),
                  /* @__PURE__ */ jsx(Form$2.ErrorMessage, {})
-@@ -23753,7 +23757,7 @@ const StoreCreditAccountCreateForm = () => {
+@@ -23798,7 +23802,7 @@ const StoreCreditAccountCreateForm = () => {
              name: "customer_id",
              render: ({ field }) => {
                return /* @__PURE__ */ jsxs(Form$2.Item, { className: "w-full", children: [
@@ -379,7 +379,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
                  /* @__PURE__ */ jsx(Form$2.Control, { children: /* @__PURE__ */ jsx(
                    Combobox,
                    {
-@@ -23762,10 +23766,10 @@ const StoreCreditAccountCreateForm = () => {
+@@ -23807,10 +23811,10 @@ const StoreCreditAccountCreateForm = () => {
                      searchValue,
                      onSearchValueChange,
                      options: customerOptions,
@@ -392,7 +392,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
                    }
                  ) }),
                  /* @__PURE__ */ jsx(Form$2.ErrorMessage, {})
-@@ -23776,7 +23780,7 @@ const StoreCreditAccountCreateForm = () => {
+@@ -23821,7 +23825,7 @@ const StoreCreditAccountCreateForm = () => {
        ] })
      ] }) }) }),
      /* @__PURE__ */ jsxs(RouteFocusModal.Footer, { children: [
@@ -401,7 +401,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
        /* @__PURE__ */ jsx(
          Button,
          {
-@@ -23784,7 +23788,7 @@ const StoreCreditAccountCreateForm = () => {
+@@ -23829,7 +23833,7 @@ const StoreCreditAccountCreateForm = () => {
            size: "small",
            onClick: handleSubmit,
            disabled: isPending,
@@ -410,7 +410,7 @@ index 12900ceafc792572318dac68eff9ae2882c6f952..f13ed1313538f02e3356bf0e2c005bc3
          }
        )
      ] })
-@@ -23792,8 +23796,8 @@ const StoreCreditAccountCreateForm = () => {
+@@ -23837,8 +23841,8 @@ const StoreCreditAccountCreateForm = () => {
  };
  const StoreCreditAccountCreate = () => {
    return /* @__PURE__ */ jsxs(RouteFocusModal, { children: [

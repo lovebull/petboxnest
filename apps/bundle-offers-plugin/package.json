@@ -34,15 +34,15 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@medusajs/admin-sdk": "2.19.0",
-    "@medusajs/admin-shared": "2.19.0",
-    "@medusajs/cli": "2.19.0",
-    "@medusajs/dashboard": "2.19.0",
-    "@medusajs/framework": "2.19.0",
-    "@medusajs/icons": "2.19.0",
-    "@medusajs/js-sdk": "2.19.0",
-    "@medusajs/medusa": "2.19.0",
-    "@medusajs/ui": "4.2.1",
+    "@medusajs/admin-sdk": "2.21.2",
+    "@medusajs/admin-shared": "2.21.2",
+    "@medusajs/cli": "2.21.2",
+    "@medusajs/dashboard": "2.21.2",
+    "@medusajs/framework": "2.21.2",
+    "@medusajs/icons": "2.21.2",
+    "@medusajs/js-sdk": "2.21.2",
+    "@medusajs/medusa": "2.21.2",
+    "@medusajs/ui": "4.2.6",
     "@tanstack/react-query": "5.64.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -50,15 +50,15 @@
     "zod": "4.2.0"
   },
   "devDependencies": {
-    "@medusajs/admin-sdk": "2.19.0",
-    "@medusajs/admin-shared": "2.19.0",
-    "@medusajs/cli": "2.19.0",
-    "@medusajs/dashboard": "2.19.0",
-    "@medusajs/framework": "2.19.0",
-    "@medusajs/icons": "2.19.0",
-    "@medusajs/js-sdk": "2.19.0",
-    "@medusajs/medusa": "2.19.0",
-    "@medusajs/ui": "4.2.1",
+    "@medusajs/admin-sdk": "2.21.2",
+    "@medusajs/admin-shared": "2.21.2",
+    "@medusajs/cli": "2.21.2",
+    "@medusajs/dashboard": "2.21.2",
+    "@medusajs/framework": "2.21.2",
+    "@medusajs/icons": "2.21.2",
+    "@medusajs/js-sdk": "2.21.2",
+    "@medusajs/medusa": "2.21.2",
+    "@medusajs/ui": "4.2.6",
     "@tanstack/react-query": "5.64.2",
     "@types/node": "^20.12.11",
     "@types/react": "^18.3.2",
@@ -70,7 +70,7 @@
     "zod": "4.2.0"
   },
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": ">=22.22.0"
   },
   "packageManager": "pnpm@11.5.2"
 }

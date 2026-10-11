@@ -4,6 +4,31 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.9",
+    date: "2026-10-11 12:57:28 EDT",
+    title: "🔎 Storefront 搜索与 Medusa 2.21.2 升级",
+    items: [
+      "🔎 Medusa Backend 新增 product 搜索索引，写入商品标题、描述、分类、标签、SKU、选项值、宠物类型和多币种价格字段。",
+      "🧭 Storefront 导航栏新增搜索抽屉，支持即时搜索商品、展示商品缩略图，并可跳转商品详情或查看全部结果。",
+      "🛍️ 商品列表、分类页和集合页的搜索、宠物类型、价格区间、选项值和价格排序改用 Store Search 查询商品 ID 后再 hydrate 完整商品数据。",
+      "⚙️ Backend 中间件启用 /store/search 的 product 索引查询，并接入 @medusajs/instantsearch-adapter、instantsearch.js 和 react-instantsearch 依赖。",
+      "⬆️ Medusa 相关依赖升级到 2.21.2，Next.js 升级到 15.5.24，并同步 pnpm lockfile、workspace override 和本地 bundle offers 插件 peer 依赖。",
+      "🎁 礼品卡与 Store Credit 的 loyalty plugin 双语补丁迁移到 @medusajs/loyalty-plugin@2.21.2，保留中文后台运营文案。",
+      "💳 支付返回接口保留 payment_intent、payment_intent_client_secret 和 redirect_status 参数，便于支付失败后结账页继续识别 Stripe 返回状态。",
+      "🖼️ Storefront 图片配置新增允许的图片质量档位，商品搜索缩略图和页面图片可使用更明确的优化质量。",
+    ],
+    fixes: [
+      "🐛 修复商品列表依赖全量读取后在前端过滤、排序和分页，商品数量增长后容易变慢且分页计数不稳定的问题。",
+      "🐛 修复导航栏缺少可用商品搜索入口，用户需要先进入 Store 页面才能查找商品的问题。",
+      "🐛 修复价格排序、价格区间、宠物类型和选项筛选无法统一交给后端搜索索引处理，筛选体验和分页结果容易不一致的问题。",
+      "🐛 修复商品、分类和集合页面 generateStaticParams 预生成大量路径，生产构建时容易被商品和地区数量拖慢的问题。",
+      "🐛 修复支付失败跳回 checkout 时丢失 Stripe redirect 参数，前端难以判断原始支付状态的问题。",
+      "🐛 修复 Medusa 2.21.2 升级后 loyalty plugin 仍指向旧 2.19.0 patch，可能导致补丁版本和依赖版本不匹配的问题。",
+      "🐛 修复购物车下拉计时器使用 NodeJS.Timer 类型，在 Storefront 浏览器/Next 类型环境下可能产生类型不一致的问题。",
+      "🐛 修复未选择变体时 Add to cart 按钮在单变体商品上仍可能显示不够明确，统一提示 Select options。",
+    ],
+  },
+  {
     version: "v1.22.8",
     date: "2026-10-11 07:46:09 EDT",
     title: "🧠 Agent Skills 文档与 Medusa 指南同步",

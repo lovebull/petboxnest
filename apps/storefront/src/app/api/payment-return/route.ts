@@ -53,6 +53,18 @@ export async function GET(req: NextRequest) {
       payment_error: "payment_failed",
     })
 
+    for (const key of [
+      "payment_intent",
+      "payment_intent_client_secret",
+      "redirect_status",
+    ]) {
+      const value = searchParams.get(key)
+
+      if (value) {
+        params.set(key, value)
+      }
+    }
+
     return NextResponse.redirect(`${origin}${prefix}/checkout?${params}`)
   }
 

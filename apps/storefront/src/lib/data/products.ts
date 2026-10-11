@@ -1,12 +1,13 @@
 "use server"
 
 import { sdk } from "@lib/config"
-import {
-  CatalogFilters,
-  filterCatalogProducts,
-} from "@lib/util/catalog-filters"
+import { CatalogFilters, isProductInStock } from "@lib/util/catalog-filters"
 import { OptionValueIds } from "@lib/util/product-option-filters"
-import { sortProducts } from "@lib/util/sort-products"
+import type {
+  SearchFilters,
+  SearchQuery,
+  SearchResult,
+} from "@medusajs/instantsearch-adapter"
 import { HttpTypes } from "@medusajs/types"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
@@ -20,8 +21,16 @@ type ProductListQueryParams = (HttpTypes.FindParams &
 
 const PRODUCT_BATCH_LIMIT = 100
 
-const hasCatalogFilters = (filters?: CatalogFilters) =>
-  Boolean(filters?.pet || filters?.price || filters?.availability)
+type ProductSearchDocument = {
+  id?: string | null
+  handle?: string | null
+}
+
+type ProductSearchResponse = {
+  results: SearchResult<ProductSearchDocument>[]
+}
+
+const PRODUCT_INDEX_NAME = "product"
 
 const withOptionFilters = (
   queryParams: ProductListQueryParams | undefined,
@@ -35,42 +44,6 @@ const withOptionFilters = (
     ...queryParams,
     ...(optionFilters.length ? { option_value_id: optionFilters } : {}),
   }
-}
-
-const listAllProducts = async ({
-  queryParams,
-  countryCode,
-}: {
-  queryParams?: ProductListQueryParams
-  countryCode: string
-}) => {
-  const products: HttpTypes.StoreProduct[] = []
-  let pageParam = 1
-  let totalCount = 0
-
-  while (true) {
-    const {
-      response: { products: batch, count },
-    } = await listProducts({
-      pageParam,
-      queryParams: {
-        ...queryParams,
-        limit: PRODUCT_BATCH_LIMIT,
-      },
-      countryCode,
-    })
-
-    totalCount = count
-    products.push(...batch)
-
-    if (!batch.length || products.length >= count) {
-      break
-    }
-
-    pageParam += 1
-  }
-
-  return { products, count: totalCount }
 }
 
 export const listProducts = async ({
@@ -156,11 +129,169 @@ export const listProducts = async ({
     })
 }
 
+const asArray = (value: string | string[] | undefined) =>
+  !value ? [] : Array.isArray(value) ? value : [value]
+
+const buildSearchFilters = ({
+  queryParams,
+  optionValueIds,
+  filters,
+  searchQuery,
+  currencyCode,
+}: {
+  queryParams?: ProductListQueryParams
+  optionValueIds?: OptionValueIds
+  filters?: CatalogFilters
+  searchQuery?: string
+  currencyCode: string
+}): SearchFilters | undefined => {
+  const constraints: SearchFilters[] = []
+  const productIds = asArray(queryParams?.id)
+  const collectionIds = asArray(queryParams?.collection_id)
+  const categoryIds = asArray(queryParams?.category_id)
+
+  if (productIds.length) {
+    constraints.push({ id: { $in: productIds } })
+  }
+
+  if (collectionIds.length) {
+    constraints.push({ collection_id: { $in: collectionIds } })
+  }
+
+  if (categoryIds.length) {
+    constraints.push({ category_ids: { $in: categoryIds } })
+  }
+
+  if (optionValueIds?.length) {
+    constraints.push(
+      ...optionValueIds.map((id) => ({ option_value_ids: { $eq: id } }))
+    )
+  }
+
+  if (filters?.pet) {
+    constraints.push({ pet_types: { $eq: filters.pet } })
+  }
+
+  if (filters?.price) {
+    const priceField = `min_price_${currencyCode.toLowerCase()}`
+    const ranges = {
+      under_25: { $lt: 25 },
+      "25_50": { $gte: 25, $lt: 50 },
+      "50_100": { $gte: 50, $lt: 100 },
+      over_100: { $gte: 100 },
+    } as const
+
+    constraints.push({ [priceField]: ranges[filters.price] })
+  }
+
+  const combined =
+    constraints.length === 1
+      ? constraints[0]
+      : constraints.length > 1
+      ? { $and: constraints }
+      : undefined
+
+  return searchQuery
+    ? { ...(combined || {}), q: searchQuery }
+    : combined
+}
+
+const searchProductIds = async ({
+  skip,
+  take,
+  sortBy,
+  currencyCode,
+  queryParams,
+  optionValueIds,
+  filters,
+  searchQuery,
+}: {
+  skip: number
+  take: number
+  sortBy: SortOptions
+  currencyCode: string
+  queryParams?: ProductListQueryParams
+  optionValueIds?: OptionValueIds
+  filters?: CatalogFilters
+  searchQuery?: string
+}) => {
+  const priceField = `min_price_${currencyCode.toLowerCase()}`
+  const order =
+    sortBy === "price_asc"
+      ? { [priceField]: "ASC" as const }
+      : sortBy === "price_desc"
+      ? { [priceField]: "DESC" as const }
+      : { created_at: "DESC" as const }
+
+  const query: SearchQuery = {
+    entity: PRODUCT_INDEX_NAME,
+    filters: buildSearchFilters({
+      queryParams,
+      optionValueIds,
+      filters,
+      searchQuery,
+      currencyCode,
+    }),
+    pagination: { skip, take, order },
+    search_options: { match_strategy: "last" },
+  }
+
+  const { results } = await sdk.client.fetch<ProductSearchResponse>(
+    "/store/search",
+    {
+      method: "POST",
+      body: { queries: [query] },
+      cache: "no-store",
+    }
+  )
+  const result = results[0]
+
+  return {
+    ids: (result?.hits || []).map((hit) => hit.id),
+    count: result?.metadata.count ?? result?.hits.length ?? 0,
+  }
+}
+
+const listProductsByIds = async ({
+  ids,
+  countryCode,
+}: {
+  ids: string[]
+  countryCode: string
+}) => {
+  if (!ids.length) {
+    return []
+  }
+
+  const products: HttpTypes.StoreProduct[] = []
+
+  for (let offset = 0; offset < ids.length; offset += PRODUCT_BATCH_LIMIT) {
+    const batchIds = ids.slice(offset, offset + PRODUCT_BATCH_LIMIT)
+    const { response } = await listProducts({
+      countryCode,
+      cache: "no-store",
+      queryParams: {
+        id: batchIds,
+        limit: batchIds.length,
+      },
+    })
+
+    products.push(...response.products)
+  }
+
+  const position = new Map(ids.map((id, index) => [id, index]))
+
+  return products.sort(
+    (left, right) =>
+      (position.get(left.id) ?? Number.MAX_SAFE_INTEGER) -
+      (position.get(right.id) ?? Number.MAX_SAFE_INTEGER)
+  )
+}
+
 /**
- * Lists products with API-backed pagination whenever the selected sort/filter
- * can be handled by Medusa. Custom catalog filters and price sorting require a
- * full paginated read because Medusa 2.19's Store Product List endpoint doesn't
- * expose those storefront-specific predicates as database filters.
+ * Uses Medusa Search for query, pet, price, option and sort operations, then
+ * hydrates the matching IDs through the Store Product API so the existing
+ * PetBoxNest product cards keep receiving complete product data.
  */
 export const listProductsWithSort = async ({
   page = 1,
@@ -185,48 +316,94 @@ export const listProductsWithSort = async ({
 }> => {
   const limit = queryParams?.limit || 12
   const pageParam = Math.max(page, 1)
-  const queryWithOptionFilters = withOptionFilters(queryParams, optionValueIds)
-  const requiresFullCatalogPass =
+  const requiresSearch =
     sortBy === "price_asc" ||
     sortBy === "price_desc" ||
-    hasCatalogFilters(filters) ||
+    Boolean(filters?.pet || filters?.price || filters?.availability) ||
+    Boolean(optionValueIds?.length) ||
     Boolean(searchQuery)
 
-  if (!requiresFullCatalogPass) {
+  if (!requiresSearch) {
     return listProducts({
       pageParam,
       queryParams: {
-        ...queryWithOptionFilters,
-        order:
-          sortBy === "created_at" ? "-created_at" : queryWithOptionFilters.order,
+        ...withOptionFilters(queryParams, optionValueIds),
+        order: "-created_at",
         limit,
       },
       countryCode,
     })
   }
 
-  const { products } = await listAllProducts({
-    queryParams: queryWithOptionFilters,
-    countryCode,
-  })
+  const region = await getRegion(countryCode)
 
-  const filteredProducts = filterCatalogProducts(products, filters, searchQuery)
-  const sortedProducts = sortProducts(filteredProducts, sortBy)
+  if (!region) {
+    return {
+      response: { products: [], count: 0 },
+      nextPage: null,
+      queryParams,
+    }
+  }
 
   const offset = (pageParam - 1) * limit
+  const searchArgs = {
+    sortBy,
+    currencyCode: region.currency_code,
+    queryParams,
+    optionValueIds,
+    filters,
+    searchQuery,
+  }
 
-  const filteredCount = filteredProducts.length
+  if (!filters?.availability) {
+    const result = await searchProductIds({
+      ...searchArgs,
+      skip: offset,
+      take: limit,
+    })
+    const products = await listProductsByIds({
+      ids: result.ids,
+      countryCode,
+    })
 
-  const nextPage = filteredCount > offset + limit ? pageParam + 1 : null
+    return {
+      response: { products, count: result.count },
+      nextPage: result.count > offset + limit ? pageParam + 1 : null,
+      queryParams,
+    }
+  }
 
-  const paginatedProducts = sortedProducts.slice(offset, offset + limit)
+  const allIds: string[] = []
+  let searchCount = 0
+
+  do {
+    const result = await searchProductIds({
+      ...searchArgs,
+      skip: allIds.length,
+      take: PRODUCT_BATCH_LIMIT,
+    })
+    searchCount = result.count
+    allIds.push(...result.ids)
+
+    if (!result.ids.length) {
+      break
+    }
+  } while (allIds.length < searchCount)
+
+  const hydratedProducts = await listProductsByIds({
+    ids: allIds,
+    countryCode,
+  })
+  const availableProducts = hydratedProducts.filter(isProductInStock)
+  const products = availableProducts.slice(offset, offset + limit)
+  const count = availableProducts.length
 
   return {
     response: {
-      products: paginatedProducts,
-      count: filteredCount,
+      products,
+      count,
     },
-    nextPage,
+    nextPage: count > offset + limit ? pageParam + 1 : null,
     queryParams,
   }
 }

@@ -4,6 +4,24 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.13",
+    date: "2026-10-12 08:20:32 EDT",
+    title: "🧭 Medusa Admin 侧栏导航顺序优化",
+    items: [
+      "🧭 统一多个 Medusa Admin 自定义页面的侧栏双语标签，让菜单同时展示中文业务名称和英文短名称。",
+      "📌 调整媒体库、套餐优惠、产品评论、缺货通知、弃购恢复、售后服务、采购管理、采购来源、邮件通知和前台错误页面的 rank 顺序。",
+      "🎁 loyalty plugin 礼品卡与商店信用菜单补充双语标签，并加入固定 rank，确保与自定义运营菜单一起稳定排序。",
+      "📦 同步 @medusajs/loyalty-plugin@2.21.2 patch hash 与 pnpm lockfile，保持补丁内容和安装校验一致。",
+    ],
+    fixes: [
+      "🐛 修复 Admin 侧栏自定义页面排序不集中，运营常用入口分散在不同位置的问题。",
+      "🐛 修复部分页面只有中文或英文长标题，侧栏扫描效率低、不同插件菜单命名风格不一致的问题。",
+      "🐛 修复 Gift Cards 和 Store Credits 来自 loyalty plugin 时缺少 rank，可能被插入到不可预期位置的问题。",
+      "🐛 修复礼品卡和商店信用菜单双语格式与其他后台运营页面不一致的问题。",
+      "🐛 修复 loyalty plugin patch 内容更新后 lockfile patch hash 不同步，pnpm install 可能出现补丁校验差异的问题。",
+    ],
+  },
+  {
     version: "v1.22.12",
     date: "2026-10-12 02:00:39 EDT",
     title: "🏭 Medusa 采购管理插件接入",

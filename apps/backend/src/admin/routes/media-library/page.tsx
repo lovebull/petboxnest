@@ -403,9 +403,9 @@ const MediaLibraryPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "媒体库",
+  label: "媒体库 / Media",
   icon: Images,
-  rank: 18,
+  rank: 10,
 })
 
 export default MediaLibraryPage

@@ -119,13 +119,15 @@ index 38b090d1b9ec46baba146465147b165adc43bd65..a18285f7a93a0bb14f9533f7e107f4c1
              to: "create"
            }
          ]
-@@ -6140,7 +6144,7 @@ const GiftCardsPage = () => {
+@@ -6140,7 +6144,8 @@ const GiftCardsPage = () => {
    ] });
  };
  const config$3 = defineRouteConfig({
 -  label: "Gift Cards",
-+  label: "礼品卡 Gift Cards",
-   icon: GiftCardIcon
++  label: "礼品卡 / Gift Cards",
+-  icon: GiftCardIcon
++  icon: GiftCardIcon,
++  rank: 70
  });
  function setRef$2(ref, value) {
 @@ -22976,14 +22980,14 @@ const GiftCardCreateForm = ({
@@ -314,13 +316,15 @@ index 38b090d1b9ec46baba146465147b165adc43bd65..a18285f7a93a0bb14f9533f7e107f4c1
              to: "/store-credit-accounts/create"
            }
          ]
-@@ -23326,7 +23330,7 @@ const StoreCreditAccountsPage = () => {
+@@ -23326,7 +23330,8 @@ const StoreCreditAccountsPage = () => {
    ] });
  };
  const config$1 = defineRouteConfig({
 -  label: "Store Credits",
-+  label: "商店信用 Store Credits",
-   icon: StoreCreditIcon
++  label: "商店信用 / Credits",
+-  icon: StoreCreditIcon
++  icon: StoreCreditIcon,
++  rank: 80
  });
  var isObject_1;
 @@ -23693,7 +23697,7 @@ const useComboboxData = ({
@@ -421,3 +425,23 @@ index 38b090d1b9ec46baba146465147b165adc43bd65..a18285f7a93a0bb14f9533f7e107f4c1
      /* @__PURE__ */ jsx(StoreCreditAccountCreateForm, {})
    ] });
  };
+@@ -42937,17 +42943,17 @@ const menuItemModule = {
+   menuItems: [
+     {
+       label: config$3.label,
+       icon: config$3.icon,
+       path: "/gift-cards",
+       nested: void 0,
+-      rank: void 0,
++      rank: 70,
+       translationNs: void 0
+     },
+     {
+       label: config$1.label,
+       icon: config$1.icon,
+       path: "/store-credit-accounts",
+       nested: void 0,
+-      rank: void 0,
++      rank: 80,
+       translationNs: void 0
+     },

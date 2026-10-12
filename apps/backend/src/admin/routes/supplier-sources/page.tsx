@@ -531,9 +531,9 @@ const SupplierSourcesPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "采购供应商 / Supplier Sources",
+  label: "采购来源 / Sources",
   icon: BuildingStorefront,
-  rank: 22,
+  rank: 100,
 })
 
 export default SupplierSourcesPage

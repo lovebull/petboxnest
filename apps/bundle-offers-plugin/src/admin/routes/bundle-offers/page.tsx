@@ -77,5 +77,5 @@ const BundleOffersPage = () => {
   )
 }
 
-export const config = defineRouteConfig({ label: "套餐管理 / Bundle Offers", icon: BuildingStorefront })
+export const config = defineRouteConfig({ label: "套餐优惠 / Bundles", icon: BuildingStorefront, rank: 20 })
 export default BundleOffersPage

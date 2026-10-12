@@ -198,7 +198,7 @@ const ProcurementPage = () => {
 export const config = defineRouteConfig({
   label: "采购管理 / Procurement",
   icon: BuildingStorefront,
-  rank: 40,
+  rank: 90,
 })
 
 export default ProcurementPage

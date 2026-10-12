@@ -594,9 +594,9 @@ function Detail({ label, value }: { label: string; value: string }) {
 }
 
 export const config = defineRouteConfig({
-  label: "前台错误 / Storefront errors",
+  label: "前台错误 / Errors",
   icon: ChatBubbleLeftRight,
-  rank: 60,
+  rank: 120,
 });
 
 export default CheckoutErrorsPage;

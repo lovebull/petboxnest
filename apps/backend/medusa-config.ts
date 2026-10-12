@@ -45,6 +45,10 @@ module.exports = defineConfig({
   },
   plugins: [
     {
+      resolve: "@petboxnest/medusa-plugin-sales-analytics",
+      options: {},
+    },
+    {
       resolve: "@petboxnest/medusa-plugin-procurement",
       options: {},
     },

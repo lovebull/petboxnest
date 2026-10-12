@@ -4,6 +4,32 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.14",
+    date: "2026-10-12 10:27:12 EDT",
+    title: "📊 Medusa 销售分析插件接入",
+    items: [
+      "📊 新增 @petboxnest/medusa-plugin-sales-analytics 本地 Medusa 插件，并在 Backend medusa-config.ts 中注册启用。",
+      "🧱 插件新增 salesAnalytics 模块，包含订单销售事实、每日销售指标、客户销售汇总和同步状态数据模型。",
+      "🗃️ 新增销售分析数据库迁移，创建 pbn_sales_order_fact、pbn_sales_daily_metric、pbn_sales_customer_fact 和 pbn_sales_sync_state 表及索引。",
+      "🔄 新增订单销售投影同步 workflow，可从 Medusa 订单读取销售额、折扣、退款、发货状态、售出件数和回头客信息。",
+      "♻️ 新增历史销售数据重建 workflow、Admin 手动重建接口和每日定时对账任务，支持重新生成销售分析数据。",
+      "📡 新增订单与退款事件订阅器，在订单创建、更新、取消、发货、退货、索赔、换货和退款后自动同步销售事实表。",
+      "📈 Medusa Admin 新增销售分析页面，支持日期范围、币种筛选、7/30/90 天快捷筛选、销售趋势图、核心指标卡和订单明细分页。",
+      "🔐 新增 Admin API 查询校验中间件，统一校验销售分析日期、币种、分页和发货状态筛选参数。",
+      "📦 Backend package 和 pnpm lockfile 同步加入 @petboxnest/medusa-plugin-sales-analytics workspace 依赖。",
+    ],
+    fixes: [
+      "🐛 修复后台缺少统一销售分析入口，只能从订单列表人工汇总销售额、退款和发货趋势的问题。",
+      "🐛 修复订单更新、退款、退货和发货后销售指标无法自动同步，统计结果容易滞后的问题。",
+      "🐛 修复历史订单缺少可手动重建的销售分析投影，新增插件后无法一次性补齐旧数据的问题。",
+      "🐛 修复销售额、折扣、退款、净销售额、总销售额和售出件数缺少独立事实表，跨时间范围查询效率和一致性不足的问题。",
+      "🐛 修复回头客、客户生命周期销售额和客户数量缺少汇总模型，运营无法快速判断复购表现的问题。",
+      "🐛 修复多币种订单混合统计时容易口径不清的问题，销售分析接口按币种输出可用币种、汇总和趋势序列。",
+      "🐛 修复 Admin 页面缺少同步状态反馈，历史重建成功或失败后运营无法直接确认处理进度的问题。",
+      "🐛 修复 sales analytics 插件接入后 workspace 依赖和 lockfile 不同步，可能导致后端插件解析失败的问题。",
+    ],
+  },
+  {
     version: "v1.22.13",
     date: "2026-10-12 08:20:32 EDT",
     title: "🧭 Medusa Admin 侧栏导航顺序优化",

@@ -28,9 +28,9 @@ import { ExternalImageUrlField as ExternalImageUrlField_6347326069c7cc612e7be63a
 import { ContactSubmissionActionsCell as ContactSubmissionActionsCell_73ecc835f719ee8003c9c471ba73c54d } from '../../../admin/components/ContactSubmissionActions'
 import { ContactSubmissionActionsField as ContactSubmissionActionsField_73ecc835f719ee8003c9c471ba73c54d } from '../../../admin/components/ContactSubmissionActions'
 import { WhatsNewNavLink as WhatsNewNavLink_0ea4c6b38bdf58c4b1c95fee3f2dc334 } from '../../../admin/components/WhatsNewNavLink'
-import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { WhatsNewView as WhatsNewView_9fb96533aeee27d19eea7a730016cbb7 } from '../../../admin/views/WhatsNew'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 /** @type import('payload').ImportMap */
 export const importMap = {
@@ -64,7 +64,7 @@ export const importMap = {
   "/admin/components/ContactSubmissionActions#ContactSubmissionActionsCell": ContactSubmissionActionsCell_73ecc835f719ee8003c9c471ba73c54d,
   "/admin/components/ContactSubmissionActions#ContactSubmissionActionsField": ContactSubmissionActionsField_73ecc835f719ee8003c9c471ba73c54d,
   "/admin/components/WhatsNewNavLink#WhatsNewNavLink": WhatsNewNavLink_0ea4c6b38bdf58c4b1c95fee3f2dc334,
-  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "/admin/views/WhatsNew#WhatsNewView": WhatsNewView_9fb96533aeee27d19eea7a730016cbb7,
-  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

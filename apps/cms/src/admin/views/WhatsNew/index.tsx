@@ -4,6 +4,28 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.10",
+    date: "2026-10-11 20:47:17 EDT",
+    title: "🛡️ Payload CMS 3.90.2 安全升级",
+    items: [
+      "🛡️ Payload CMS 依赖升级到 3.90.2，覆盖 db-postgres、next、richtext-lexical、storage-s3、translations、ui 和 payload 主包。",
+      "⬆️ CMS 运行时同步升级 Next.js 16.3.8、React 19.2.6、React DOM 19.2.6 和 sharp 0.35.5，并更新 pnpm lockfile。",
+      "🗃️ 新增 Payload 3.90.2 安全升级迁移，补充 users.reset_password_requested_at 与 media._objectkey 字段。",
+      "🧩 迁移脚本继续保护 product_enhancements_image_blocks 的 image_source、image_url 和 image_alt 字段，避免重复迁移或字段类型不一致。",
+      "🧬 同步 Payload 生成类型，UsersSelect 增加 resetPasswordRequestedAt，Media/MediaSelect 增加 _objectKey。",
+      "🗺️ 更新 Payload Admin importMap，保持 WhatsNewView、CollectionCards 和 S3ClientUploadHandler 在新版生成顺序下可正常解析。",
+      "⚙️ CMS TypeScript 配置切换到 react-jsx，并纳入 .next/dev/types 路径类型，适配新版 Next 开发类型生成。",
+    ],
+    fixes: [
+      "🐛 修复 Payload 3.88.0 版本停留在旧安全补丁线，CMS 后台依赖无法获得 3.90.2 修复的问题。",
+      "🐛 修复升级后用户重置密码请求时间字段缺失，可能导致 Payload 新版用户类型和数据库结构不一致的问题。",
+      "🐛 修复 S3 存储对象键字段缺失，媒体资源在新版 storage-s3 类型中无法完整表达 _objectKey 的问题。",
+      "🐛 修复 product enhancement 图片块迁移重复执行时 enum 或字段已存在可能导致迁移失败的问题。",
+      "🐛 修复 Next 16 开发模式生成的 .next/dev/types 未纳入 tsconfig，CMS 类型检查可能找不到 routes/root params 类型的问题。",
+      "🐛 修复 importMap 中 Payload 生成项顺序变化后，S3 上传处理器和 Admin 自定义视图映射容易不同步的问题。",
+    ],
+  },
+  {
     version: "v1.22.9",
     date: "2026-10-11 12:57:28 EDT",
     title: "🔎 Storefront 搜索与 Medusa 2.21.2 升级",

@@ -4,6 +4,33 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.12",
+    date: "2026-10-12 02:00:39 EDT",
+    title: "🏭 Medusa 采购管理插件接入",
+    items: [
+      "🏭 新增 @petboxnest/medusa-plugin-procurement 本地 Medusa 插件，并在 Backend medusa-config.ts 中注册启用。",
+      "🗂️ 插件新增 procurement 模块，包含供应商、采购订单、采购明细、付款记录、收货单、收货明细和审计日志数据模型。",
+      "🧾 新增采购模块数据库迁移，创建 pbn_procurement_supplier、pbn_procurement_order、pbn_procurement_item、pbn_procurement_payment、pbn_procurement_receipt、pbn_procurement_receipt_item 和 pbn_procurement_audit 表及索引。",
+      "🔄 新增供应商保存、采购单保存、采购单状态流转、记录付款和记录收货 workflows，并带有回滚补偿和审计日志写入。",
+      "🛡️ 新增 Admin API 校验中间件，覆盖采购单、供应商、付款、收货、状态变更和统计查询的请求体验证。",
+      "📋 Medusa Admin 新增采购管理页面，可搜索、筛选、分页查看采购单，查看采购金额摘要，并导出当前页 CSV。",
+      "🤝 Medusa Admin 新增供应商管理页面，可维护供应商联系信息、1688/淘宝/京东采购地址、默认币种和付款条件。",
+      "📦 采购单详情页支持编辑草稿、推进状态、记录付款、记录收货、查看付款记录、收货记录、金额汇总、交付信息和操作审计。",
+      "📊 新增采购统计页，支持按日期查看采购总额、已付款、未付款、平均采购单、供应商排行、月度趋势和原始币种汇总。",
+      "📦 Backend package 和 pnpm lockfile 同步加入 @petboxnest/medusa-plugin-procurement workspace 依赖。",
+    ],
+    fixes: [
+      "🐛 修复采购流程只能依赖商品采购来源链接，缺少独立采购订单、付款、收货和审计闭环的问题。",
+      "🐛 修复供应商资料分散在商品或人工表格中，无法在 Medusa Admin 内集中维护联系人、采购地址和付款条件的问题。",
+      "🐛 修复采购单金额、币种、汇率、运费、税费、折扣和其他费用缺少统一计算与基础币种统计的问题。",
+      "🐛 修复采购单状态缺少受控流转，草稿、已下单、部分收货、已收货、已取消之间容易被人工误改的问题。",
+      "🐛 修复付款记录可能超过采购单未付款金额，或使用错误币种记录付款的问题。",
+      "🐛 修复收货数量可能超过采购数量，且部分收货与完整收货状态无法自动同步的问题。",
+      "🐛 修复采购操作缺少审计日志，无法追踪供应商、采购单、付款和收货变更来源的问题。",
+      "🐛 修复后台运营缺少采购统计视图，难以按供应商、月份和币种快速评估采购成本的问题。",
+    ],
+  },
+  {
     version: "v1.22.11",
     date: "2026-10-11 21:36:53 EDT",
     title: "📦 pnpm 依赖提升规则补充",

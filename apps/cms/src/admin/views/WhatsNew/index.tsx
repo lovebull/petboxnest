@@ -4,6 +4,21 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.11",
+    date: "2026-10-11 21:36:53 EDT",
+    title: "📦 pnpm 依赖提升规则补充",
+    items: [
+      "📦 .npmrc 新增 public-hoist-pattern 配置，将 @medusajs、@tanstack/react-query、react-i18next 和 react-router-dom 相关依赖提升到公共可解析位置。",
+      "🧩 保留 auto-install-peers=true，并补充 Medusa Admin、插件和 CMS/Storefront 共享依赖在 pnpm workspace 下的解析规则。",
+      "🛠️ 通过统一 hoist 规则降低本地插件、Medusa Admin 扩展和 workspace 包在不同安装环境中的依赖解析差异。",
+    ],
+    fixes: [
+      "🐛 修复 pnpm 严格隔离依赖时，Medusa Admin 或本地插件可能找不到 @medusajs 相关包的问题。",
+      "🐛 修复 @tanstack/react-query、react-i18next、react-router-dom 等前后台共享依赖在 workspace 链接场景下可能重复安装或解析不一致的问题。",
+      "🐛 修复依赖提升规则缺失时，不同机器执行 pnpm install 后 node_modules 结构差异较大，导致开发、类型检查或插件加载结果不稳定的问题。",
+    ],
+  },
+  {
     version: "v1.22.10",
     date: "2026-10-11 20:47:17 EDT",
     title: "🛡️ Payload CMS 3.90.2 安全升级",

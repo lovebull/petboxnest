@@ -4,6 +4,7 @@ import {
   ANALYTICS_CONSENT_CHANGED_EVENT,
   canCollectStorefrontAnalytics,
   clearAnalyticsIdentity,
+  flushPendingStorefrontAnalytics,
   trackStorefrontEvent,
 } from "@lib/analytics/client"
 import { usePathname } from "next/navigation"
@@ -28,19 +29,16 @@ const StorefrontAnalytics = () => {
         country_code: countryCodeFromPath(pathname),
       }
       await trackStorefrontEvent("page_view", details).catch(() => undefined)
-      if (/\/[a-z]{2}\/products\//.test(pathname)) {
-        await trackStorefrontEvent("product_view", details).catch(
-          () => undefined
-        )
-      }
       if (/\/[a-z]{2}\/checkout(?:\/|$|\?)/.test(pathname)) {
         await trackStorefrontEvent("checkout_started", details).catch(
-          () => undefined
+          () => undefined,
         )
       }
     }
 
     void recordPage()
+    void flushPendingStorefrontAnalytics()
+    const handleOnline = () => void flushPendingStorefrontAnalytics()
     const handleConsent = (event: Event) => {
       const allowed = (event as CustomEvent<{ analytics: boolean }>).detail
         ?.analytics
@@ -48,11 +46,11 @@ const StorefrontAnalytics = () => {
       else clearAnalyticsIdentity()
     }
     window.addEventListener(ANALYTICS_CONSENT_CHANGED_EVENT, handleConsent)
-    return () =>
-      window.removeEventListener(
-        ANALYTICS_CONSENT_CHANGED_EVENT,
-        handleConsent
-      )
+    window.addEventListener("online", handleOnline)
+    return () => {
+      window.removeEventListener(ANALYTICS_CONSENT_CHANGED_EVENT, handleConsent)
+      window.removeEventListener("online", handleOnline)
+    }
   }, [pathname])
 
   return null

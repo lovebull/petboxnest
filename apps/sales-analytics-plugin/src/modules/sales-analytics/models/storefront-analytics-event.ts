@@ -1,4 +1,4 @@
-import { model } from "@medusajs/framework/utils"
+import { model } from "@medusajs/framework/utils";
 
 const StorefrontAnalyticsEvent = model
   .define(
@@ -26,7 +26,9 @@ const StorefrontAnalyticsEvent = model
       variant_id: model.text().nullable(),
       cart_id: model.text().nullable(),
       order_id: model.text().nullable(),
-    }
+      request_ip_hash: model.text().nullable(),
+      deduplication_key: model.text().nullable(),
+    },
   )
   .indexes([
     {
@@ -41,6 +43,15 @@ const StorefrontAnalyticsEvent = model
       name: "IDX_pbn_storefront_event_visitor",
       on: ["visitor_id", "occurred_at"],
     },
-  ])
+    {
+      name: "IDX_pbn_storefront_event_ip_time",
+      on: ["request_ip_hash", "occurred_at"],
+    },
+    {
+      name: "UQ_pbn_storefront_event_deduplication_key",
+      on: ["deduplication_key"],
+      unique: true,
+    },
+  ]);
 
-export default StorefrontAnalyticsEvent
+export default StorefrontAnalyticsEvent;

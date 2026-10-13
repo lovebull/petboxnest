@@ -26,7 +26,7 @@ type ProductActionsProps = {
 }
 
 const optionsAsKeymap = (
-  variantOptions: HttpTypes.StoreProductVariant["options"]
+  variantOptions: HttpTypes.StoreProductVariant["options"],
 ) => {
   return variantOptions?.reduce((acc: Record<string, string>, varopt) => {
     if (varopt.option_id) acc[varopt.option_id] = varopt.value
@@ -63,12 +63,12 @@ export default function ProductActions({
     const requestedVariantId = searchParams.get("v_id")
     const selectedOffer =
       bundleOffer.options.find(
-        (option) => option.variant_id === requestedVariantId
+        (option) => option.variant_id === requestedVariantId,
       ) ||
       bundleOffer.options.find((option) => option.is_default) ||
       bundleOffer.options[0]
     const variant = product.variants.find(
-      (item) => item.id === selectedOffer?.variant_id
+      (item) => item.id === selectedOffer?.variant_id,
     )
 
     if (variant) {
@@ -168,7 +168,7 @@ export default function ProductActions({
     setAddError(null)
 
     try {
-      await addToCart({
+      const cartId = await addToCart({
         variantId: selectedVariant.id,
         quantity: 1,
         countryCode,
@@ -179,6 +179,7 @@ export default function ProductActions({
         country_code: countryCode,
         product_id: product.id,
         variant_id: selectedVariant.id,
+        cart_id: cartId,
       }).catch(() => undefined)
 
       notifyLayoutSessionChanged()
@@ -191,7 +192,7 @@ export default function ProductActions({
         message.includes("available")
       ) {
         setAddError(
-          "This item is no longer available in the selected option. Choose another option or request a restock alert."
+          "This item is no longer available in the selected option. Choose another option or request a restock alert.",
         )
       } else if (
         message.includes("network") ||
@@ -199,11 +200,11 @@ export default function ProductActions({
         message.includes("no response")
       ) {
         setAddError(
-          "We couldn't reach the store. Check your connection and try adding the item again."
+          "We couldn't reach the store. Check your connection and try adding the item again.",
         )
       } else {
         setAddError(
-          "We couldn't add this item to your cart. Please try again. If it keeps happening, contact support."
+          "We couldn't add this item to your cart. Please try again. If it keeps happening, contact support.",
         )
       }
     } finally {
@@ -275,10 +276,10 @@ export default function ProductActions({
           {!selectedVariant
             ? "Select options"
             : !inStock || !isValidVariant
-            ? "Out of stock"
-            : addError
-            ? "Try adding again"
-            : "Add to cart"}
+              ? "Out of stock"
+              : addError
+                ? "Try adding again"
+                : "Add to cart"}
         </Button>
         {addError && (
           <div

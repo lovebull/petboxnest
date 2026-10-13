@@ -9,6 +9,7 @@ const CONSENT_STORAGE_KEY = "petboxnest_cookie_consent_v1"
 const VISITOR_STORAGE_KEY = "petboxnest_analytics_visitor_v1"
 const SESSION_STORAGE_KEY = "petboxnest_analytics_session_v1"
 const LAST_EVENT_STORAGE_KEY = "petboxnest_analytics_last_event_v1"
+const PENDING_EVENTS_STORAGE_KEY = "petboxnest_analytics_pending_v1"
 const SESSION_TIMEOUT_MS = 30 * 60 * 1000
 
 type AnalyticsEventType =
@@ -30,6 +31,14 @@ type AnalyticsEventDetails = {
 type StoredSession = {
   id: string
   last_seen_at: number
+}
+
+type PendingAnalyticsEvent = AnalyticsEventDetails & {
+  event_id: string
+  event_type: AnalyticsEventType
+  visitor_id: string
+  session_id: string
+  attempts: number
 }
 
 type AnalyticsConsentState = "granted" | "denied" | "unset"
@@ -65,8 +74,7 @@ export const hasAnalyticsConsent = () =>
   readAnalyticsConsentState() === "granted"
 
 let collectionSettingsCache:
-  | { collectBeforeConsent: boolean; expiresAt: number }
-  | undefined
+  { collectBeforeConsent: boolean; expiresAt: number } | undefined
 let collectionSettingsRequest: Promise<boolean> | undefined
 
 const getCollectBeforeConsentSetting = async () => {
@@ -137,7 +145,7 @@ const isImmediateDuplicate = (eventType: AnalyticsEventType, path?: string) => {
       : null
     window.sessionStorage.setItem(
       LAST_EVENT_STORAGE_KEY,
-      JSON.stringify({ key, recorded_at: now })
+      JSON.stringify({ key, recorded_at: now }),
     )
     return previous?.key === key && now - previous.recorded_at < 1_500
   } catch {
@@ -148,14 +156,76 @@ const isImmediateDuplicate = (eventType: AnalyticsEventType, path?: string) => {
 export const clearAnalyticsIdentity = () => {
   window.localStorage.removeItem(VISITOR_STORAGE_KEY)
   window.localStorage.removeItem(SESSION_STORAGE_KEY)
+  window.localStorage.removeItem(PENDING_EVENTS_STORAGE_KEY)
   window.sessionStorage.removeItem(LAST_EVENT_STORAGE_KEY)
 }
 
 let analyticsQueue: Promise<void> = Promise.resolve()
 
+const readPendingEvents = (): PendingAnalyticsEvent[] => {
+  try {
+    const parsed = JSON.parse(
+      window.localStorage.getItem(PENDING_EVENTS_STORAGE_KEY) || "[]",
+    )
+    return Array.isArray(parsed) ? parsed.slice(-100) : []
+  } catch {
+    return []
+  }
+}
+
+const writePendingEvents = (events: PendingAnalyticsEvent[]) => {
+  try {
+    window.localStorage.setItem(
+      PENDING_EVENTS_STORAGE_KEY,
+      JSON.stringify(events.slice(-100)),
+    )
+  } catch {
+    // Analytics must never interrupt the shopping experience.
+  }
+}
+
+const postPendingEvent = (event: PendingAnalyticsEvent) =>
+  sdk.client.fetch("/store/analytics/events", {
+    method: "POST",
+    body: {
+      event_id: event.event_id,
+      event_type: event.event_type,
+      visitor_id: event.visitor_id,
+      session_id: event.session_id,
+      path: event.path,
+      country_code: event.country_code,
+      product_id: event.product_id,
+      variant_id: event.variant_id,
+      cart_id: event.cart_id,
+      order_id: event.order_id,
+    },
+    cache: "no-store",
+  })
+
+const flushPendingEvents = async () => {
+  if (!(await canCollectStorefrontAnalytics())) return
+  const remaining: PendingAnalyticsEvent[] = []
+  for (const event of readPendingEvents()) {
+    try {
+      await postPendingEvent(event)
+    } catch {
+      if (event.attempts < 5) {
+        remaining.push({ ...event, attempts: event.attempts + 1 })
+      }
+    }
+  }
+  writePendingEvents(remaining)
+}
+
+export const flushPendingStorefrontAnalytics = () => {
+  const task = analyticsQueue.then(flushPendingEvents)
+  analyticsQueue = task.catch(() => undefined)
+  return task
+}
+
 const sendStorefrontEvent = async (
   eventType: AnalyticsEventType,
-  details: AnalyticsEventDetails = {}
+  details: AnalyticsEventDetails = {},
 ) => {
   if (
     !(await canCollectStorefrontAnalytics()) ||
@@ -164,24 +234,29 @@ const sendStorefrontEvent = async (
     return
   }
   const { visitorId, sessionId } = getIdentity()
-  await sdk.client.fetch("/store/analytics/events", {
-    method: "POST",
-    body: {
-      event_id: crypto.randomUUID(),
-      event_type: eventType,
-      visitor_id: visitorId,
-      session_id: sessionId,
-      ...details,
-    },
-    cache: "no-store",
-  })
+  const event: PendingAnalyticsEvent = {
+    event_id: crypto.randomUUID(),
+    event_type: eventType,
+    visitor_id: visitorId,
+    session_id: sessionId,
+    ...details,
+    attempts: 0,
+  }
+  writePendingEvents([...readPendingEvents(), event])
+  await postPendingEvent(event)
+  writePendingEvents(
+    readPendingEvents().filter((entry) => entry.event_id !== event.event_id),
+  )
 }
 
 export const trackStorefrontEvent = (
   eventType: AnalyticsEventType,
-  details: AnalyticsEventDetails = {}
+  details: AnalyticsEventDetails = {},
 ) => {
-  const task = analyticsQueue.then(() => sendStorefrontEvent(eventType, details))
+  const task = analyticsQueue.then(async () => {
+    await flushPendingEvents()
+    await sendStorefrontEvent(eventType, details)
+  })
   analyticsQueue = task.catch(() => undefined)
   return task
 }

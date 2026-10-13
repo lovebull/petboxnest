@@ -9,6 +9,7 @@ import ProductReviewsSection, {
   ProductReviewsFallback,
   type ProductReviewQuery,
 } from "@modules/products/components/product-reviews-section"
+import ProductAnalytics from "@modules/products/components/product-analytics"
 import RelatedProducts from "@modules/products/components/related-products"
 import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
@@ -45,6 +46,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
 
   return (
     <>
+      <ProductAnalytics productId={product.id} />
       <section
         className="border-b border-grey-20 bg-cream"
         data-testid="product-container"

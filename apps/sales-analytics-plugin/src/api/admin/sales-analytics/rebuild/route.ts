@@ -1,7 +1,15 @@
-import type { AuthenticatedMedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { rebuildSalesAnalyticsWorkflow } from "../../../../workflows"
+import type {
+  AuthenticatedMedusaRequest,
+  MedusaResponse,
+} from "@medusajs/framework/http";
+import { requestSalesAnalyticsRebuildWorkflow } from "../../../../workflows";
 
-export async function POST(req: AuthenticatedMedusaRequest, res: MedusaResponse) {
-  const { result } = await rebuildSalesAnalyticsWorkflow(req.scope).run({ input: {} })
-  res.json(result)
+export async function POST(
+  req: AuthenticatedMedusaRequest,
+  res: MedusaResponse,
+) {
+  const { result } = await requestSalesAnalyticsRebuildWorkflow(req.scope).run({
+    input: {},
+  });
+  res.status(202).json(result);
 }

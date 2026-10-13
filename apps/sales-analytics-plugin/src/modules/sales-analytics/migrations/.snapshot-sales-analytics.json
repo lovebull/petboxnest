@@ -1914,6 +1914,38 @@
           "enumItems": [],
           "mappedType": "text"
         },
+        "request_ip_hash": {
+          "name": "request_ip_hash",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "deduplication_key": {
+          "name": "deduplication_key",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -2010,6 +2042,24 @@
           "primary": false,
           "unique": false,
           "expression": "CREATE INDEX IF NOT EXISTS \"IDX_pbn_storefront_event_visitor\" ON \"pbn_storefront_analytics_event\" (\"visitor_id\", \"occurred_at\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_pbn_storefront_event_ip_time",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_pbn_storefront_event_ip_time\" ON \"pbn_storefront_analytics_event\" (\"request_ip_hash\", \"occurred_at\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "UQ_pbn_storefront_event_deduplication_key",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"UQ_pbn_storefront_event_deduplication_key\" ON \"pbn_storefront_analytics_event\" (\"deduplication_key\") WHERE deleted_at IS NULL"
         },
         {
           "keyName": "pbn_storefront_analytics_event_pkey",

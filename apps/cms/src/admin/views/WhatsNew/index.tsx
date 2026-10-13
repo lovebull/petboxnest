@@ -4,6 +4,26 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.24.0",
+    date: "2026-10-13 12:43:31 EDT",
+    title: "🧭 经营分析导航分组",
+    items: [
+      "🧭 Medusa Admin 新增 /analytics 经营分析一级入口，将经营概览、销售分析和订单里程碑统一收拢到同一导航分组。",
+      "📊 新增 /analytics/overview 子页面承载经营概览，并保持原经营概览页面组件复用，避免重复维护两套 UI。",
+      "💰 新增 /analytics/sales 子页面承载销售分析明细，经营概览中的销售明细按钮同步跳转到新路径。",
+      "🏁 新增 /analytics/milestones 子页面承载订单里程碑，顶部订单成就提醒同步指向新路径。",
+      "↪️ 原 /commerce-analytics、/sales-analytics、/order-milestones 页面改为兼容重定向到新的 /analytics/* 路径。",
+      "📌 /analytics 入口默认跳转到 /analytics/overview，让运营点击经营分析菜单即可进入概览页。",
+    ],
+    fixes: [
+      "🐛 修复销售分析、经营概览和订单里程碑分散在多个同级菜单中，后台侧栏逐渐拥挤、运营查找成本变高的问题。",
+      "🐛 修复经营概览跳转销售明细仍指向旧 /sales-analytics 路径，无法体现新的分析分组结构的问题。",
+      "🐛 修复订单成就顶部提醒仍跳转旧 /order-milestones 路径，和新的导航归类不一致的问题。",
+      "🐛 修复旧书签或旧入口直接访问分析页面时可能与新菜单结构脱节的问题，现在旧路径会自动重定向到新路径。",
+      "🐛 修复多个分析页面各自导出侧栏配置，导致 rank 和菜单层级不易统一维护的问题。",
+    ],
+  },
+  {
     version: "v1.23.0",
     date: "2026-10-13 12:14:50 EDT",
     title: "🏁 订单达成里程碑监控",

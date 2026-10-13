@@ -1,7 +1,7 @@
-import { defineRouteConfig } from "@medusajs/admin-sdk";
 import { CheckCircleSolid, Spinner, Trophy } from "@medusajs/icons";
 import { Badge, Button, Container, Heading, Text, toast } from "@medusajs/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Navigate } from "react-router-dom";
 import { sdk } from "../../lib/sdk";
 import type { AdminOrderMilestone, OrderMilestonesResponse } from "../../types";
 
@@ -48,7 +48,7 @@ const MilestoneCard = ({ milestone }: { milestone: AdminOrderMilestone }) => (
   </div>
 );
 
-const OrderMilestonesPage = () => {
+export const OrderMilestonesPage = () => {
   const queryClient = useQueryClient();
   const milestones = useQuery({
     queryKey,
@@ -212,10 +212,8 @@ const OrderMilestonesPage = () => {
   );
 };
 
-export const config = defineRouteConfig({
-  label: "订单里程碑 / Milestones",
-  icon: Trophy,
-  rank: 15,
-});
+const LegacyOrderMilestonesRoute = () => (
+  <Navigate to="/analytics/milestones" replace />
+);
 
-export default OrderMilestonesPage;
+export default LegacyOrderMilestonesRoute;

@@ -1,5 +1,4 @@
-import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { ChartBar, Spinner } from "@medusajs/icons";
+import { Spinner } from "@medusajs/icons";
 import {
   Badge,
   Button,
@@ -13,7 +12,7 @@ import {
 } from "@medusajs/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { sdk } from "../../lib/sdk";
 import type {
   CommerceAnalyticsResponse,
@@ -278,7 +277,7 @@ const Funnel = ({ summary }: { summary: CommerceAnalyticsSummary }) => {
   );
 };
 
-const CommerceAnalyticsPage = () => {
+export const CommerceAnalyticsPage = () => {
   const queryClient = useQueryClient();
   const initial = useMemo(todayRange, []);
   const [dateFrom, setDateFrom] = useState(initial.from);
@@ -355,7 +354,7 @@ const CommerceAnalyticsPage = () => {
           </div>
           <div className="flex items-center gap-2">
             <Button size="small" variant="secondary" asChild>
-              <Link to="/sales-analytics">查看销售明细 / Sales report</Link>
+              <Link to="/analytics/sales">查看销售明细 / Sales report</Link>
             </Button>
             <Badge color={autoRefresh ? "green" : "grey"}>
               {autoRefresh ? "每 60 秒刷新" : "自动刷新已关闭"}
@@ -619,10 +618,8 @@ const CommerceAnalyticsPage = () => {
   );
 };
 
-export const config = defineRouteConfig({
-  label: "经营概览 / Overview",
-  icon: ChartBar,
-  rank: 14,
-});
+const LegacyCommerceAnalyticsRoute = () => (
+  <Navigate to="/analytics/overview" replace />
+);
 
-export default CommerceAnalyticsPage;
+export default LegacyCommerceAnalyticsRoute;

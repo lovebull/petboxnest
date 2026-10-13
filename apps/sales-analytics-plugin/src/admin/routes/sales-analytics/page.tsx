@@ -1,5 +1,4 @@
-import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { ChartBar, Spinner } from "@medusajs/icons";
+import { Spinner } from "@medusajs/icons";
 import {
   Badge,
   Button,
@@ -13,7 +12,7 @@ import {
 } from "@medusajs/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { sdk } from "../../lib/sdk";
 import type {
   SalesAnalyticsResponse,
@@ -192,7 +191,7 @@ const SalesChart = ({
   );
 };
 
-const SalesAnalyticsPage = () => {
+export const SalesAnalyticsPage = () => {
   const initial = useMemo(initialRange, []);
   const [dateFrom, setDateFrom] = useState(initial.from);
   const [dateTo, setDateTo] = useState(initial.to);
@@ -751,10 +750,8 @@ const SalesAnalyticsPage = () => {
   );
 };
 
-export const config = defineRouteConfig({
-  label: "销售分析 / Sales",
-  icon: ChartBar,
-  rank: 15,
-});
+const LegacySalesAnalyticsRoute = () => (
+  <Navigate to="/analytics/sales" replace />
+);
 
-export default SalesAnalyticsPage;
+export default LegacySalesAnalyticsRoute;

@@ -19,7 +19,10 @@ const OrderMilestoneTopbar = () => {
 
   return (
     <Button asChild size="small" variant="transparent">
-      <Link to="/order-milestones" aria-label={`${unread} 个未读订单里程碑`}>
+      <Link
+        to="/analytics/milestones"
+        aria-label={`${unread} 个未读订单里程碑`}
+      >
         <Trophy />
         <Text size="small" weight="plus">
           订单成就

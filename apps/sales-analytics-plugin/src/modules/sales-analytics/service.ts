@@ -10,6 +10,8 @@ import {
   SalesOrderFact,
   SalesSyncState,
   SalesAnalyticsSetting,
+  OrderMilestone,
+  OrderMilestoneAcknowledgement,
   StorefrontAnalyticsEvent,
   StorefrontAnalyticsSession,
 } from "./models";
@@ -20,6 +22,8 @@ class SalesAnalyticsModuleService extends MedusaService({
   SalesCustomerFact,
   SalesSyncState,
   SalesAnalyticsSetting,
+  OrderMilestone,
+  OrderMilestoneAcknowledgement,
   StorefrontAnalyticsEvent,
   StorefrontAnalyticsSession,
 }) {
@@ -48,6 +52,20 @@ class SalesAnalyticsModuleService extends MedusaService({
        order by currency_code`,
     );
     return rows.map((row) => row.currency_code);
+  }
+
+  @InjectManager()
+  async getValidOrderCount(
+    @MedusaContext() sharedContext: Context = {},
+  ): Promise<number> {
+    const [row] = await this.connection(sharedContext).execute<{
+      order_count: number;
+    }>(
+      `select count(*)::integer as order_count
+       from pbn_sales_order_fact
+       where deleted_at is null and is_valid = true`,
+    );
+    return Number(row?.order_count || 0);
   }
 
   @InjectManager()

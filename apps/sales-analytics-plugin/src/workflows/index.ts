@@ -15,3 +15,6 @@ export {
   updateSalesAnalyticsSettingsWorkflow,
 } from "./update-sales-analytics-settings";
 export type { UpdateSalesAnalyticsSettingsInput } from "./update-sales-analytics-settings";
+export { evaluateOrderMilestonesWorkflow } from "./evaluate-order-milestones";
+export { dismissOrderMilestoneWorkflow } from "./dismiss-order-milestone";
+export type { DismissOrderMilestoneInput } from "./dismiss-order-milestone";

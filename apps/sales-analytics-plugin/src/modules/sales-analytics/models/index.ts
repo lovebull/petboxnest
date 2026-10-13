@@ -1,7 +1,9 @@
-export { default as SalesOrderFact } from "./sales-order-fact"
-export { default as SalesDailyMetric } from "./sales-daily-metric"
-export { default as SalesCustomerFact } from "./sales-customer-fact"
-export { default as SalesSyncState } from "./sales-sync-state"
-export { default as StorefrontAnalyticsEvent } from "./storefront-analytics-event"
-export { default as StorefrontAnalyticsSession } from "./storefront-analytics-session"
-export { default as SalesAnalyticsSetting } from "./sales-analytics-setting"
+export { default as SalesOrderFact } from "./sales-order-fact";
+export { default as SalesDailyMetric } from "./sales-daily-metric";
+export { default as SalesCustomerFact } from "./sales-customer-fact";
+export { default as SalesSyncState } from "./sales-sync-state";
+export { default as StorefrontAnalyticsEvent } from "./storefront-analytics-event";
+export { default as StorefrontAnalyticsSession } from "./storefront-analytics-session";
+export { default as SalesAnalyticsSetting } from "./sales-analytics-setting";
+export { default as OrderMilestone } from "./order-milestone";
+export { default as OrderMilestoneAcknowledgement } from "./order-milestone-acknowledgement";

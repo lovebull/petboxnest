@@ -122,3 +122,29 @@ export type AnalyticsCollectionSettings = {
 export type AnalyticsCollectionSettingsResponse = {
   settings: AnalyticsCollectionSettings;
 };
+
+export type AdminOrderMilestone = {
+  id: string | null;
+  threshold: number;
+  title: string;
+  title_en: string;
+  message: string;
+  message_en: string;
+  achieved: boolean;
+  achieved_at: string | null;
+  achieved_order_count: number | null;
+  dismissed: boolean;
+};
+
+export type OrderMilestonesResponse = {
+  order_milestones: {
+    current_order_count: number;
+    next_milestone: number | null;
+    previous_milestone: number;
+    remaining_orders: number;
+    progress_percentage: number;
+    unread_count: number;
+    latest_unread: AdminOrderMilestone | null;
+    milestones: AdminOrderMilestone[];
+  };
+};

@@ -1,15 +1,19 @@
-import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
-import { syncSalesOrderWorkflow } from "../workflows"
+import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework";
+import {
+  evaluateOrderMilestonesWorkflow,
+  syncSalesOrderWorkflow,
+} from "../workflows";
 
-type OrderEvent = { id?: string; order_id?: string }
+type OrderEvent = { id?: string; order_id?: string };
 
 export default async function orderSalesAnalyticsHandler({
   event: { data },
   container,
 }: SubscriberArgs<OrderEvent>) {
-  const orderId = data.order_id || data.id
-  if (!orderId) return
-  await syncSalesOrderWorkflow(container).run({ input: { order_id: orderId } })
+  const orderId = data.order_id || data.id;
+  if (!orderId) return;
+  await syncSalesOrderWorkflow(container).run({ input: { order_id: orderId } });
+  await evaluateOrderMilestonesWorkflow(container).run({ input: {} });
 }
 
 export const config: SubscriberConfig = {
@@ -26,4 +30,4 @@ export const config: SubscriberConfig = {
     "order.claim_created",
     "order.exchange_created",
   ],
-}
+};

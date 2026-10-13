@@ -437,66 +437,6 @@ const CommerceAnalyticsPage = () => {
         </div>
       </Container>
 
-      <Container className="p-0">
-        <div className="flex flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between">
-          <div className="max-w-3xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <Heading level="h2">访客数据采集</Heading>
-              <Badge color={collectBeforeConsent ? "orange" : "green"}>
-                {collectBeforeConsent
-                  ? "同意前采集 / Pre-consent"
-                  : "需先同意 / Consent required"}
-              </Badge>
-            </div>
-            <Text
-              size="small"
-              leading="compact"
-              className="mt-1 text-ui-fg-subtle"
-            >
-              开启后，访客尚未选择 Cookie
-              偏好时即可采集匿名访问与转化事件；访客明确选择“仅必要
-              Cookie”后仍会停止采集。
-            </Text>
-            <Text size="small" leading="compact" className="text-ui-fg-muted">
-              When enabled, anonymous analytics starts before a visitor makes a
-              cookie choice. An explicit opt-out is always respected.
-            </Text>
-          </div>
-          <div className="flex shrink-0 items-center gap-3">
-            <div>
-              <Text size="small" weight="plus">
-                无需事先同意，先采集
-              </Text>
-              <Text size="xsmall" className="text-ui-fg-subtle">
-                Collect before consent
-              </Text>
-            </div>
-            {collectionSettings.isLoading ? (
-              <Spinner />
-            ) : (
-              <Switch
-                checked={collectBeforeConsent}
-                disabled={
-                  collectionSettings.isError ||
-                  updateCollectionSettings.isPending
-                }
-                onCheckedChange={(checked) =>
-                  updateCollectionSettings.mutate(checked)
-                }
-                aria-label="无需事先同意，先采集访客分析数据"
-              />
-            )}
-          </div>
-        </div>
-        {collectionSettings.isError && (
-          <div className="border-t px-6 py-3">
-            <Text size="small" className="text-ui-fg-error">
-              采集设置加载失败，Storefront 将使用默认的“需先同意”模式。
-            </Text>
-          </div>
-        )}
-      </Container>
-
       {analytics.isLoading ? (
         <Container className="flex justify-center p-16">
           <Spinner />
@@ -614,6 +554,66 @@ const CommerceAnalyticsPage = () => {
           统计时区：{analytics.data?.period.timezone || "America/New_York"}
           ；销售额仅统计已收款及后续退款状态订单。所有图表包含无数据时段的零值。
         </Text>
+      </Container>
+
+      <Container className="p-0">
+        <div className="flex flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-3xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <Heading level="h2">访客数据采集</Heading>
+              <Badge color={collectBeforeConsent ? "orange" : "green"}>
+                {collectBeforeConsent
+                  ? "同意前采集 / Pre-consent"
+                  : "需先同意 / Consent required"}
+              </Badge>
+            </div>
+            <Text
+              size="small"
+              leading="compact"
+              className="mt-1 text-ui-fg-subtle"
+            >
+              开启后，访客尚未选择 Cookie
+              偏好时即可采集匿名访问与转化事件；访客明确选择“仅必要
+              Cookie”后仍会停止采集。
+            </Text>
+            <Text size="small" leading="compact" className="text-ui-fg-muted">
+              When enabled, anonymous analytics starts before a visitor makes a
+              cookie choice. An explicit opt-out is always respected.
+            </Text>
+          </div>
+          <div className="flex shrink-0 items-center gap-3">
+            <div>
+              <Text size="small" weight="plus">
+                无需事先同意，先采集
+              </Text>
+              <Text size="xsmall" className="text-ui-fg-subtle">
+                Collect before consent
+              </Text>
+            </div>
+            {collectionSettings.isLoading ? (
+              <Spinner />
+            ) : (
+              <Switch
+                checked={collectBeforeConsent}
+                disabled={
+                  collectionSettings.isError ||
+                  updateCollectionSettings.isPending
+                }
+                onCheckedChange={(checked) =>
+                  updateCollectionSettings.mutate(checked)
+                }
+                aria-label="无需事先同意，先采集访客分析数据"
+              />
+            )}
+          </div>
+        </div>
+        {collectionSettings.isError && (
+          <div className="border-t px-6 py-3">
+            <Text size="small" className="text-ui-fg-error">
+              采集设置加载失败，Storefront 将使用默认的“需先同意”模式。
+            </Text>
+          </div>
+        )}
       </Container>
     </div>
   );

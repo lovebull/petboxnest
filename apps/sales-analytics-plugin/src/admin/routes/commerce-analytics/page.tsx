@@ -7,14 +7,17 @@ import {
   Heading,
   Input,
   Select,
+  Switch,
   Text,
+  toast,
 } from "@medusajs/ui"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
 import { sdk } from "../../lib/sdk"
 import type {
   CommerceAnalyticsResponse,
   CommerceAnalyticsSummary,
+  AnalyticsCollectionSettingsResponse,
 } from "../../types"
 
 const isoDay = (date: Date) => date.toISOString().slice(0, 10)
@@ -198,6 +201,7 @@ const Funnel = ({ summary }: { summary: CommerceAnalyticsSummary }) => {
 }
 
 const CommerceAnalyticsPage = () => {
+  const queryClient = useQueryClient()
   const initial = useMemo(todayRange, [])
   const [dateFrom, setDateFrom] = useState(initial.from)
   const [dateTo, setDateTo] = useState(initial.to)
@@ -218,10 +222,39 @@ const CommerceAnalyticsPage = () => {
     refetchInterval: autoRefresh ? 60_000 : false,
   })
 
+  const collectionSettings = useQuery({
+    queryKey: ["commerce-analytics", "collection-settings"],
+    queryFn: () =>
+      sdk.client.fetch<AnalyticsCollectionSettingsResponse>(
+        "/admin/commerce-analytics/settings"
+      ),
+  })
+
+  const updateCollectionSettings = useMutation({
+    mutationFn: (collectBeforeConsent: boolean) =>
+      sdk.client.fetch<AnalyticsCollectionSettingsResponse>(
+        "/admin/commerce-analytics/settings",
+        {
+          method: "POST",
+          body: { require_cookie_consent: !collectBeforeConsent },
+        }
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["commerce-analytics", "collection-settings"],
+      })
+      toast.success("采集设置已保存 / Collection settings saved")
+    },
+    onError: (error: Error) =>
+      toast.error(`保存失败 / Save failed: ${error.message}`),
+  })
+
   const activeCurrency = analytics.data?.currency_code || currencyCode || "usd"
   const summary = analytics.data?.summary
   const previous = analytics.data?.previous_summary
   const series = analytics.data?.series || []
+  const collectBeforeConsent =
+    collectionSettings.data?.settings.collect_before_consent ?? false
 
   const selectPreset = (days: number, offset = 0) => {
     const end = new Date()
@@ -275,6 +308,54 @@ const CommerceAnalyticsPage = () => {
             <Button size="small" variant="secondary" onClick={() => selectPreset(30)}>30 天</Button>
           </div>
         </div>
+      </Container>
+
+      <Container className="p-0">
+        <div className="flex flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-3xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <Heading level="h2">访客数据采集</Heading>
+              <Badge color={collectBeforeConsent ? "orange" : "green"}>
+                {collectBeforeConsent
+                  ? "同意前采集 / Pre-consent"
+                  : "需先同意 / Consent required"}
+              </Badge>
+            </div>
+            <Text size="small" leading="compact" className="mt-1 text-ui-fg-subtle">
+              开启后，访客尚未选择 Cookie 偏好时即可采集匿名访问与转化事件；访客明确选择“仅必要 Cookie”后仍会停止采集。
+            </Text>
+            <Text size="small" leading="compact" className="text-ui-fg-muted">
+              When enabled, anonymous analytics starts before a visitor makes a cookie choice. An explicit opt-out is always respected.
+            </Text>
+          </div>
+          <div className="flex shrink-0 items-center gap-3">
+            <div>
+              <Text size="small" weight="plus">无需事先同意，先采集</Text>
+              <Text size="xsmall" className="text-ui-fg-subtle">Collect before consent</Text>
+            </div>
+            {collectionSettings.isLoading ? (
+              <Spinner />
+            ) : (
+              <Switch
+                checked={collectBeforeConsent}
+                disabled={
+                  collectionSettings.isError || updateCollectionSettings.isPending
+                }
+                onCheckedChange={(checked) =>
+                  updateCollectionSettings.mutate(checked)
+                }
+                aria-label="无需事先同意，先采集访客分析数据"
+              />
+            )}
+          </div>
+        </div>
+        {collectionSettings.isError && (
+          <div className="border-t px-6 py-3">
+            <Text size="small" className="text-ui-fg-error">
+              采集设置加载失败，Storefront 将使用默认的“需先同意”模式。
+            </Text>
+          </div>
+        )}
       </Container>
 
       {analytics.isLoading ? (
@@ -362,7 +443,7 @@ const CommerceAnalyticsPage = () => {
 
       <Container className="px-6 py-4">
         <Text size="small" className="text-ui-fg-subtle">
-          对比区间：{analytics.data?.period.previous_date_from || "—"} 至 {analytics.data?.period.previous_date_to || "—"}。访问与漏斗数据仅在访客同意 Analytics Cookie 后采集；不同币种不会合并统计。
+          对比区间：{analytics.data?.period.previous_date_from || "—"} 至 {analytics.data?.period.previous_date_to || "—"}。访问与漏斗数据当前{collectBeforeConsent ? "可在访客选择 Cookie 前采集，明确拒绝后停止" : "仅在访客同意 Analytics Cookie 后采集"}；不同币种不会合并统计。
         </Text>
       </Container>
     </div>

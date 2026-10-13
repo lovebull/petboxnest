@@ -32,18 +32,75 @@ type StoredSession = {
   last_seen_at: number
 }
 
-export const hasAnalyticsConsent = () => {
+type AnalyticsConsentState = "granted" | "denied" | "unset"
+
+type AnalyticsCollectionSettingsResponse = {
+  settings: {
+    require_cookie_consent: boolean
+    collect_before_consent: boolean
+  }
+}
+
+const readAnalyticsConsentState = (): AnalyticsConsentState => {
   try {
     const stored = window.localStorage.getItem(CONSENT_STORAGE_KEY)
-    if (!stored) return false
+    if (!stored) return "unset"
     const parsed = JSON.parse(stored) as {
       version?: number
       preferences?: { analytics?: boolean }
     }
-    return parsed.version === 1 && parsed.preferences?.analytics === true
+    if (
+      parsed.version !== 1 ||
+      typeof parsed.preferences?.analytics !== "boolean"
+    ) {
+      return "unset"
+    }
+    return parsed.preferences.analytics ? "granted" : "denied"
   } catch {
-    return false
+    return "unset"
   }
+}
+
+export const hasAnalyticsConsent = () =>
+  readAnalyticsConsentState() === "granted"
+
+let collectionSettingsCache:
+  | { collectBeforeConsent: boolean; expiresAt: number }
+  | undefined
+let collectionSettingsRequest: Promise<boolean> | undefined
+
+const getCollectBeforeConsentSetting = async () => {
+  const now = Date.now()
+  if (collectionSettingsCache && collectionSettingsCache.expiresAt > now) {
+    return collectionSettingsCache.collectBeforeConsent
+  }
+  if (!collectionSettingsRequest) {
+    collectionSettingsRequest = sdk.client
+      .fetch<AnalyticsCollectionSettingsResponse>("/store/analytics/config", {
+        cache: "no-store",
+      })
+      .then((response) => {
+        const collectBeforeConsent =
+          response.settings.collect_before_consent === true
+        collectionSettingsCache = {
+          collectBeforeConsent,
+          expiresAt: Date.now() + 60_000,
+        }
+        return collectBeforeConsent
+      })
+      .catch(() => false)
+      .finally(() => {
+        collectionSettingsRequest = undefined
+      })
+  }
+  return collectionSettingsRequest
+}
+
+export const canCollectStorefrontAnalytics = async () => {
+  const consentState = readAnalyticsConsentState()
+  if (consentState === "granted") return true
+  if (consentState === "denied") return false
+  return getCollectBeforeConsentSetting()
 }
 
 const getIdentity = () => {
@@ -100,7 +157,10 @@ const sendStorefrontEvent = async (
   eventType: AnalyticsEventType,
   details: AnalyticsEventDetails = {}
 ) => {
-  if (!hasAnalyticsConsent() || isImmediateDuplicate(eventType, details.path)) {
+  if (
+    !(await canCollectStorefrontAnalytics()) ||
+    isImmediateDuplicate(eventType, details.path)
+  ) {
     return
   }
   const { visitorId, sessionId } = getIdentity()

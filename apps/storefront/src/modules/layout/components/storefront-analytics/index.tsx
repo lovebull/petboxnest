@@ -2,12 +2,12 @@
 
 import {
   ANALYTICS_CONSENT_CHANGED_EVENT,
+  canCollectStorefrontAnalytics,
   clearAnalyticsIdentity,
-  hasAnalyticsConsent,
   trackStorefrontEvent,
 } from "@lib/analytics/client"
 import { usePathname } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 const countryCodeFromPath = (pathname: string) => {
   const segment = pathname.split("/").filter(Boolean)[0]
@@ -16,30 +16,35 @@ const countryCodeFromPath = (pathname: string) => {
 
 const StorefrontAnalytics = () => {
   const pathname = usePathname()
+  const recordedPathRef = useRef<string | null>(null)
 
   useEffect(() => {
-    const recordPage = () => {
-      if (!hasAnalyticsConsent()) return
+    const recordPage = async () => {
+      if (!(await canCollectStorefrontAnalytics())) return
+      if (recordedPathRef.current === pathname) return
+      recordedPathRef.current = pathname
       const details = {
         path: pathname,
         country_code: countryCodeFromPath(pathname),
       }
-      void trackStorefrontEvent("page_view", details).catch(() => undefined)
+      await trackStorefrontEvent("page_view", details).catch(() => undefined)
       if (/\/[a-z]{2}\/products\//.test(pathname)) {
-        void trackStorefrontEvent("product_view", details).catch(() => undefined)
+        await trackStorefrontEvent("product_view", details).catch(
+          () => undefined
+        )
       }
       if (/\/[a-z]{2}\/checkout(?:\/|$|\?)/.test(pathname)) {
-        void trackStorefrontEvent("checkout_started", details).catch(
+        await trackStorefrontEvent("checkout_started", details).catch(
           () => undefined
         )
       }
     }
 
-    recordPage()
+    void recordPage()
     const handleConsent = (event: Event) => {
       const allowed = (event as CustomEvent<{ analytics: boolean }>).detail
         ?.analytics
-      if (allowed) recordPage()
+      if (allowed) void recordPage()
       else clearAnalyticsIdentity()
     }
     window.addEventListener(ANALYTICS_CONSENT_CHANGED_EVENT, handleConsent)

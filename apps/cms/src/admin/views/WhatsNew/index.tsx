@@ -4,6 +4,32 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.16",
+    date: "2026-10-13 03:24:42 EDT",
+    title: "⚙️ 销售分析采集设置开关",
+    items: [
+      "⚙️ Medusa Admin 经营概览新增访客数据采集设置，可切换是否允许在访客选择 Cookie 偏好前采集匿名分析事件。",
+      "🧱 salesAnalytics 模块新增 SalesAnalyticsSetting 数据模型，用于持久化 Storefront analytics 采集策略。",
+      "🗃️ 新增销售分析设置数据库迁移与 snapshot，创建 pbn_sales_analytics_setting 表、key 唯一索引和 deleted_at 索引。",
+      "🔄 新增 updateSalesAnalyticsSettingsWorkflow，通过 workflow 保存 require_cookie_consent 并记录更新人。",
+      "🔐 新增 Admin API /admin/commerce-analytics/settings，支持读取与保存采集设置，并对 POST 请求体验证。",
+      "🛒 新增 Store API /store/analytics/config，向前台返回 collect_before_consent 配置，并使用 no-store 避免设置缓存滞后。",
+      "🍪 Storefront analytics 客户端新增采集配置缓存，区分 granted、denied、unset 三种 Cookie 同意状态。",
+      "🧭 Storefront 页面埋点改为先读取采集策略：明确拒绝时停止采集，未选择时按后台设置决定是否采集。",
+      "📌 经营概览页面底部说明会随采集模式变化，提示当前是“需先同意”还是“同意前可采集”。",
+    ],
+    fixes: [
+      "🐛 修复前台分析采集策略只能固定依赖 Analytics Cookie 同意，运营无法按业务策略调整未选择状态采集行为的问题。",
+      "🐛 修复 Storefront 在访客尚未选择 Cookie 偏好时没有服务端配置可判断是否允许匿名采集的问题。",
+      "🐛 修复经营概览缺少采集开关和状态提示，后台无法直接确认当前漏斗数据采集模式的问题。",
+      "🐛 修复采集策略没有持久化模型，重启服务或多实例部署时容易出现配置不一致的问题。",
+      "🐛 修复前台配置读取可能被浏览器或中间层缓存，导致后台刚保存的采集策略无法及时生效的问题。",
+      "🐛 修复 Cookie 同意状态只能返回布尔值，无法区分“明确拒绝”和“尚未选择”，导致采集判断不够精确的问题。",
+      "🐛 修复页面重复记录保护只依赖事件去重，路由层缺少当前路径记录标记，可能在同一路径重复触发 page_view 的问题。",
+      "🐛 修复保存采集设置缺少 workflow 回滚补偿，更新失败时无法恢复或清理设置记录的问题。",
+    ],
+  },
+  {
     version: "v1.22.15",
     date: "2026-10-12 21:18:33 EDT",
     title: "📈 Storefront 转化漏斗与经营概览",

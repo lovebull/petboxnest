@@ -8,3 +8,8 @@ export type {
   RecordStorefrontAnalyticsEventInput,
   StorefrontAnalyticsEventType,
 } from "./record-storefront-analytics-event"
+export {
+  STOREFRONT_ANALYTICS_SETTINGS_KEY,
+  updateSalesAnalyticsSettingsWorkflow,
+} from "./update-sales-analytics-settings"
+export type { UpdateSalesAnalyticsSettingsInput } from "./update-sales-analytics-settings"

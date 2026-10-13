@@ -94,3 +94,12 @@ export type CommerceAnalyticsResponse = {
   }>
   definitions: Record<string, string>
 }
+
+export type AnalyticsCollectionSettings = {
+  require_cookie_consent: boolean
+  collect_before_consent: boolean
+}
+
+export type AnalyticsCollectionSettingsResponse = {
+  settings: AnalyticsCollectionSettings
+}

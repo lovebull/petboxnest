@@ -50,3 +50,10 @@ export const StorefrontAnalyticsEventSchema = z.strictObject({
 export type StorefrontAnalyticsEventBody = z.infer<
   typeof StorefrontAnalyticsEventSchema
 >
+
+export const SalesAnalyticsSettingsSchema = z.strictObject({
+  require_cookie_consent: z.boolean(),
+})
+export type SalesAnalyticsSettingsBody = z.infer<
+  typeof SalesAnalyticsSettingsSchema
+>

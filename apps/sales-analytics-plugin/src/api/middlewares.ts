@@ -7,6 +7,7 @@ import {
   CommerceAnalyticsQuerySchema,
   SalesAnalyticsQuerySchema,
   SalesOrdersQuerySchema,
+  SalesAnalyticsSettingsSchema,
   StorefrontAnalyticsEventSchema,
 } from "./validators"
 
@@ -26,6 +27,11 @@ export default defineMiddlewares({
       matcher: "/admin/commerce-analytics",
       method: "GET",
       middlewares: [validateAndTransformQuery(CommerceAnalyticsQuerySchema, {})],
+    },
+    {
+      matcher: "/admin/commerce-analytics/settings",
+      method: "POST",
+      middlewares: [validateAndTransformBody(SalesAnalyticsSettingsSchema)],
     },
     {
       matcher: "/store/analytics/events",

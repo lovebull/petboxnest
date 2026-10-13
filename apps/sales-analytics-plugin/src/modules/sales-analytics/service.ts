@@ -4,6 +4,8 @@ import {
   SalesDailyMetric,
   SalesOrderFact,
   SalesSyncState,
+  StorefrontAnalyticsEvent,
+  StorefrontAnalyticsSession,
 } from "./models"
 
 class SalesAnalyticsModuleService extends MedusaService({
@@ -11,6 +13,8 @@ class SalesAnalyticsModuleService extends MedusaService({
   SalesDailyMetric,
   SalesCustomerFact,
   SalesSyncState,
+  StorefrontAnalyticsEvent,
+  StorefrontAnalyticsSession,
 }) {}
 
 export default SalesAnalyticsModuleService

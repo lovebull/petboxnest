@@ -51,3 +51,46 @@ export type SalesOrdersResponse = {
   page_size: number
   page_count: number
 }
+
+export type CommerceAnalyticsSummary = {
+  total_sales: number
+  order_count: number
+  average_order_value: number
+  customer_count: number
+  returning_customer_count: number
+  returning_customer_rate: number
+  visits: number
+  new_visits: number
+  returning_visits: number
+  added_to_cart_sessions: number
+  checkout_sessions: number
+  completed_sessions: number
+  add_to_cart_rate: number
+  checkout_rate: number
+  conversion_rate: number
+}
+
+export type CommerceAnalyticsResponse = {
+  period: {
+    date_from: string
+    date_to: string
+    previous_date_from: string
+    previous_date_to: string
+    granularity: "hour" | "day"
+  }
+  currency_code: string
+  available_currencies: string[]
+  summary: CommerceAnalyticsSummary
+  previous_summary: CommerceAnalyticsSummary
+  series: Array<{
+    bucket: string
+    total_sales: number
+    order_count: number
+    visits: number
+    new_visits: number
+    returning_visits: number
+    new_customers: number
+    returning_customers: number
+  }>
+  definitions: Record<string, string>
+}

@@ -21,3 +21,32 @@ export const SalesOrdersQuerySchema = SalesAnalyticsQuerySchema.extend({
   fulfillment_status: z.string().trim().max(50).optional(),
 })
 export type SalesOrdersQuery = z.infer<typeof SalesOrdersQuerySchema>
+
+export const CommerceAnalyticsQuerySchema = SalesAnalyticsQuerySchema.extend({
+  granularity: z.enum(["auto", "hour", "day"]).default("auto"),
+})
+export type CommerceAnalyticsQuery = z.infer<
+  typeof CommerceAnalyticsQuerySchema
+>
+
+export const StorefrontAnalyticsEventSchema = z.strictObject({
+  event_id: z.uuid(),
+  event_type: z.enum([
+    "page_view",
+    "product_view",
+    "add_to_cart",
+    "checkout_started",
+    "order_completed",
+  ]),
+  visitor_id: z.uuid(),
+  session_id: z.uuid(),
+  path: z.string().trim().min(1).max(500).startsWith("/").optional(),
+  country_code: z.string().trim().length(2).toLowerCase().optional(),
+  product_id: z.string().trim().max(100).optional(),
+  variant_id: z.string().trim().max(100).optional(),
+  cart_id: z.string().trim().max(100).optional(),
+  order_id: z.string().trim().max(100).optional(),
+})
+export type StorefrontAnalyticsEventBody = z.infer<
+  typeof StorefrontAnalyticsEventSchema
+>

@@ -5,6 +5,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { COOKIE_SETTINGS_EVENT } from "../cookie-settings-button"
+import { ANALYTICS_CONSENT_CHANGED_EVENT } from "@lib/analytics/client"
 
 type ConsentPreferences = {
   necessary: true
@@ -73,6 +74,11 @@ const saveConsent = (preferences: ConsentPreferences) => {
   document.cookie = `${CONSENT_COOKIE_NAME}=${encodeURIComponent(
     JSON.stringify(payload)
   )}; Max-Age=${CONSENT_MAX_AGE}; Path=/; SameSite=Lax`
+  window.dispatchEvent(
+    new CustomEvent(ANALYTICS_CONSENT_CHANGED_EVENT, {
+      detail: { analytics: preferences.analytics },
+    })
+  )
 }
 
 const CookieConsentBanner = () => {

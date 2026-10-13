@@ -4,6 +4,32 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.22.15",
+    date: "2026-10-12 21:18:33 EDT",
+    title: "📈 Storefront 转化漏斗与经营概览",
+    items: [
+      "📈 Medusa Admin 新增经营概览页面，整合销售额、访问量、回头客率、转化率、平均订单金额和订单数指标。",
+      "🧭 经营概览支持今天、昨天、7 天、30 天快捷筛选、币种筛选、自动刷新和上期对比。",
+      "🧱 salesAnalytics 模块新增 StorefrontAnalyticsEvent 与 StorefrontAnalyticsSession 数据模型，用于记录前台事件和匿名访问会话。",
+      "🗃️ 新增 storefront analytics 数据库迁移与 snapshot，创建 pbn_storefront_analytics_event 和 pbn_storefront_analytics_session 表及索引。",
+      "🔄 新增 recordStorefrontAnalyticsEventWorkflow，支持 page_view、product_view、add_to_cart、checkout_started 和 order_completed 事件写入。",
+      "🔐 新增 Store API /store/analytics/events 请求体验证，使用 event_id 去重、session 归属校验和会话级限流保护埋点写入。",
+      "🛒 Storefront 接入 Analytics Cookie 同意后的页面浏览、商品浏览、加购、开始结账和订单完成事件上报。",
+      "🍪 Cookie 同意设置保存后会广播 analytics consent 变更，允许开启时立即记录当前页面，关闭时清理匿名分析身份。",
+      "📊 新增 Admin /admin/commerce-analytics 汇总接口，按日期范围和币种输出销售、访问、漏斗与新老访客序列。",
+    ],
+    fixes: [
+      "🐛 修复销售分析只能看到订单结果，缺少访问到加购、结账、下单全过程转化漏斗的问题。",
+      "🐛 修复前台页面浏览、商品浏览和加购行为没有统一进入 Medusa 后台分析体系的问题。",
+      "🐛 修复订单完成事件可能重复记录的问题，通过 event_id 和 order_id 双重去重保持转化统计稳定。",
+      "🐛 修复 Analytics Cookie 关闭后仍可能保留匿名访客与会话标识的问题，关闭同意时会清理本地分析身份。",
+      "🐛 修复同一会话短时间重复触发相同页面事件导致访问数据被放大的问题，前端增加即时重复事件抑制。",
+      "🐛 修复 Store API 缺少请求体验证和限流保护，异常埋点请求可能污染分析数据的问题。",
+      "🐛 修复 Admin 经营指标缺少上期对比、自动刷新和小时级当天粒度，运营无法实时判断今日表现的问题。",
+      "🐛 修复销售和访问数据分散在不同视图中，难以同时判断销售额、流量和转化率关系的问题。",
+    ],
+  },
+  {
     version: "v1.22.14",
     date: "2026-10-12 10:27:12 EDT",
     title: "📊 Medusa 销售分析插件接入",

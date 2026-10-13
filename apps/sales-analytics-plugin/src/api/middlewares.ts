@@ -1,5 +1,14 @@
-import { defineMiddlewares, validateAndTransformQuery } from "@medusajs/framework/http"
-import { SalesAnalyticsQuerySchema, SalesOrdersQuerySchema } from "./validators"
+import {
+  defineMiddlewares,
+  validateAndTransformBody,
+  validateAndTransformQuery,
+} from "@medusajs/framework/http"
+import {
+  CommerceAnalyticsQuerySchema,
+  SalesAnalyticsQuerySchema,
+  SalesOrdersQuerySchema,
+  StorefrontAnalyticsEventSchema,
+} from "./validators"
 
 export default defineMiddlewares({
   routes: [
@@ -12,6 +21,16 @@ export default defineMiddlewares({
       matcher: "/admin/sales-analytics/orders",
       method: "GET",
       middlewares: [validateAndTransformQuery(SalesOrdersQuerySchema, {})],
+    },
+    {
+      matcher: "/admin/commerce-analytics",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(CommerceAnalyticsQuerySchema, {})],
+    },
+    {
+      matcher: "/store/analytics/events",
+      method: "POST",
+      middlewares: [validateAndTransformBody(StorefrontAnalyticsEventSchema)],
     },
   ],
 })

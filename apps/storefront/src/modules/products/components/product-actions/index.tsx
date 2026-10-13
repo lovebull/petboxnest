@@ -1,6 +1,7 @@
 "use client"
 
 import { addToCart } from "@lib/data/cart"
+import { trackStorefrontEvent } from "@lib/analytics/client"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@modules/common/components/ui"
@@ -172,6 +173,13 @@ export default function ProductActions({
         quantity: 1,
         countryCode,
       })
+
+      void trackStorefrontEvent("add_to_cart", {
+        path: pathname,
+        country_code: countryCode,
+        product_id: product.id,
+        variant_id: selectedVariant.id,
+      }).catch(() => undefined)
 
       notifyLayoutSessionChanged()
     } catch (error) {

@@ -3,6 +3,7 @@ import { Metadata } from "next"
 import { getBaseURL } from "@lib/util/env"
 import CookieConsentBanner from "@modules/layout/components/cookie-consent-banner"
 import LayoutSessionBanners from "@modules/layout/components/layout-session-banners"
+import StorefrontAnalytics from "@modules/layout/components/storefront-analytics"
 import { LayoutSessionProvider } from "@modules/layout/components/layout-session-provider"
 import Footer from "@modules/layout/templates/footer"
 import Nav from "@modules/layout/templates/nav"
@@ -20,6 +21,7 @@ export default function PageLayout(props: { children: React.ReactNode }) {
         <Nav />
       </Suspense>
       <LayoutSessionBanners />
+      <StorefrontAnalytics />
       {props.children}
       <Footer />
       <CookieConsentBanner />

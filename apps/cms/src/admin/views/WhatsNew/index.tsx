@@ -4,6 +4,21 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.24.2",
+    date: "2026-10-13 20:54:28 EDT",
+    title: "🏷️ 经营分析菜单标签优化",
+    items: [
+      "🏷️ 将 /analytics/sales 菜单英文标签从 Sales Analytics 精简为 Sales，让侧栏子菜单更短、更易扫描。",
+      "🎯 将 /analytics/milestones 菜单英文标签从 Milestones 调整为 Goals，更贴近订单目标达成页面的运营语义。",
+      "🧭 经营分析分组内的子菜单英文命名保持简洁风格，和 Overview、Sales、Goals 的层级表达一致。",
+    ],
+    fixes: [
+      "🐛 修复销售分析子菜单英文标签过长，在侧栏或窄屏导航中容易显得拥挤的问题。",
+      "🐛 修复订单里程碑英文标签 Milestones 偏技术描述，和运营视角的目标达成页面含义不够贴合的问题。",
+      "🐛 修复经营分析分组内子菜单英文命名长短不一致，影响后台运营人员快速识别入口的问题。",
+    ],
+  },
+  {
     version: "v1.24.1",
     date: "2026-10-13 20:34:24 EDT",
     title: "🛠️ 经营分析导航与里程碑日期修正",

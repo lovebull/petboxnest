@@ -1,0 +1,10 @@
+/*
+ * Medusa renders both the collapsible parent trigger and a link to the parent
+ * route inside the expanded mobile submenu. The parent route only redirects to
+ * Overview, so that second link is redundant and repeats the same label.
+ */
+@media (max-width: 1023px) {
+  nav li > a[href$="/analytics"] {
+    display: none;
+  }
+}

@@ -7,6 +7,24 @@ import type { AdminOrderMilestone, OrderMilestonesResponse } from "../../types";
 
 const queryKey = ["order-milestones"];
 const formatCount = (value: number) => value.toLocaleString("en-US");
+const analyticsTimeZone = "America/New_York";
+
+const achievementDateZh = new Intl.DateTimeFormat("zh-CN", {
+  timeZone: analyticsTimeZone,
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const achievementDateEn = new Intl.DateTimeFormat("en-US", {
+  timeZone: analyticsTimeZone,
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  timeZoneName: "short",
+});
 
 const MilestoneCard = ({ milestone }: { milestone: AdminOrderMilestone }) => (
   <div
@@ -41,9 +59,15 @@ const MilestoneCard = ({ milestone }: { milestone: AdminOrderMilestone }) => (
       </Badge>
     </div>
     {milestone.achieved_at && (
-      <Text size="xsmall" className="mt-3 text-ui-fg-muted">
-        达成时间 / Achieved {new Date(milestone.achieved_at).toLocaleString()}
-      </Text>
+      <div className="mt-3 border-t pt-3">
+        <Text size="small" leading="compact" weight="plus">
+          达成日期：{achievementDateZh.format(new Date(milestone.achieved_at))}
+        </Text>
+        <Text size="xsmall" leading="compact" className="text-ui-fg-muted">
+          Date achieved:{" "}
+          {achievementDateEn.format(new Date(milestone.achieved_at))}
+        </Text>
+      </div>
     )}
   </div>
 );

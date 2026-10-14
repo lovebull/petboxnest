@@ -1,6 +1,7 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk";
 import { ChartBar } from "@medusajs/icons";
 import { Navigate } from "react-router-dom";
+import "./page.css";
 
 const AnalyticsRoute = () => <Navigate to="/analytics/overview" replace />;
 

@@ -1,9 +1,12 @@
 import BrandValues from "@modules/home/components/brand-values"
+import CarePerspectives from "@modules/home/components/care-perspectives"
 import ClubhouseNotes from "@modules/home/components/clubhouse-notes"
 import EarlyAccessSignup from "@modules/home/components/early-access-signup"
 import Hero from "@modules/home/components/hero"
+import HomeFaq from "@modules/home/components/home-faq"
 import HowItWorks from "@modules/home/components/how-it-works"
 import LatestProducts from "@modules/home/components/latest-products"
+import PetPerspectives from "@modules/home/components/pet-perspectives"
 import ShopByPet from "@modules/home/components/shop-by-pet"
 import SocialProof from "@modules/home/components/social-proof"
 import TrustStrip from "@modules/home/components/trust-strip"
@@ -46,8 +49,11 @@ export default async function Home(props: {
       <ShopByPet />
       <LatestProducts countryCode={countryCode} region={region} />
       <BrandValues />
+      <PetPerspectives />
       <HowItWorks />
+      <CarePerspectives />
       <SocialProof />
+      <HomeFaq />
       <ClubhouseNotes />
       <EarlyAccessSignup />
     </>

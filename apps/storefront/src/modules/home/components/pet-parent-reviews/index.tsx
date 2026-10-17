@@ -1,4 +1,5 @@
 import { getHomepageReviews } from "@lib/data/product-reviews"
+import { curatedProductReviews } from "@lib/data/curated-product-reviews"
 import ReviewRail, { type PetParentVoice } from "./review-rail"
 
 const reviewDateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -11,17 +12,14 @@ const reviewDateFormatter = new Intl.DateTimeFormat("en-US", {
 const PetParentReviews = async () => {
   const data = await getHomepageReviews()
 
-  if (!data.reviews.length) {
-    return null
-  }
-
-  const voices: PetParentVoice[] = data.reviews.map((review) => ({
+  const approvedVoices: PetParentVoice[] = data.reviews.map((review) => ({
     id: review.id,
     name: review.reviewer_name,
     title: review.title || "A note from their home",
     content: review.content,
     rating: review.rating,
     dateLabel: reviewDateFormatter.format(new Date(review.created_at)),
+    trustLabel: "Approved customer review",
     product: review.product
       ? {
           title: review.product.title,
@@ -29,6 +27,22 @@ const PetParentReviews = async () => {
         }
       : null,
   }))
+
+  const voices = [
+    ...approvedVoices,
+    ...curatedProductReviews
+      .filter(
+        (review) => !approvedVoices.some((voice) => voice.id === review.id),
+      )
+      .map<PetParentVoice>((review) => ({
+        id: review.id,
+        name: "Editorial summary",
+        title: review.title || "A note from their home",
+        content: review.content,
+        trustLabel: "General feedback theme",
+        isEditorial: true,
+      })),
+  ].slice(0, 8)
 
   return (
     <section
@@ -38,7 +52,7 @@ const PetParentReviews = async () => {
       <div className="pbn-container">
         <header className="mx-auto max-w-[760px] text-center">
           <p className="text-xs font-bold uppercase tracking-normal text-brand">
-            Approved customer reviews
+            Pet parent feedback highlights
           </p>
           <h2
             id="pet-parent-reviews-heading"
@@ -47,8 +61,9 @@ const PetParentReviews = async () => {
             What pet parents are saying
           </h2>
           <p className="mx-auto mt-4 max-w-[650px] text-base leading-7 text-muted small:text-lg small:leading-8">
-            Honest notes from PetBoxNest customer accounts, published after
-            moderation.
+            Approved reviews appear with their rating and date. Editorial
+            summaries are clearly labeled and are not product-specific or
+            verified-purchase reviews.
           </p>
         </header>
 

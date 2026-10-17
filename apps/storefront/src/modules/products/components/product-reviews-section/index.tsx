@@ -1,4 +1,5 @@
 import { getProductReviews } from "@lib/data/product-reviews"
+import { getCuratedProductReviews } from "@lib/data/curated-product-reviews"
 import ProductReviews from "@modules/products/components/product-reviews"
 
 export type ProductReviewQuery = {
@@ -17,18 +18,22 @@ export default async function ProductReviewsSection({
   productSchemaId: string
   query: ProductReviewQuery
 }) {
-  const reviews = await getProductReviews(productId, query)
+  const approvedReviews = await getProductReviews(productId, query)
+  const usesCuratedReviews = approvedReviews.count === 0
+  const reviews = usesCuratedReviews
+    ? getCuratedProductReviews(query)
+    : approvedReviews
 
   const reviewSchema =
-    reviews.count > 0
+    approvedReviews.count > 0
       ? {
           "@context": "https://schema.org",
           "@type": "Product",
           "@id": productSchemaId,
           aggregateRating: {
             "@type": "AggregateRating",
-            ratingValue: reviews.average_rating,
-            reviewCount: reviews.count,
+            ratingValue: approvedReviews.average_rating,
+            reviewCount: approvedReviews.count,
             bestRating: 5,
             worstRating: 1,
           },
@@ -48,6 +53,7 @@ export default async function ProductReviewsSection({
       <ProductReviews
         productId={productId}
         data={reviews}
+        usesCuratedReviews={usesCuratedReviews}
       />
     </>
   )

@@ -11,6 +11,8 @@ export type PetParentVoice = {
   content: string
   rating?: number
   dateLabel?: string
+  trustLabel?: string
+  isEditorial?: boolean
   product?: {
     title: string
     handle: string
@@ -65,7 +67,7 @@ const ReviewRail = ({ voices }: ReviewRailProps) => {
         ref={railRef}
         onScroll={updateControls}
         className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-0.5 pb-2"
-        aria-label="Approved customer reviews"
+        aria-label="Customer review highlights"
       >
         {voices.map((voice, index) => (
           <article
@@ -103,15 +105,21 @@ const ReviewRail = ({ voices }: ReviewRailProps) => {
 
             <div className="mt-5 flex items-center gap-2 text-xs font-bold uppercase tracking-normal text-brand">
               <CheckCircle aria-hidden="true" className="h-4 w-4 text-brand" />
-              Approved customer review
+              {voice.trustLabel || "Customer review"}
             </div>
 
             <h3 className="mt-4 text-lg font-bold leading-6 text-ink">
               {voice.title}
             </h3>
-            <blockquote className="mt-3 flex-1 text-[15px] leading-7 text-muted">
-              “{voice.content}”
-            </blockquote>
+            {voice.isEditorial ? (
+              <p className="mt-3 flex-1 text-[15px] leading-7 text-muted">
+                {voice.content}
+              </p>
+            ) : (
+              <blockquote className="mt-3 flex-1 text-[15px] leading-7 text-muted">
+                “{voice.content}”
+              </blockquote>
+            )}
 
             <footer className="mt-6 border-t border-grey-20 pt-4 text-xs leading-5 text-muted">
               {voice.product?.handle ? (
@@ -122,9 +130,7 @@ const ReviewRail = ({ voices }: ReviewRailProps) => {
                   {voice.product.title}
                 </LocalizedClientLink>
               ) : (
-                <span className="font-bold text-ink">
-                  PetBoxNest customer
-                </span>
+                <span className="font-bold text-ink">Pet parent</span>
               )}
               {voice.dateLabel && (
                 <time className="mt-1 block">{voice.dateLabel}</time>

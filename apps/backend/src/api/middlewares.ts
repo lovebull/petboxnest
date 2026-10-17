@@ -322,10 +322,7 @@ const CheckoutErrorListSchema = z.object({
   q: z.string().trim().max(120).optional(),
   resource: CheckoutErrorResourceSchema.optional(),
   resolution_status: CheckoutErrorResolutionSchema.optional(),
-  retryable: z
-    .enum(["true", "false"])
-    .transform((value) => value === "true")
-    .optional(),
+  retryable: z.enum(["true", "false"]).transform((value) => value === "true").optional(),
   date_from: z.iso.datetime().optional(),
   date_to: z.iso.datetime().optional(),
 });
@@ -337,7 +334,10 @@ const StorefrontErrorListSchema = z.object({
   resource: CheckoutErrorResourceSchema.optional(),
   scope: StorefrontErrorScopeSchema.optional(),
   resolution_status: CheckoutErrorResolutionSchema.optional(),
-  retryable: z.enum(["true", "false"]).transform((value) => value === "true").optional(),
+  retryable: z
+    .enum(["true", "false"])
+    .transform((value) => value === "true")
+    .optional(),
   date_from: z.iso.datetime().optional(),
   date_to: z.iso.datetime().optional(),
 });
@@ -577,6 +577,27 @@ export default defineMiddlewares({
             has_reply: true,
           }).extend({
             limit: z.coerce.number().int().min(1).max(100).default(10),
+          }),
+          {},
+        ),
+      ],
+    },
+    {
+      matcher: "/store/product-reviews",
+      method: "GET",
+      middlewares: [
+        validateAndTransformQuery(
+          ReviewListSchema.omit({
+            status: true,
+            statuses: true,
+            ratings: true,
+            product_id: true,
+            q: true,
+            date_from: true,
+            date_to: true,
+            has_reply: true,
+          }).extend({
+            limit: z.coerce.number().int().min(1).max(12).default(8),
           }),
           {},
         ),

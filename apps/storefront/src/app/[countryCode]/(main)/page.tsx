@@ -6,6 +6,7 @@ import Hero from "@modules/home/components/hero"
 import HomeFaq from "@modules/home/components/home-faq"
 import HowItWorks from "@modules/home/components/how-it-works"
 import LatestProducts from "@modules/home/components/latest-products"
+import PetParentReviews from "@modules/home/components/pet-parent-reviews"
 import PetPerspectives from "@modules/home/components/pet-perspectives"
 import ShopByPet from "@modules/home/components/shop-by-pet"
 import SocialProof from "@modules/home/components/social-proof"
@@ -52,6 +53,7 @@ export default async function Home(props: {
       <PetPerspectives />
       <HowItWorks />
       <CarePerspectives />
+      <PetParentReviews />
       <SocialProof />
       <HomeFaq />
       <ClubhouseNotes />

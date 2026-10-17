@@ -23,6 +23,42 @@ export type ProductReviewsResponse = {
   rating_distribution: Record<1 | 2 | 3 | 4 | 5, number>
 }
 
+export type HomepageReview = Omit<PublicReview, "reply"> & {
+  product: {
+    id: string
+    title: string
+    handle: string
+    thumbnail: string | null
+  } | null
+}
+
+export type HomepageReviewsResponse = {
+  reviews: HomepageReview[]
+  count: number
+  page: number
+  page_size: number
+  page_count: number
+}
+
+export async function getHomepageReviews(limit = 8) {
+  return sdk.client
+    .fetch<HomepageReviewsResponse>("/store/product-reviews", {
+      query: { page: 1, limit, sort: "newest" },
+      cache: "force-cache",
+      next: {
+        revalidate: 60,
+        tags: ["product-reviews", "homepage-product-reviews"],
+      },
+    })
+    .catch(() => ({
+      reviews: [],
+      count: 0,
+      page: 1,
+      page_size: limit,
+      page_count: 1,
+    }))
+}
+
 export async function getProductReviews(productId: string, query?: { page?: number; rating?: number; q?: string; sort?: string }) {
   return sdk.client.fetch<ProductReviewsResponse>(`/store/products/${productId}/reviews`, {
     query: { page: query?.page || 1, limit: 10, rating: query?.rating, q: query?.q, sort: query?.sort || "newest" },

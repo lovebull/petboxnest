@@ -6,26 +6,46 @@ const questions = [
     question: "How do I know my order was received?",
     answer:
       "After checkout, you will see an order confirmation and receive a confirmation email. If it does not arrive within an hour, check your spam folder or contact us.",
+    detailLink: {
+      href: "/faq#orders-and-payment",
+      label: "More order answers",
+    },
   },
   {
     question: "When will my order ship?",
     answer:
-      "Most orders are processed within one to two business days. We will email tracking information when the carrier accepts your shipment.",
+      "Orders are generally processed within one to two business days. Orders placed on weekends or U.S. holidays begin processing on the next business day, and tracking is emailed when the carrier accepts your shipment.",
+    detailLink: {
+      href: "/shipping-policy#processing-and-delivery",
+      label: "Read the Shipping Policy",
+    },
   },
   {
     question: "Do you offer free shipping?",
     answer:
-      "Standard shipping is free on qualifying U.S. orders of $100 or more. Checkout will show the available options and final shipping cost.",
+      "U.S. standard shipping is free on orders of $100 or more. Standard shipping is $9.99 for U.S. orders under $100, and checkout shows the available options and final charge.",
+    detailLink: {
+      href: "/shipping-policy#shipping-costs",
+      label: "See shipping costs",
+    },
   },
   {
     question: "What is your return window?",
     answer:
-      "Eligible unused, clean, and undamaged items may be returned within 15 calendar days of confirmed delivery.",
+      "Eligible items may be returned within 15 calendar days of confirmed delivery. Items must be unused, clean, and undamaged, with their original packaging, accessories, and proof of purchase.",
+    detailLink: {
+      href: "/refund-policy#return-eligibility",
+      label: "Check return eligibility",
+    },
   },
   {
-    question: "What does the product warranty cover?",
+    question: "How long does a refund take?",
     answer:
-      "Our 30-day limited warranty covers qualifying defects in materials or workmanship. Normal wear, impact damage, misuse, and unauthorized alterations are not covered.",
+      "After a returned item passes inspection, we initiate an approved refund to the original payment method within five business days. Your bank or payment provider may need another five to ten business days to post the credit.",
+    detailLink: {
+      href: "/refund-policy#refund-details",
+      label: "Read the Returns & Refunds Policy",
+    },
   },
 ]
 
@@ -64,8 +84,15 @@ const HomeFaq = () => {
                   <ChevronDown aria-hidden="true" />
                 </span>
               </summary>
-              <div className="px-5 pb-6 pr-16 text-base leading-7 text-muted small:px-7 small:pb-7 small:pr-24">
+              <div className="space-y-3 px-5 pb-6 pr-16 text-base leading-7 text-muted small:px-7 small:pb-7 small:pr-24">
                 <p>{item.answer}</p>
+                <LocalizedClientLink
+                  href={item.detailLink.href}
+                  className="pbn-focus inline-flex min-h-11 items-center gap-2 rounded-lg font-bold text-brand underline decoration-brand/35 underline-offset-4 transition-colors hover:text-brand-dark hover:decoration-brand-dark"
+                >
+                  {item.detailLink.label}
+                  <ArrowRight aria-hidden="true" />
+                </LocalizedClientLink>
               </div>
             </details>
           ))}

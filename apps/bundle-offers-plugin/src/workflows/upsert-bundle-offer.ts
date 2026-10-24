@@ -16,6 +16,7 @@ import {
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk"
 import { batchLinksWorkflow } from "@medusajs/medusa/core-flows"
+import { getPackInventoryError, hasDuplicateInventoryItems, inventoryLinkAction } from "../utils/inventory-safety"
 import {
   BUNDLE_OFFERS_MODULE,
 } from "../modules/bundle-offers"
@@ -105,21 +106,11 @@ const buildLinkBatch = (
   const deleted: LinkDefinition[] = []
 
   after.forEach((component, key) => {
-    const existing = before.get(key)
-    if (!existing) {
-      if (nativeLinks.has(key)) {
-        if (
-          nativeLinks.get(key)?.required_quantity !==
-          component.required_quantity
-        ) {
-          update.push(toLink(component, true))
-        }
-      } else {
-        create.push(toLink(component, true))
-      }
-    } else if (existing.required_quantity !== component.required_quantity) {
-      update.push(toLink(component, true))
-    }
+    // Compare with the live Medusa link, not the previous offer snapshot.
+    // Otherwise an unchanged save cannot repair a link edited elsewhere.
+    const action = inventoryLinkAction(nativeLinks.get(key)?.required_quantity, component.required_quantity)
+    if (action === "create") create.push(toLink(component, true))
+    if (action === "update") update.push(toLink(component, true))
   })
 
   before.forEach((component, key) => {
@@ -317,6 +308,10 @@ const validateInput = async (
   }
 
   const components = input.options.flatMap((option) => option.components)
+  if (input.options.some((option) => hasDuplicateInventoryItems(option.components))) {
+    throw new MedusaError(MedusaError.Types.INVALID_DATA,
+      "同一库存项请合并填写发货总数（含赠品） / Combine paid and free quantities for the same inventory item into one component.")
+  }
   components.forEach((component: BundleOfferComponentInput) => {
     if (!Number.isInteger(component.required_quantity) || component.required_quantity < 1) {
       throw new MedusaError(
@@ -363,6 +358,7 @@ const upsertBundleOfferStep = createStep(
       entity: "variant",
       fields: [
         "id",
+        "metadata",
         "inventory_items.inventory_item_id",
         "inventory_items.required_quantity",
       ],
@@ -384,6 +380,14 @@ const upsertBundleOfferStep = createStep(
         })
       })
     })
+    for (const option of input.options) {
+      const variant = nativeVariants.find((item) => item.id === option.variant_id)
+      const error = getPackInventoryError(
+        variant?.metadata as Record<string, unknown> | null | undefined,
+        variant?.inventory_items || [], option.components
+      )
+      if (error) throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
+    }
     if (previous && previous.product_id !== input.product_id) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,

@@ -12,6 +12,7 @@ import { Plus, Trash } from "@medusajs/icons"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { FormEvent, useEffect, useMemo, useState } from "react"
 import { sdk } from "../lib/sdk"
+import { getPackInventoryError, hasDuplicateInventoryItems } from "../../utils/inventory-safety"
 import type {
   AdminBundleComponent,
   AdminBundleOffer,
@@ -21,7 +22,11 @@ import type {
 type ProductSummary = {
   id: string
   title: string
-  variants?: Array<{ id: string; title: string; sku?: string | null }>
+  variants?: Array<{
+    id: string; title: string; sku?: string | null
+    metadata?: Record<string, unknown> | null
+    inventory_items?: Array<{ inventory_item_id: string; required_quantity: number }>
+  }>
 }
 
 type InventorySummary = {
@@ -141,7 +146,7 @@ export function BundleOfferEditor({
     queryKey: ["bundle-offers-product", draft.product_id],
     queryFn: async () => {
       const response = await sdk.admin.product.retrieve(draft.product_id, {
-        fields: "+variants.id,+variants.title,+variants.sku",
+        fields: "+variants.id,+variants.title,+variants.sku,+variants.metadata,*variants.inventory_items",
       })
       return response.product as ProductSummary
     },
@@ -157,16 +162,19 @@ export function BundleOfferEditor({
   })
 
   const variants = selectedProductQuery.data?.variants || []
+  const usedVariantIds = new Set(draft.options.map((option) => option.variant_id).filter(Boolean))
+  const hasUnusedVariant = variants.some((variant) => !usedVariantIds.has(variant.id))
   const inventoryItems = inventoryQuery.data || []
   const invalidReason = useMemo(() => {
     if (!draft.product_id) return "请选择商品 / Select a product"
+    if (selectedProductQuery.isPending || selectedProductQuery.isError) return "请等待商品库存配置加载成功 / Product inventory must load before saving"
     if (!draft.title.trim()) return "请输入套餐标题 / Enter an offer title"
     if (!draft.options.length) return "至少添加一个套餐 / Add at least one option"
     if (draft.options.some((option) => !option.variant_id || !option.title.trim())) {
       return "每个套餐都需要变体和标题 / Every option needs a variant and title"
     }
     if (new Set(draft.options.map((option) => option.variant_id)).size !== draft.options.length) {
-      return "同一变体不能重复 / A variant can only be used once"
+      return "多个套餐绑定了相同变体，请为每个套餐选择独立变体 / Select a different variant for each option"
     }
     if (draft.options.filter((option) => option.is_active && option.is_default).length > 1) {
       return "只能设置一个默认套餐 / Only one active option can be default"
@@ -174,8 +182,16 @@ export function BundleOfferEditor({
     if (draft.options.some((option) => option.components.some((component) => !component.inventory_item_id))) {
       return "请选择库存组件 / Select every inventory component"
     }
+    for (const option of draft.options) {
+      const variant = variants.find((item) => item.id === option.variant_id)
+      if (!variant) return "绑定变体不存在，请刷新 / Variant not found; refresh this editor"
+      if (hasDuplicateInventoryItems(option.components)) return "相同库存项请合并填写总数量（含赠品） / Combine quantities for the same inventory item"
+      if (option.components.some((item) => !Number.isInteger(item.required_quantity) || item.required_quantity < 1)) return "库存数量必须是正整数 / Inventory quantities must be positive integers"
+      const error = getPackInventoryError(variant.metadata, variant.inventory_items || [], option.components)
+      if (error) return error
+    }
     return null
-  }, [draft])
+  }, [draft, selectedProductQuery.data, selectedProductQuery.isPending, selectedProductQuery.isError])
 
   const save = useMutation({
     mutationFn: () => {
@@ -215,6 +231,8 @@ export function BundleOfferEditor({
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["bundle-offers"] })
+      await queryClient.invalidateQueries({ queryKey: ["bundle-offers-product", draft.product_id] })
+      await queryClient.invalidateQueries({ queryKey: ["product", draft.product_id] })
       toast.success("套餐已保存 / Bundle offer saved")
       onOpenChange(false)
     },
@@ -295,10 +313,22 @@ export function BundleOfferEditor({
                   <Heading level="h2">套餐选项</Heading>
                   <Text size="small" className="text-ui-fg-subtle">Bundle options</Text>
                 </div>
-                <Button type="button" size="small" variant="secondary" onClick={() => setDraft((current) => ({ ...current, options: [...current.options, emptyOption(current.options.length)] }))}>
+                <Button type="button" size="small" variant="secondary" disabled={selectedProductQuery.isFetching || !hasUnusedVariant || draft.options.some((option) => !option.variant_id)} onClick={() => setDraft((current) => ({ ...current, options: [...current.options, emptyOption(current.options.length)] }))}>
                   <Plus /> 添加套餐 / Add option
                 </Button>
               </div>
+
+              <Text size="small" className="text-ui-fg-subtle">
+                每个套餐需要独立的商品变体，用于设置成交价及库存组成。多个套餐可以通过库存组件复用同一库存项。
+                <br />Each option requires its own purchasable variant. Options can share inventory items through kit components.
+                {draft.product_id && !selectedProductQuery.isFetching && !hasUnusedVariant && (
+                  <>
+                    <br />当前没有未绑定的变体，请先到商品详情创建新的套餐变体，再返回编辑。
+                    <br />No unused variants remain. Create another variant on the product details page, then return to this editor.
+                    <br /><a href={`/app/products/${draft.product_id}`} target="_blank" rel="noreferrer" className="underline">打开商品详情 / Open product details</a>
+                  </>
+                )}
+              </Text>
 
               {draft.options.map((option, optionIndex) => (
                 <section key={option.id || `option-${optionIndex}`} className="rounded-lg border border-ui-border-base p-4">
@@ -315,10 +345,21 @@ export function BundleOfferEditor({
                     <Field label="绑定变体 / Purchasable variant">
                       <Select value={option.variant_id || undefined} onValueChange={(variant_id) => {
                         const variant = variants.find((item) => item.id === variant_id)
-                        updateOption(optionIndex, { variant_id, title: option.title || variant?.title || "" })
+                        if (variant_id === option.variant_id) return
+                        updateOption(optionIndex, {
+                          variant_id, title: option.title || variant?.title || "",
+                          components: (variant?.inventory_items || []).map((item, index) => ({
+                            inventory_item_id: item.inventory_item_id,
+                            required_quantity: item.required_quantity,
+                            role: "paid" as const, label: "", display_order: index,
+                          })),
+                        })
                       }}>
                         <Select.Trigger><Select.Value placeholder="选择变体 / Select variant" /></Select.Trigger>
-                        <Select.Content>{variants.map((variant) => <Select.Item key={variant.id} value={variant.id}>{variant.title}{variant.sku ? ` · ${variant.sku}` : ""}</Select.Item>)}</Select.Content>
+                        <Select.Content>{variants.map((variant) => {
+                          const usedByOtherOption = draft.options.some((other, index) => index !== optionIndex && other.variant_id === variant.id)
+                          return <Select.Item key={variant.id} value={variant.id} disabled={usedByOtherOption}>{variant.title}{variant.sku ? ` · ${variant.sku}` : ""}{usedByOtherOption ? " · 已绑定其他套餐 / Already assigned" : ""}</Select.Item>
+                        })}</Select.Content>
                       </Select>
                     </Field>
                     <Field label="套餐名称 / Offer name"><Input value={option.title} onChange={(event) => updateOption(optionIndex, { title: event.target.value })} /></Field>
@@ -337,7 +378,7 @@ export function BundleOfferEditor({
 
                   <div className="mt-5 border-t border-ui-border-base pt-4">
                     <div className="mb-3 flex items-center justify-between">
-                      <div><Text weight="plus" size="small">库存组成 / Inventory kit</Text><Text size="xsmall" className="text-ui-fg-subtle">付费件和赠品都参与库存扣减。</Text></div>
+                      <div><Text weight="plus" size="small">库存组成 / Inventory kit</Text><Text size="xsmall" className="text-ui-fg-subtle">数量为每份实际发货总数，包含赠品：三盒装填 3，五盒装填 5。同一库存项合并填写。<br />Enter all shipped units per pack, including free units. Combine the same inventory item into one row.</Text></div>
                       <Button type="button" size="small" variant="secondary" onClick={() => updateOption(optionIndex, { components: [...option.components, emptyComponent()] })}><Plus /> 添加组件 / Add</Button>
                     </div>
                     <div className="flex flex-col gap-3">
@@ -347,7 +388,7 @@ export function BundleOfferEditor({
                             <Select.Trigger><Select.Value placeholder="库存项 / Inventory item" /></Select.Trigger>
                             <Select.Content>{inventoryItems.map((item) => <Select.Item key={item.id} value={item.id}>{item.title}{item.sku ? ` · ${item.sku}` : ""}</Select.Item>)}</Select.Content>
                           </Select>
-                          <Input aria-label="Required quantity" type="number" min="1" step="1" value={component.required_quantity} onChange={(event) => updateOption(optionIndex, { components: option.components.map((item, index) => index === componentIndex ? { ...item, required_quantity: Number(event.target.value) } : item) })} />
+                          <Input aria-label="实际发货数量（含赠品） / Shipped units including gifts" type="number" min="1" step="1" value={component.required_quantity} onChange={(event) => updateOption(optionIndex, { components: option.components.map((item, index) => index === componentIndex ? { ...item, required_quantity: Number(event.target.value) } : item) })} />
                           <Select value={component.role} onValueChange={(role) => updateOption(optionIndex, { components: option.components.map((item, index) => index === componentIndex ? { ...item, role: role as "paid" | "gift" } : item) })}>
                             <Select.Trigger><Select.Value /></Select.Trigger><Select.Content><Select.Item value="paid">付费件 / Paid</Select.Item><Select.Item value="gift">赠品 / Gift</Select.Item></Select.Content>
                           </Select>

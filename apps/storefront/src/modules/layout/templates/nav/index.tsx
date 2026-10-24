@@ -20,7 +20,7 @@ export default async function Nav() {
   return (
     <div className="sticky inset-x-0 top-0 z-50 text-ink">
       <div className="flex min-h-9 items-center justify-center bg-brand px-4 py-2 text-center text-xs font-bold tracking-[0.04em] text-white small:text-sm">
-        Free shipping on purchases $100+ · Less cleanup, more cuddle time
+        Free shipping on purchases $70+ · Less cleanup, more cuddle time
       </div>
       <header className="relative h-[72px] border-b border-[#E6E8EC] bg-white/95 backdrop-blur-md small:h-20">
         <nav className="pbn-container flex h-full w-full items-center justify-between text-sm font-semibold">

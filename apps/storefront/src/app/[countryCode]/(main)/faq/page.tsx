@@ -79,7 +79,7 @@ const faqGroups = [
       {
         question: "Do you offer free shipping?",
         answer:
-          "Standard shipping is free on qualifying U.S. orders of $100 or more. The checkout page shows the current shipping options and final cost.",
+          "Standard shipping is free on qualifying U.S. orders of $70 or more. The checkout page shows the current shipping options and final cost.",
         detailLink: {
           href: "/shipping-policy",
           label: "Read the Shipping Policy.",

@@ -114,7 +114,7 @@ export default function ShippingPolicyPage() {
               Last updated
             </p>
             <p className="mt-2 font-display text-[30px] font-bold leading-tight">
-              September 11, 2026
+              October 25, 2026
             </p>
             <p className="mt-5 border-t border-white/15 pt-5 text-sm leading-6 text-white/70">
               The delivery estimate shown at checkout is the most current
@@ -178,9 +178,19 @@ export default function ShippingPolicyPage() {
               index={0}
             >
               <p>
-                Orders are generally processed within one to two business days.
+                Orders ship from Vietnam or China, depending on inventory
+                availability and logistics arrangements. Customers cannot select
+                the shipping origin.
+              </p>
+              <p>
+                Please allow 1–2 business days for processing and an estimated
+                7–15 business days for standard delivery after dispatch.
                 Orders placed on weekends or U.S. holidays begin processing on
                 the next business day.
+              </p>
+              <p>
+                Delivery times are estimates. Customs clearance, holidays, or
+                carrier delays may extend delivery times.
               </p>
               <div
                 className="max-w-full overflow-x-auto rounded-[16px] border border-[#E6E8EC] bg-cream"
@@ -198,7 +208,7 @@ export default function ShippingPolicyPage() {
                         Cost
                       </th>
                       <th scope="col" className="px-5 py-4 font-bold">
-                        Estimated delivery
+                        Estimated delivery after dispatch
                       </th>
                     </tr>
                   </thead>
@@ -206,21 +216,23 @@ export default function ShippingPolicyPage() {
                     <tr>
                       <td className="px-5 py-4 font-bold">Standard</td>
                       <td className="px-5 py-4">
-                        $9.99 for U.S. orders under $100
+                        $9.99 for U.S. orders under $70
                       </td>
-                      <td className="px-5 py-4">3-7 business days</td>
+                      <td className="px-5 py-4">7–15 business days</td>
                     </tr>
                     <tr>
                       <td className="px-5 py-4 font-bold">Express</td>
                       <td className="px-5 py-4">Calculated at checkout</td>
-                      <td className="px-5 py-4">2-3 business days</td>
+                      <td className="px-5 py-4">
+                        Shown at checkout when available
+                      </td>
                     </tr>
                     <tr>
                       <td className="px-5 py-4 font-bold">
                         Free standard shipping
                       </td>
-                      <td className="px-5 py-4">Orders of $100 or more</td>
-                      <td className="px-5 py-4">3-7 business days</td>
+                      <td className="px-5 py-4">Orders of $70 or more</td>
+                      <td className="px-5 py-4">7–15 business days</td>
                     </tr>
                     <tr>
                       <td className="px-5 py-4 font-bold">
@@ -242,8 +254,8 @@ export default function ShippingPolicyPage() {
                 place an order. Current standard rates are:
               </p>
               <ul className="list-disc space-y-2 pl-5 marker:text-brand">
-                <li>Free U.S. standard shipping on orders of $100 or more.</li>
-                <li>$9.99 U.S. standard shipping on orders under $100.</li>
+                <li>Free U.S. standard shipping on orders of $70 or more.</li>
+                <li>$9.99 U.S. standard shipping on orders under $70.</li>
                 <li>
                   $20 flat-rate international shipping where an eligible
                   destination is available at checkout.

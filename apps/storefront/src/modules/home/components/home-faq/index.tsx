@@ -23,7 +23,7 @@ const questions = [
   {
     question: "Do you offer free shipping?",
     answer:
-      "U.S. standard shipping is free on orders of $100 or more. Standard shipping is $9.99 for U.S. orders under $100, and checkout shows the available options and final charge.",
+      "U.S. standard shipping is free on orders of $70 or more. Standard shipping is $9.99 for U.S. orders under $70, and checkout shows the available options and final charge.",
     detailLink: {
       href: "/shipping-policy#shipping-costs",
       label: "See shipping costs",

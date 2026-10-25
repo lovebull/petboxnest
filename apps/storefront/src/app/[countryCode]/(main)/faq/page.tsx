@@ -130,6 +130,15 @@ const faqGroups = [
     accent: "bg-mint",
     items: [
       {
+        question: "How does PetBoxNest choose its products?",
+        answer:
+          "PetBoxNest helps you discover thoughtfully selected finds for life with pets. We focus on practicality, comfort, and value, bringing together useful products that fit everyday routines. Our goal is to make it easier to find the right products for your pet, your home, and your needs.",
+        detailLink: {
+          href: "/about-us",
+          label: "Discover our story.",
+        },
+      },
+      {
         question: "What is your return window?",
         answer:
           "Eligible unused, clean, and undamaged items may be returned within 15 calendar days of confirmed delivery.",

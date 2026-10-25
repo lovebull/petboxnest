@@ -276,9 +276,9 @@ export default function ShippingPolicyPage() {
               index={2}
             >
               <p>
-                PetBoxNest partners with reliable carriers to help your order
-                arrive safely and on time. We primarily use FedEx, UPS, and USPS
-                for shipments.
+                We work with UPS, FedEx, and DHL. The carrier is selected based
+                on the shipping origin, destination, and logistics availability.
+                Customers cannot select a specific carrier.
               </p>
             </PolicyCard>
 

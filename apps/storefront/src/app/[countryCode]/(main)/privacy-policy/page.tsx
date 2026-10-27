@@ -267,7 +267,7 @@ export default function PrivacyPolicyPage() {
                 exercising applicable rights.
               </p>
               <p>
-                Submit a request to support@Petboxnest.com with the subject
+                Submit a request to support@petboxnest.com with the subject
                 “Privacy Request.” An authorized agent may submit a request
                 where permitted by law.
               </p>
@@ -299,7 +299,7 @@ export default function PrivacyPolicyPage() {
               <p>
                 We may update this policy to reflect operational, legal, or
                 technical changes. The date at the top shows the latest
-                revision. Questions may be sent to support@Petboxnest.com.
+                revision. Questions may be sent to support@petboxnest.com.
               </p>
             </PolicyCard>
           </article>

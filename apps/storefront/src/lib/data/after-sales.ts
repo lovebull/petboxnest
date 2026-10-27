@@ -56,12 +56,14 @@ export type AfterSalesEligibility = Record<AfterSalesType, boolean> & {
 export type AfterSalesOrder = {
   id: string
   display_id?: string | number
+  status?: string
+  fulfillment_status?: string
   items?: Array<{
     id: string
     title?: string | null
     quantity: number
   }>
-  fulfillments?: Array<{ labels?: AfterSalesTrackingLabel[] }>
+  fulfillments?: Array<{ id?: string; canceled_at?: string | null; labels?: AfterSalesTrackingLabel[] }>
 }
 
 export type OrderAfterSalesResponse = {

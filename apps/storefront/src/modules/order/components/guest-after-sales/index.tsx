@@ -1,6 +1,7 @@
 "use client"
 
 import { FormEvent, useState } from "react"
+import GuestOrderTracking from "@modules/order/components/guest-order-tracking"
 import {
   createGuestAfterSales,
   getGuestAfterSalesOrder,
@@ -25,7 +26,7 @@ const statusLabels: Record<string, string> = {
   cancelled: "Cancelled",
 }
 
-export default function GuestAfterSales() {
+export default function GuestAfterSales({ mode = "returns" }: { mode?: "returns" | "tracking" }) {
   const [step, setStep] = useState<"lookup" | "verify" | "order" | "done">(
     "lookup",
   )
@@ -71,6 +72,7 @@ export default function GuestAfterSales() {
     setOrderId(result.order_id)
     setToken(result.access_token)
     setData(order)
+    setMessage("")
     setStep("order")
   }
   const submit = async (event: FormEvent) => {
@@ -116,10 +118,10 @@ export default function GuestAfterSales() {
     <div className="mx-auto w-full max-w-3xl px-4 py-12 small:py-20">
       <div className="rounded-[28px] bg-cream p-6 small:p-10">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
-          Guest order care
+          {mode === "tracking" ? "Order tracking" : "Guest order care"}
         </p>
         <h1 className="mt-3 font-display text-4xl font-bold leading-tight text-ink small:text-5xl">
-          Start a return without an account.
+          {mode === "tracking" ? "Follow your order home." : "Start a return without an account."}
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
           Use the order number and email from checkout. We’ll send a one-time
@@ -173,7 +175,13 @@ export default function GuestAfterSales() {
             </button>
           </form>
         )}
-        {step === "order" && (
+        {step === "order" && mode === "tracking" && data && (
+          <GuestOrderTracking order={data.order} onReset={() => {
+            setStep("lookup"); setReference(""); setEmail(""); setCode("")
+            setOrderId(""); setToken(""); setData(null); setMessage("")
+          }} />
+        )}
+        {step === "order" && mode === "returns" && (
           <form onSubmit={submit}>
             <h2 className="font-display text-2xl font-bold text-ink">
               Order #{data?.order.display_id}

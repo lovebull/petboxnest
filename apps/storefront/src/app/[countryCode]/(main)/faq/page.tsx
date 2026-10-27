@@ -68,6 +68,15 @@ const faqGroups = [
     accent: "bg-sky",
     items: [
       {
+        question: "How can I track my order?",
+        answer:
+          "Open Track Order and enter your order number and checkout email. Verify the one-time code sent to your email to view your order status and available carrier tracking links. An account is not required. Tracking details appear after your shipment is arranged.",
+        detailLink: {
+          href: "/track-order",
+          label: "Track your order.",
+        },
+      },
+      {
         question: "When will my order ship?",
         answer:
           "Most orders are processed within one to two business days. Peak periods may take longer, and we will email tracking information when the carrier accepts your shipment.",
@@ -160,10 +169,10 @@ const faqGroups = [
         question: "What does the product warranty cover?",
         answer:
           "Our 30-day limited warranty covers qualifying defects in materials or workmanship. Normal wear, impact damage, misuse, and unauthorized alterations are not covered.",
-        // detailLink: {
-        //   href: "/warranty",
-        //   label: "Read the Warranty.",
-        // },
+        detailLink: {
+          href: "/warranty",
+          label: "Read the Warranty.",
+        },
       },
     ],
   },

@@ -329,6 +329,12 @@ export default function ShippingPolicyPage() {
                 tracking information. Tracking may take up to 24 hours to show
                 movement after the carrier receives the package.
               </p>
+              <LocalizedClientLink
+                href="/track-order"
+                className="pbn-focus inline-flex min-h-11 items-center rounded-lg font-bold text-brand underline underline-offset-4"
+              >
+                Track your order <ArrowRight aria-hidden="true" className="ml-2" />
+              </LocalizedClientLink>
             </PolicyCard>
 
             <PolicyCard

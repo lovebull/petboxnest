@@ -7,6 +7,8 @@ const supportLinks = [
   { label: "Contact us", href: "/contact" },
   { label: "FAQ", href: "/faq" },
   { label: "Shipping", href: "/shipping-policy" },
+  { label: "Track order", href: "/track-order" },
+  { label: "Warranty", href: "/warranty" },
   { label: "Refund policy", href: "/refund-policy" },
   { label: "Guest returns", href: "/returns" },
 ]

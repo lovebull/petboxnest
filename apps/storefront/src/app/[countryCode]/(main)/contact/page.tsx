@@ -83,10 +83,10 @@ export default async function ContactPage({
                 </dt>
                 <dd className="mt-3 break-words text-base leading-7">
                   <a
-                    href="mailto:support@Petboxnest.com"
+                    href="mailto:support@petboxnest.com"
                     className="pbn-focus rounded-md font-bold text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
                   >
-                    support@Petboxnest.com
+                    support@petboxnest.com
                   </a>
                 </dd>
               </div>

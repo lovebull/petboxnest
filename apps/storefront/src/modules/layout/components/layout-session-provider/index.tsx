@@ -18,6 +18,7 @@ type LayoutSession = {
 }
 
 type LayoutSessionContextValue = LayoutSession & {
+  hydrated: boolean
   refresh: () => Promise<void>
 }
 
@@ -29,6 +30,7 @@ const emptySession: LayoutSession = {
 
 const LayoutSessionContext = createContext<LayoutSessionContextValue>({
   ...emptySession,
+  hydrated: false,
   refresh: async () => undefined,
 })
 
@@ -44,11 +46,15 @@ export function LayoutSessionProvider({
   children: React.ReactNode
 }) {
   const [session, setSession] = useState<LayoutSession>(emptySession)
+  // Keep the server fallback and the first client render identical. The
+  // actual cart is loaded after hydration, then the count can update safely.
+  const [hydrated, setHydrated] = useState(false)
   const pathname = usePathname()
 
   const refresh = useCallback(async () => {
     const nextSession = await retrieveLayoutSession().catch(() => emptySession)
     setSession(nextSession)
+    setHydrated(true)
   }, [])
 
   useEffect(() => {
@@ -63,7 +69,7 @@ export function LayoutSessionProvider({
   }, [refresh])
 
   return (
-    <LayoutSessionContext.Provider value={{ ...session, refresh }}>
+    <LayoutSessionContext.Provider value={{ ...session, hydrated, refresh }}>
       {children}
     </LayoutSessionContext.Provider>
   )

@@ -63,9 +63,16 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const inventoryLimited = Boolean(
     item.variant?.manage_inventory && !item.variant.allow_backorder
   )
-  const maxQuantity = inventoryLimited
-    ? Math.max(0, Math.floor(item.variant?.inventory_quantity ?? 0))
-    : undefined
+  // Store API responses can omit inventory_quantity for a line item even
+  // when inventory is managed. Missing data is not the same as zero stock;
+  // only enforce a client-side maximum when Medusa returned a real number.
+  const hasInventoryQuantity =
+    typeof item.variant?.inventory_quantity === "number" &&
+    Number.isFinite(item.variant.inventory_quantity)
+  const maxQuantity =
+    inventoryLimited && hasInventoryQuantity
+      ? Math.max(0, Math.floor(item.variant?.inventory_quantity ?? 0))
+      : undefined
   const quantityUnavailable = maxQuantity === 0
 
   if (type === "full") {
@@ -130,7 +137,9 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
                     defaultValue={item.quantity}
                     disabled={updating || quantityUnavailable}
                     onBlur={(event) => {
-                      const requestedQuantity = Number(event.currentTarget.value)
+                      const requestedQuantity = Number(
+                        event.currentTarget.value
+                      )
 
                       if (
                         !Number.isInteger(requestedQuantity) ||
@@ -169,7 +178,7 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
                 </div>
                 {updating && <Spinner />}
               </div>
-              {inventoryLimited && (
+              {inventoryLimited && hasInventoryQuantity && (
                 <p className="text-xs font-semibold text-muted">
                   {maxQuantity !== undefined && maxQuantity > 0
                     ? `${maxQuantity} currently available`

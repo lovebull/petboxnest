@@ -9,7 +9,6 @@ import { redirect } from "next/navigation"
 import {
   getAuthHeaders,
   getCacheOptions,
-  getSessionCacheOptions,
   getCacheTag,
   getCartId,
   removeCartId,
@@ -37,10 +36,6 @@ export async function retrieveCart(cartId?: string, fields?: string) {
     ...(await getAuthHeaders()),
   }
 
-  const next = {
-    ...(await getSessionCacheOptions("carts")),
-  }
-
   return await sdk.client
     .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${id}`, {
       method: "GET",
@@ -48,8 +43,9 @@ export async function retrieveCart(cartId?: string, fields?: string) {
         fields,
       },
       headers,
-      next,
-      cache: "force-cache",
+      // A cart is private, mutable session data. Do not serve a cached
+      // response after add/update/delete operations or inventory changes.
+      cache: "no-store",
     })
     .then(({ cart }: { cart: HttpTypes.StoreCart }) => cart)
     .catch(() => null)

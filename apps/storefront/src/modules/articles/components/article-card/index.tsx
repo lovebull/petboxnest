@@ -22,7 +22,7 @@ export function getArticleImageAlt(article: PayloadArticle) {
 }
 
 export function formatArticleDate(date?: string | null) {
-  if (!date) {
+  if (!date || Number.isNaN(new Date(date).getTime())) {
     return ""
   }
 
@@ -44,7 +44,7 @@ export default function ArticleCard({ article }: { article: PayloadArticle }) {
   const imageUrl = getArticleThumbnailImage(article)
   const imageAlt = getArticleImageAlt(article)
   const date = formatArticleDate(
-    article.published_at || article.createdAt || article.updatedAt,
+    article.published_at || article.createdAt || article.updatedAt
   )
 
   return (

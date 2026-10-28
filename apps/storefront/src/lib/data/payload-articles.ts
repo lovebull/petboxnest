@@ -1,11 +1,13 @@
 "use server"
 
 import "server-only"
+import { cache } from "react"
 
 import {
   fetchPayloadJson,
   getPayloadPaginationTimeoutMs,
   getPayloadRequestTimeoutMs,
+  getPayloadArticleTimeoutMs,
   PayloadRequestError,
   reportPayloadRequestError,
 } from "./payload-fetch"
@@ -158,6 +160,9 @@ export async function getLatestArticles({
       `${PAYLOAD_SERVER_URL}/api/articles?${query.toString()}`,
       {
         resource: "articles",
+        timeoutMs: optional
+          ? getPayloadRequestTimeoutMs()
+          : getPayloadArticleTimeoutMs(),
         cache: "force-cache",
         next: {
           revalidate: PAYLOAD_REVALIDATE_SECONDS,
@@ -249,28 +254,35 @@ export async function getAllPublishedArticles(): Promise<PayloadArticle[]> {
   throw error
 }
 
+const readArticleBySlug = cache(
+  async (slug: string): Promise<PayloadArticle | null> => {
+    const query = new URLSearchParams()
+    query.set("limit", "1")
+    query.set("depth", "2")
+    query.set("where[status][equals]", "published")
+    query.set("where[slug][equals]", slug)
+
+    const data = await fetchPayloadJson<PayloadListResponse<PayloadArticle>>(
+      `${PAYLOAD_SERVER_URL}/api/articles?${query.toString()}`,
+      {
+        resource: "article",
+        timeoutMs: getPayloadArticleTimeoutMs(),
+        cache: "force-cache",
+        next: {
+          revalidate: PAYLOAD_REVALIDATE_SECONDS,
+          tags: ["payload-articles", `payload-article-${slug}`],
+        },
+      }
+    )
+
+    const article = data.docs[0]
+
+    return article ? normalizeArticle(article) : null
+  }
+)
+
 export async function getArticleBySlug(
   slug: string
 ): Promise<PayloadArticle | null> {
-  const query = new URLSearchParams()
-  query.set("limit", "1")
-  query.set("depth", "2")
-  query.set("where[status][equals]", "published")
-  query.set("where[slug][equals]", slug)
-
-  const data = await fetchPayloadJson<PayloadListResponse<PayloadArticle>>(
-    `${PAYLOAD_SERVER_URL}/api/articles?${query.toString()}`,
-    {
-      resource: "article",
-      cache: "force-cache",
-      next: {
-        revalidate: PAYLOAD_REVALIDATE_SECONDS,
-        tags: ["payload-articles", `payload-article-${slug}`],
-      },
-    }
-  )
-
-  const article = data.docs[0]
-
-  return article ? normalizeArticle(article) : null
+  return readArticleBySlug(slug)
 }

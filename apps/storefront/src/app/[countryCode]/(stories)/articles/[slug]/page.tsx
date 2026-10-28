@@ -21,25 +21,10 @@ type Props = {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params
-  let article
-
-  try {
-    article = await getArticleBySlug(params.slug)
-  } catch {
-    return {
-      title: "The Nest Journal | PetBoxNest",
-      description:
-        "Read PetBoxNest pet care ideas, home-friendly guides, and stories for happier pets and calmer homes.",
-      alternates: {
-        canonical: `/${params.countryCode}/articles/${params.slug}`,
-      },
-    }
-  }
+  const article = await getArticleBySlug(params.slug)
 
   if (!article) {
-    return {
-      title: "Article Not Found | PetBoxNest",
-    }
+    notFound()
   }
 
   const title = article.seo?.meta_title || `${article.title} | PetBoxNest`
@@ -77,17 +62,16 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function ArticlePage(props: Props) {
   const params = await props.params
-  const [article, articles] = await Promise.all([
-    getArticleBySlug(params.slug),
-    getLatestArticles({ limit: 100 }),
-  ])
+  const article = await getArticleBySlug(params.slug)
 
   if (!article) {
     notFound()
   }
+  // Navigation is optional: a slow recommendation list must not hide a story.
+  const articles = await getLatestArticles({ limit: 100, optional: true })
 
   const currentArticleIndex = articles.findIndex(
-    (item) => item.slug === article.slug,
+    (item) => item.slug === article.slug
   )
   const previousArticle =
     currentArticleIndex >= 0 ? articles[currentArticleIndex + 1] : undefined
@@ -100,7 +84,9 @@ export default async function ArticlePage(props: Props) {
     article.published_at || article.createdAt || article.updatedAt
   const date = formatArticleDate(articleDate)
   const baseUrl = getBaseURL().replace(/\/$/, "")
-  const articleUrl = `${baseUrl}/${params.countryCode}/articles/${encodeURIComponent(article.slug)}`
+  const articleUrl = `${baseUrl}/${
+    params.countryCode
+  }/articles/${encodeURIComponent(article.slug)}`
   const articleDescription =
     article.seo?.meta_description ||
     article.excerpt ||
@@ -211,6 +197,27 @@ export default async function ArticlePage(props: Props) {
                   {article.excerpt}
                 </p>
               )}
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-muted">
+                <p>
+                  By{" "}
+                  <span className="font-bold text-ink">
+                    {article.author || "PetBoxNest Editorial Team"}
+                  </span>
+                </p>
+                {date && (
+                  <p>
+                    First published: <time dateTime={articleDate}>{date}</time>
+                  </p>
+                )}
+                {article.updatedAt && (
+                  <p>
+                    Last updated:{" "}
+                    <time dateTime={article.updatedAt}>
+                      {formatArticleDate(article.updatedAt)}
+                    </time>
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </header>
@@ -240,6 +247,19 @@ export default async function ArticlePage(props: Props) {
               A little something for better pet homes
             </div>
             <RichText content={article.content} />
+            <aside
+              className="mt-10 rounded-2xl border border-grey-20 bg-mist p-5 text-sm leading-6 text-muted"
+              aria-label="About this content"
+            >
+              <p className="font-bold text-ink">About this content</p>
+              <p className="mt-2">
+                Published by {article.author || "PetBoxNest Editorial Team"}.
+                This article provides general information and is not veterinary
+                advice, a diagnosis, or a treatment plan. It is not presented as
+                veterinarian-reviewed content. Consult your veterinarian about
+                symptoms or changes in your pet&apos;s health.
+              </p>
+            </aside>
           </div>
 
           {(previousArticle || nextArticle) && (

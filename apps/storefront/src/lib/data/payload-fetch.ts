@@ -60,6 +60,10 @@ export function getPayloadPaginationTimeoutMs() {
   )
 }
 
+export function getPayloadArticleTimeoutMs() {
+  return readTimeout(process.env.PAYLOAD_ARTICLE_TIMEOUT_MS, 30_000, 45_000)
+}
+
 export class PayloadRequestError extends Error {
   readonly kind: PayloadRequestErrorKind
   readonly resource: PayloadResource

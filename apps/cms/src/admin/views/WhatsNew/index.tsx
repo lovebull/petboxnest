@@ -4,6 +4,32 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.31.0",
+    date: "2026-10-28 14:06:55 CST",
+    title: "📚 Nest Journal 文章体验与稳定性升级",
+    items: [
+      "📚 文章详情页迁移到独立 stories 路由组，保留原有 /[countryCode]/articles/[slug] URL，同时让文章内容拥有独立的布局和错误边界。",
+      "🛡️ 关键文章读取新增布局级 CMS 门闸，文章数据获取失败时先返回错误状态，不会提前提交 HTTP 200 的商店壳层。",
+      "⏱️ 新增 PAYLOAD_ARTICLE_TIMEOUT_MS 配置，关键文章请求默认允许 30 秒 CMS 冷启动时间，并限制最大值为 45 秒。",
+      "⚡️ 文章详情、metadata 和布局共享 React cache 读取结果，同一请求内不会重复查询同一篇文章。",
+      "🧭 文章推荐列表改为可选读取，推荐接口慢或暂时失败时仍优先展示文章正文。",
+      "✍️ 文章头部新增作者、First published 和 Last updated 信息，帮助顾客判断内容来源与新鲜度。",
+      "🩺 文章正文末尾新增 About this content 说明，明确文章属于一般信息，不是兽医建议、诊断或治疗方案。",
+      "🔎 文章页面保留 BlogPosting 与 BreadcrumbList 结构化数据，并继续输出 canonical、Open Graph 和 Twitter 元数据。",
+      "🧪 新增文章页面 Playwright 回归测试和 Payload 读取单元测试，覆盖 4 篇文章、404、响应式宽度、超时、缓存及失败降级。",
+      "⚙️ `.env.template` 与 `.env.domain.example` 新增 PAYLOAD_ARTICLE_TIMEOUT_MS 配置说明，便于部署环境统一设置。",
+    ],
+    fixes: [
+      "🐛 修复 Payload CMS 冷启动或暂时不可用时，文章页面可能先提交成功壳层再失败，导致错误响应表现为 HTTP 200 的问题。",
+      "🐛 修复文章正文、页面 metadata 和共享布局分别读取同一文章，造成一次请求重复访问 CMS 的问题。",
+      "🐛 修复推荐文章列表读取失败会连带阻塞关键文章正文，现将非关键推荐数据与正文读取隔离。",
+      "🐛 修复文章详情页缺少作者、首发日期和最后更新时间，顾客无法判断编辑来源和内容时效的问题。",
+      "🐛 修复宠物健康相关文章缺少非医疗建议边界说明，现明确提示应向兽医咨询症状或健康变化。",
+      "🐛 修复无效日期可能传入文章日期格式化函数，现会安全返回空日期而不产生 Invalid Date 文案。",
+      "🐛 修复文章路由缺少专属回归测试，现覆盖正常文章、缺失文章和 1440/390/320 像素布局无横向溢出。",
+    ],
+  },
+  {
     version: "v1.30.0",
     date: "2026-10-27 20:13:57 CST",
     title: "📍 访客订单追踪与帮助入口上线",

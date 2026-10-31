@@ -75,3 +75,8 @@ logs/*
 /apps/backend/.env本地
 /apps/cms/.env.local本地
 /apps/storefront/.env.local本地
+
+# JavaScript emitted beside TypeScript sources by plugin tooling.
+/apps/bundle-offers-plugin/src/utils/inventory-safety.js
+/apps/sales-analytics-plugin/src/modules/sales-analytics/order-milestones.js
+/apps/sales-analytics-plugin/src/modules/sales-analytics/utils.js

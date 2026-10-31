@@ -4,6 +4,19 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.31.3",
+    date: "2026-10-31 15:52:02 CST",
+    title: "🧹 清理插件编译产物跟踪状态",
+    items: [
+      "🧹 明确忽略 bundle-offers-plugin 和 sales-analytics-plugin 中由 TypeScript 编译生成的 3 个 JavaScript 产物，保留对应 `.ts` 源文件作为唯一代码来源。",
+      "🛠️ 保留插件本地编译能力，同时避免编译过程把 source map 内嵌的生成文件误识别为待提交源代码。",
+    ],
+    fixes: [
+      "🐛 修复插件 TypeScript 编译后生成的 inventory-safety.js、order-milestones.js 和 utils.js 持续显示为未跟踪文件的问题。",
+      "🔒 避免生成的 JavaScript 和 source map 进入 Git，减少源代码与编译产物重复维护的风险。",
+    ],
+  },
+  {
     version: "v1.31.2",
     date: "2026-10-31 15:49:43 CST",
     title: "🧰 开发配置与类型检查稳定性修订",

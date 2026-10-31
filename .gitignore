@@ -71,3 +71,7 @@ apps/backend/backups/*.dump
 deliverables/*
 
 logs/*
+
+/apps/backend/.env本地
+/apps/cms/.env.local本地
+/apps/storefront/.env.local本地

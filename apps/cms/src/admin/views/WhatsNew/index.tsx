@@ -4,6 +4,24 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.31.2",
+    date: "2026-10-31 15:49:43 CST",
+    title: "🧰 开发配置与类型检查稳定性修订",
+    items: [
+      "🛡️ 补充三个本地环境配置文件的仓库忽略规则，避免本地配置误进入 Git 提交。",
+      "🧪 Backend TypeScript 配置排除测试目录及测试文件，减少生产类型检查受到测试代码影响的情况。",
+      "📝 Storefront ESLint 配置覆盖 `.cjs` 文件，确保 CommonJS 测试脚本使用正确的 require 规则。",
+      "⚙️ CMS Next.js 类型引用同步到当前 `.next/types` 目录结构，避免开发环境类型文件路径失效。",
+    ],
+    fixes: [
+      "🐛 修复本地环境文件忽略规则使用绝对路径，Git 无法稳定匹配仓库内文件的问题。",
+      "🐛 修复 Backend 类型检查仍扫描测试文件，导致测试专用代码影响常规检查结果的问题。",
+      "🐛 修复 Storefront 的 `.cjs` 测试脚本未被 ESLint CommonJS 规则覆盖，可能产生错误 lint 报告的问题。",
+      "🐛 修复 CMS `next-env.d.ts` 仍引用旧版 `.next/dev` 类型目录，导致 Next.js 类型路径与当前生成目录不一致的问题。",
+      "🔒 明确排除本地环境配置及插件 TypeScript 编译产物，不将敏感配置或生成文件纳入本次提交。",
+    ],
+  },
+  {
     version: "v1.31.1",
     date: "2026-10-28 21:54:10 CST",
     title: "🛒 购物车数据与库存提示稳定性修复",

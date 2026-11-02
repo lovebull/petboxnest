@@ -216,7 +216,7 @@ export default function ShippingPolicyPage() {
                     <tr>
                       <td className="px-5 py-4 font-bold">Standard</td>
                       <td className="px-5 py-4">
-                        $9.99 for U.S. orders under $70
+                        $9.99 for U.S. orders under $60
                       </td>
                       <td className="px-5 py-4">7–15 business days</td>
                     </tr>
@@ -231,7 +231,7 @@ export default function ShippingPolicyPage() {
                       <td className="px-5 py-4 font-bold">
                         Free standard shipping
                       </td>
-                      <td className="px-5 py-4">Orders of $70 or more</td>
+                      <td className="px-5 py-4">Orders of $60 or more</td>
                       <td className="px-5 py-4">7–15 business days</td>
                     </tr>
                     <tr>
@@ -254,8 +254,8 @@ export default function ShippingPolicyPage() {
                 place an order. Current standard rates are:
               </p>
               <ul className="list-disc space-y-2 pl-5 marker:text-brand">
-                <li>Free U.S. standard shipping on orders of $70 or more.</li>
-                <li>$9.99 U.S. standard shipping on orders under $70.</li>
+                <li>Free U.S. standard shipping on orders of $60 or more.</li>
+                <li>$9.99 U.S. standard shipping on orders under $60.</li>
                 <li>
                   $20 flat-rate international shipping where an eligible
                   destination is available at checkout.

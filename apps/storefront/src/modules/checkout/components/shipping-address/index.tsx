@@ -105,7 +105,7 @@ const ShippingAddress = ({
             {`Hi ${customer.first_name}, do you want to use one of your saved addresses?`}
           </p>
           <AddressSelect
-            addresses={customer.addresses}
+            addresses={addressesInRegion ?? []}
             addressInput={
               mapKeys(formData, (_, key) =>
                 key.replace("shipping_address.", ""),

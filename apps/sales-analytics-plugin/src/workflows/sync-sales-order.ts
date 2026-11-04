@@ -1,5 +1,6 @@
 import type { MedusaContainer } from "@medusajs/framework/types";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import { getOrderDetailWorkflow } from "@medusajs/medusa/core-flows";
 import {
   createStep,
   createWorkflow,
@@ -134,11 +135,17 @@ export const syncOrderProjection = async (
   );
   const { data } = await query.graph({
     entity: "order",
-    fields: ORDER_FIELDS,
+    fields: ["id"],
     filters: { id: orderId },
   });
-  const order = data[0] as AnalyticsOrder | undefined;
-  if (!order) return null;
+  if (!data[0]) return null;
+
+  // These statuses are computed by Medusa's order-detail workflow, rather
+  // than stored fields returned by a raw graph query.
+  const { result } = await getOrderDetailWorkflow(container).run({
+    input: { order_id: orderId, fields: ORDER_FIELDS },
+  });
+  const order = result as unknown as AnalyticsOrder;
 
   const previous = (
     await service.listSalesOrderFacts({ order_id: order.id })

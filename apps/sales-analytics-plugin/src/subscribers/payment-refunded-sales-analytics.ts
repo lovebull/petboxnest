@@ -1,6 +1,6 @@
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
-import { syncSalesOrderWorkflow } from "../workflows"
+import { evaluateOrderMilestonesWorkflow, syncSalesOrderWorkflow } from "../workflows"
 
 export default async function paymentRefundedSalesAnalyticsHandler({
   event: { data },
@@ -16,6 +16,9 @@ export default async function paymentRefundedSalesAnalyticsHandler({
     ?.payment_collection?.order?.id
   if (!orderId) return
   await syncSalesOrderWorkflow(container).run({ input: { order_id: orderId } })
+  await evaluateOrderMilestonesWorkflow(container).run({ input: {} })
 }
 
-export const config: SubscriberConfig = { event: "payment.refunded" }
+export const config: SubscriberConfig = {
+  event: ["payment.captured", "payment.refunded"],
+}

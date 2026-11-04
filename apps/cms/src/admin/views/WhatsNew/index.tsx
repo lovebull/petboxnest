@@ -4,6 +4,22 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.34.0",
+    date: "2026-11-05 01:19:02 CST",
+    title: "🛡️ Storefront 安全响应头增强",
+    items: [
+      "🛡️ Storefront 关闭 Next.js 默认的 X-Powered-By 响应头，减少服务端技术栈信息暴露。",
+      "🔒 全站新增 X-Content-Type-Options、X-Frame-Options、Referrer-Policy 和 Permissions-Policy 响应头。",
+      "🚫 默认禁止摄像头、麦克风和地理位置能力，减少页面及第三方脚本不必要的浏览器权限范围。",
+      "🔐 生产站点新增 Strict-Transport-Security 配置，要求浏览器在一段时间内优先使用 HTTPS 访问。",
+    ],
+    fixes: [
+      "🐛 修复 Storefront 未统一声明浏览器安全策略，可能导致不同页面安全响应头不一致的问题。",
+      "🐛 修复服务端响应暴露 X-Powered-By 技术栈标识的问题。",
+      "🐛 修复页面缺少点击劫持、MIME 类型嗅探和跨站来源信息控制的问题。",
+    ],
+  },
+  {
     version: "v1.33.0",
     date: "2026-11-03 03:23:13 CST",
     title: "✅ 订单完成页体验升级",

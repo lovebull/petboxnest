@@ -4,6 +4,20 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.37.1",
+    date: "2026-11-05 21:32:36 CST",
+    title: "📬 订单邮件客服联系入口修复",
+    items: [
+      "📬 订单确认邮件页脚新增可点击的 support@petboxnest.com 客服邮箱，顾客可直接从邮件发起回复。",
+      "🔗 客服邮箱使用 mailto 链接并配合品牌色和下划线样式，在桌面邮件客户端和移动端更容易识别。",
+    ],
+    fixes: [
+      "🐛 修复订单确认邮件只提示回复邮件但没有明确客服地址，顾客无法快速找到联系入口的问题。",
+      "🐛 修复订单邮件客服说明缺少可操作链接，增加直接打开邮件客户端的联系路径。",
+      "✅ Backend TypeScript 类型检查通过。",
+    ],
+  },
+  {
     version: "v1.37.0",
     date: "2026-11-05 20:59:53 CST",
     title: "📧 订单确认邮件移动端体验升级",

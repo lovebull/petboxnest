@@ -7,6 +7,7 @@ import {
   Hr,
   Html,
   Img,
+  Link,
   Preview,
   Row,
   Section,
@@ -135,7 +136,11 @@ export default function OrderPlacedEmail({
           </Section>
 
           <Text style={styles.footer}>
-            Questions? Reply to this email and our team will help.
+            Questions? Reply to this email or contact{" "}
+            <Link href="mailto:support@petboxnest.com" style={styles.supportLink}>
+              support@petboxnest.com
+            </Link>
+            {" "}and our team will help.
           </Text>
         </Container>
       </Body>
@@ -267,5 +272,10 @@ const styles = {
     margin: 0,
     padding: "0 28px 28px",
     textAlign: "center" as const,
+  },
+  supportLink: {
+    color: "#4A3DB8",
+    fontWeight: "700",
+    textDecoration: "underline",
   },
 }

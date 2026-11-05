@@ -21,6 +21,7 @@ import AfterSalesUpdateEmail from "./emails/after-sales-update"
 import RestockAvailableEmail from "./emails/restock-available"
 import AbandonedCartEmail from "./emails/abandoned-cart"
 import { resolveResendSender, type ResendSenders } from "./senders"
+import { adminOrderSubject } from "./admin-order-subject"
 
 type ResendOptions = ResendSenders & {
   api_key: string
@@ -102,7 +103,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
     return templates[template] ?? null
   }
 
-  private getTemplateSubject(template: Templates) {
+  private getTemplateSubject(template: Templates, data?: ProviderSendNotificationDTO["data"]) {
     const configuredSubject =
       this.options.html_templates?.[template]?.subject
 
@@ -122,7 +123,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       case Templates.PAYMENT_REFUNDED:
         return "Your PetBoxNest refund has been processed"
       case Templates.ADMIN_ORDER_PLACED:
-        return "New PetBoxNest order received"
+        return adminOrderSubject(data?.order)
       case Templates.AFTER_SALES_CODE:
         return "Your PetBoxNest return verification code"
       case Templates.AFTER_SALES_UPDATE:
@@ -153,7 +154,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       from: resolveResendSender(templateName, this.options),
       ...(this.options.reply_to ? { replyTo: this.options.reply_to } : {}),
       to: [notification.to],
-      subject: this.getTemplateSubject(templateName),
+      subject: this.getTemplateSubject(templateName, notification.data),
     }
 
     const emailOptions: CreateEmailOptions =

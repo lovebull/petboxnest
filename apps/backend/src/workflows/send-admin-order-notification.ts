@@ -10,7 +10,7 @@ export const sendAdminOrderNotificationWorkflow = createWorkflow(
   function (input: WorkflowInput) {
     const { data: orders } = useQueryGraphStep({
       entity: "order",
-      fields: ["id", "display_id", "email", "currency_code", "total", "items.id", "items.quantity"],
+      fields: ["id", "display_id", "created_at", "email", "currency_code", "total", "items.id", "items.quantity"],
       filters: { id: input.id },
       options: { throwIfKeyNotFound: true },
     })

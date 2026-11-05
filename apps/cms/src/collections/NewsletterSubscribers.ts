@@ -1,5 +1,6 @@
 import crypto from "node:crypto"
 import type { CollectionConfig, PayloadRequest } from "payload"
+import { renderNewsletterConfirmation } from "../emails/newsletter-confirmation"
 
 const attempts = new Map<string, number[]>()
 const hash = (value: string) => crypto.createHash("sha256").update(value).digest("hex")
@@ -24,13 +25,14 @@ const rateLimited = (req: PayloadRequest) => {
   return { blocked: recent.length > 5, fingerprint: key }
 }
 
-const sendConfirmation = async (email: string, confirmToken: string, unsubscribeToken: string) => {
+const sendConfirmation = async (email: string, confirmToken: string, unsubscribeToken: string, expiresAt: string) => {
   const apiKey = process.env.RESEND_API_KEY
   const from = process.env.RESEND_FROM_UPDATES?.trim() || process.env.RESEND_FROM_EMAIL
   if (!apiKey || !from) throw new Error("Newsletter email delivery is not configured")
   const cms = (process.env.PAYLOAD_PUBLIC_SERVER_URL || baseUrl(7010)).replace(/\/$/, "")
   const confirmUrl = `${cms}/api/newsletter-subscribers/confirm?token=${encodeURIComponent(confirmToken)}`
   const unsubscribeUrl = `${cms}/api/newsletter-subscribers/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`
+  const { html, text } = renderNewsletterConfirmation({ confirmUrl, unsubscribeUrl, expiresAt })
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
@@ -39,8 +41,8 @@ const sendConfirmation = async (email: string, confirmToken: string, unsubscribe
       ...(process.env.RESEND_REPLY_TO ? { reply_to: process.env.RESEND_REPLY_TO } : {}),
       to: [email],
       subject: "Confirm your PetBoxNest updates",
-      text: `Confirm your subscription: ${confirmUrl}\n\nUnsubscribe: ${unsubscribeUrl}`,
-      html: `<div style="font-family:Arial,sans-serif;color:#202433;line-height:1.6;max-width:560px;margin:auto"><h1>Welcome to the nest</h1><p>Confirm that you'd like pet-home ideas and new-product updates from PetBoxNest.</p><p><a href="${confirmUrl}" style="display:inline-block;background:#6557D9;color:#fff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:700">Confirm subscription</a></p><p style="font-size:13px;color:#596071">Didn't request this? <a href="${unsubscribeUrl}">Unsubscribe</a>.</p></div>`,
+      text,
+      html,
     }),
   })
   const result = await response.json().catch(() => ({})) as { id?: string; message?: string }
@@ -114,7 +116,7 @@ export const NewsletterSubscribers: CollectionConfig = {
         ? await req.payload.update({ collection: "newsletter-subscribers", id: existing.id, data })
         : await req.payload.create({ collection: "newsletter-subscribers", data })
       try {
-        const messageId = await sendConfirmation(email, confirmToken, unsubscribeToken)
+        const messageId = await sendConfirmation(email, confirmToken, unsubscribeToken, data.confirmationExpiresAt)
         await req.payload.update({ collection: "newsletter-subscribers", id: saved.id, data: { lastEmailSentAt: now.toISOString(), resendMessageId: messageId } })
       } catch (error) {
         await req.payload.update({ collection: "newsletter-subscribers", id: saved.id, data: { lastDeliveryError: error instanceof Error ? error.message.slice(0, 500) : "Unknown delivery error" } })

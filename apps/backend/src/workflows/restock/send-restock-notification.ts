@@ -54,7 +54,7 @@ const sendRestockStep = createStep("send-restock", async (
         product_title: variant.product.title,
         variant_title: variant.title,
         thumbnail: variant.product.thumbnail,
-        product_url: `${storefrontUrl}/${country}/products/${variant.product.handle}`,
+          product_url: `${storefrontUrl}/${country}/products/${variant.product.handle}?v_id=${encodeURIComponent(subscription.variant_id)}`,
         unsubscribe_url: `${storefrontUrl}/${country}/restock/unsubscribe?token=${unsubscribeToken}`,
       },
     })

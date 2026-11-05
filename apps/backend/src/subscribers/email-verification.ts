@@ -46,6 +46,7 @@ export default async function verificationRequestedHandler({
     template: "email-verification",
     data: {
       verification_url: verificationUrl,
+      expires_at: data.expires_at,
     },
   })
   const notification = Array.isArray(notifications)

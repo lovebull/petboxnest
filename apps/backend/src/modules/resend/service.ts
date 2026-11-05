@@ -20,8 +20,9 @@ import AfterSalesCodeEmail from "./emails/after-sales-code"
 import AfterSalesUpdateEmail from "./emails/after-sales-update"
 import RestockAvailableEmail from "./emails/restock-available"
 import AbandonedCartEmail from "./emails/abandoned-cart"
+import { resolveResendSender, type ResendSenders } from "./senders"
 
-type ResendOptions = {
+type ResendOptions = ResendSenders & {
   api_key: string
   from: string
   html_templates?: Record<
@@ -149,7 +150,8 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
     }
 
     const commonOptions = {
-      from: this.options.from,
+      from: resolveResendSender(templateName, this.options),
+      ...(this.options.reply_to ? { replyTo: this.options.reply_to } : {}),
       to: [notification.to],
       subject: this.getTemplateSubject(templateName),
     }

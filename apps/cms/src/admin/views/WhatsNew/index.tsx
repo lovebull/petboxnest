@@ -4,6 +4,25 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.36.0",
+    date: "2026-11-05 13:15:34 CST",
+    title: "✉️ Resend 邮件发件分类与回复地址",
+    items: [
+      "✉️ 新增 Orders、Security 和 Updates 三类 Resend 发件人配置，让订单通知、安全邮件和订阅更新使用清晰的品牌发件地址。",
+      "🧭 Backend 邮件 Provider 按模板自动选择对应发件人，未分类模板继续回退到默认发件地址，保持旧配置兼容。",
+      "📨 Newsletter 订阅确认邮件优先使用 Updates 发件地址，并支持统一配置客户回复地址。",
+      "📝 Backend 和 CMS 示例环境变量、邮件分类映射文档及生产配置说明同步完善。",
+      "🧪 新增 Resend 发件人路由单元测试，覆盖订单、安全、更新和默认回退场景。",
+    ],
+    fixes: [
+      "🐛 修复不同类型邮件全部使用同一个默认发件地址，顾客难以区分订单通知、安全邮件和订阅更新的问题。",
+      "🐛 修复 Newsletter 订阅确认邮件无法使用 Updates 专用发件地址和统一 Reply-To 的问题。",
+      "🐛 修复分类发件人未配置时缺少安全回退逻辑的问题，现自动回退到 RESEND_FROM_EMAIL。",
+      "🔒 避免将 Resend API Key 写入配置示例，数据库连接信息文件不纳入本次提交。",
+      "✅ Backend、CMS 类型检查通过，Resend 发件人路由单元测试 12 项全部通过。",
+    ],
+  },
+  {
     version: "v1.35.0",
     date: "2026-11-05 01:54:41 CST",
     title: "📊 销售分析支付投影与里程碑修复",

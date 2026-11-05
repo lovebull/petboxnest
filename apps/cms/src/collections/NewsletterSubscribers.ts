@@ -26,7 +26,7 @@ const rateLimited = (req: PayloadRequest) => {
 
 const sendConfirmation = async (email: string, confirmToken: string, unsubscribeToken: string) => {
   const apiKey = process.env.RESEND_API_KEY
-  const from = process.env.RESEND_FROM_EMAIL
+  const from = process.env.RESEND_FROM_UPDATES?.trim() || process.env.RESEND_FROM_EMAIL
   if (!apiKey || !from) throw new Error("Newsletter email delivery is not configured")
   const cms = (process.env.PAYLOAD_PUBLIC_SERVER_URL || baseUrl(7010)).replace(/\/$/, "")
   const confirmUrl = `${cms}/api/newsletter-subscribers/confirm?token=${encodeURIComponent(confirmToken)}`
@@ -36,6 +36,7 @@ const sendConfirmation = async (email: string, confirmToken: string, unsubscribe
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       from,
+      ...(process.env.RESEND_REPLY_TO ? { reply_to: process.env.RESEND_REPLY_TO } : {}),
       to: [email],
       subject: "Confirm your PetBoxNest updates",
       text: `Confirm your subscription: ${confirmUrl}\n\nUnsubscribe: ${unsubscribeUrl}`,

@@ -48,7 +48,17 @@ export default function OrderPlacedEmail({
 
   return (
     <Html lang="en">
-      <Head />
+      <Head>
+        <style>{`
+          @media only screen and (max-width: 480px) {
+            .order-email-content { padding: 24px 16px !important; }
+            .order-product-image { width: 64px !important; height: 64px !important; }
+            .order-product-image-column { width: 76px !important; }
+            .order-product-meta, .order-product-price { display: block !important; width: 100% !important; text-align: left !important; }
+            .order-product-price { padding-top: 6px !important; }
+          }
+        `}</style>
+      </Head>
       <Preview>Your petboxnest order is confirmed</Preview>
       <Body style={styles.body}>
         <Container style={styles.container}>
@@ -56,7 +66,7 @@ export default function OrderPlacedEmail({
             <Text style={styles.brand}>PETBOXNEST</Text>
           </Section>
 
-          <Section style={styles.content}>
+          <Section className="order-email-content" style={styles.content}>
             <Heading style={styles.heading}>
               Thanks for your order, {customerName}.
             </Heading>
@@ -72,30 +82,42 @@ export default function OrderPlacedEmail({
             </Heading>
 
             {order.items?.map((item) => (
-              <Row key={item.id} style={styles.item}>
-                <Column style={styles.imageColumn}>
+              <Section key={item.id} style={styles.item}>
+                <Row>
+                <Column className="order-product-image-column" style={styles.imageColumn}>
                   {item.thumbnail ? (
                     <Img
+                      className="order-product-image"
                       src={item.thumbnail}
-                      alt={item.product_title || "Product"}
-                      width="72"
-                      height="72"
+                      alt={item.product_title || item.title || "Product"}
+                      width="80"
+                      height="80"
                       style={styles.image}
                     />
-                  ) : null}
+                  ) : (
+                    <div className="order-product-image" style={styles.imagePlaceholder}>
+                      <Text style={styles.placeholderText}>No image<br />available</Text>
+                    </div>
+                  )}
                 </Column>
-                <Column>
-                  <Text style={styles.itemTitle}>{item.product_title}</Text>
-                  <Text style={styles.itemMeta}>
-                    {item.variant_title} · Qty {item.quantity}
+                <Column style={styles.descriptionColumn}>
+                  <Text style={styles.itemTitle}>
+                    {item.product_title || item.title || "Product"}
                   </Text>
-                </Column>
-                <Column align="right">
-                  <Text style={styles.price}>
-                    {formatPrice(item.total, order.currency_code)}
-                  </Text>
+                  <Row>
+                    <Column className="order-product-meta" style={styles.descriptionColumn}>
+                      {item.variant_title && <Text style={styles.itemMeta}>{item.variant_title}</Text>}
+                      <Text style={styles.itemMeta}>Qty {item.quantity}</Text>
+                    </Column>
+                    <Column className="order-product-price" align="right" style={styles.priceColumn}>
+                      <Text style={styles.price}>
+                        {formatPrice(item.total, order.currency_code)}
+                      </Text>
+                    </Column>
+                  </Row>
                 </Column>
               </Row>
+              </Section>
             ))}
 
             <Hr style={styles.divider} />
@@ -123,8 +145,8 @@ export default function OrderPlacedEmail({
 
 const styles = {
   body: {
-    backgroundColor: "#f4f4f1",
-    color: "#18181b",
+    backgroundColor: "#FFF8EF",
+    color: "#202433",
     fontFamily: "Arial, sans-serif",
     margin: 0,
     padding: "32px 12px",
@@ -133,9 +155,12 @@ const styles = {
     backgroundColor: "#ffffff",
     margin: "0 auto",
     maxWidth: "640px",
+    border: "1px solid #E6E8EC",
+    borderRadius: "20px",
+    overflow: "hidden",
   },
   header: {
-    backgroundColor: "#111827",
+    backgroundColor: "#6557D9",
     padding: "20px 28px",
   },
   brand: {
@@ -168,19 +193,52 @@ const styles = {
     margin: "26px 0",
   },
   item: {
-    marginBottom: "16px",
+    borderBottom: "1px solid #E6E8EC",
+    padding: "16px 0",
   },
   imageColumn: {
-    width: "88px",
+    width: "96px",
+    verticalAlign: "top",
   },
   image: {
-    borderRadius: "6px",
-    objectFit: "cover" as const,
+    display: "block",
+    width: "80px",
+    height: "80px",
+    border: "1px solid #E6E8EC",
+    borderRadius: "12px",
+    backgroundColor: "#ffffff",
+    objectFit: "contain" as const,
+  },
+  imagePlaceholder: {
+    width: "80px",
+    height: "80px",
+    backgroundColor: "#F4F6F8",
+    borderRadius: "12px",
+    overflow: "hidden",
+  },
+  placeholderText: {
+    color: "#596071",
+    fontSize: "11px",
+    lineHeight: "16px",
+    padding: "12px 4px",
+    textAlign: "center" as const,
+    margin: 0,
+  },
+  descriptionColumn: {
+    verticalAlign: "top",
+    overflowWrap: "anywhere" as const,
+  },
+  priceColumn: {
+    width: "88px",
+    verticalAlign: "bottom",
+    whiteSpace: "nowrap" as const,
   },
   itemTitle: {
-    fontSize: "14px",
-    fontWeight: "600",
-    margin: "0 0 5px",
+    color: "#202433",
+    fontSize: "15px",
+    lineHeight: "22px",
+    fontWeight: "700",
+    margin: "0 0 6px",
   },
   itemMeta: {
     color: "#71717a",

@@ -4,6 +4,27 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.39.0",
+    date: "2026-11-06 15:47:16 CST",
+    title: "📰 Newsletter 订阅确认流程升级",
+    items: [
+      "📰 Storefront 新增本地化 Newsletter 确认和取消订阅路由，邮件链接先由 Storefront 处理，再安全返回首页早鸟报名区域。",
+      "🔐 Newsletter 链接请求新增 token 格式校验、15 秒超时、no-store、禁止跟随外部重定向和隐私响应头。",
+      "🏠 确认和取消订阅结果统一返回当前国家首页的状态提示，避免把 CMS 内部地址暴露给顾客。",
+      "📨 CMS Newsletter API 支持 response=json，供 Storefront 服务端安全获取结果，同时保留旧版邮件链接的重定向兼容。",
+      "🧪 新增 Newsletter 链接单元测试，覆盖成功、无效 token、上游失败、隐私响应头、邮件 Shop 域链接和旧版兼容流程。",
+      "⚙️ `apps/backend/.env.template` 补充 Orders、Security、Updates 发件地址和统一回复地址配置。",
+    ],
+    fixes: [
+      "🐛 修复 Newsletter 邮件确认链接直接暴露 CMS 域名，顾客无法在 Storefront 内完成确认反馈的问题。",
+      "🐛 修复确认/取消订阅链接可能把 token 或外部 next 参数带入跳转地址的问题。",
+      "🐛 修复 CMS 上游不可用、返回非 JSON 或返回错误状态时，Storefront 误显示订阅成功的问题。",
+      "🐛 修复 Newsletter 确认邮件中的确认和取消订阅链接未统一使用商城域名的问题。",
+      "🐛 修复首页早鸟报名区域未展示处理失败状态的问题。",
+      "✅ Storefront、CMS 类型检查通过，Newsletter 测试 6 项全部通过。",
+    ],
+  },
+  {
     version: "v1.38.0",
     date: "2026-11-06 00:57:28 CST",
     title: "✉️ 全站邮件模板与通知体验升级",

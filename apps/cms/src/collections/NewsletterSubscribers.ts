@@ -8,6 +8,13 @@ const normalizeEmail = (value: unknown) => typeof value === "string" ? value.tri
 const validEmail = (email: string) => email.length <= 320 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 const baseUrl = (port: number) => `${process.env.PUBLIC_PROTOCOL || "http"}://${process.env.PUBLIC_HOST || "127.0.0.1"}:${port}`
 const redirectToStorefront = (status: string) => Response.redirect(`${(process.env.NEXT_PUBLIC_BASE_URL || baseUrl(7000)).replace(/\/$/, "")}/us?newsletter=${status}#early-access`, 302)
+const newsletterResult = (req: PayloadRequest, status: string) => {
+  // Server-to-server callers receive only a result, never a CMS redirect URL.
+  if (new URL(req.url || baseUrl(7010)).searchParams.get("response") === "json") {
+    return Response.json({ status }, { headers: { "Cache-Control": "no-store" } })
+  }
+  return redirectToStorefront(status)
+}
 
 const bilingualLabel = (chinese: string, english: string) => ({
   en: `${chinese}\n${english}`,
@@ -29,9 +36,9 @@ const sendConfirmation = async (email: string, confirmToken: string, unsubscribe
   const apiKey = process.env.RESEND_API_KEY
   const from = process.env.RESEND_FROM_UPDATES?.trim() || process.env.RESEND_FROM_EMAIL
   if (!apiKey || !from) throw new Error("Newsletter email delivery is not configured")
-  const cms = (process.env.PAYLOAD_PUBLIC_SERVER_URL || baseUrl(7010)).replace(/\/$/, "")
-  const confirmUrl = `${cms}/api/newsletter-subscribers/confirm?token=${encodeURIComponent(confirmToken)}`
-  const unsubscribeUrl = `${cms}/api/newsletter-subscribers/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`
+  const storefront = (process.env.NEXT_PUBLIC_BASE_URL || baseUrl(7000)).replace(/\/$/, "")
+  const confirmUrl = `${storefront}/us/newsletter/confirm?token=${encodeURIComponent(confirmToken)}`
+  const unsubscribeUrl = `${storefront}/us/newsletter/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`
   const { html, text } = renderNewsletterConfirmation({ confirmUrl, unsubscribeUrl, expiresAt })
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -126,21 +133,21 @@ export const NewsletterSubscribers: CollectionConfig = {
     } },
     { path: "/confirm", method: "get", handler: async (req) => {
       const token = new URL(req.url || baseUrl(7010)).searchParams.get("token") || ""
-      if (!token) return redirectToStorefront("invalid")
+      if (!token) return newsletterResult(req, "invalid")
       const found = await req.payload.find({ collection: "newsletter-subscribers", where: { confirmationTokenHash: { equals: hash(token) } }, limit: 1 })
       const subscriber = found.docs[0]
-      if (!subscriber?.confirmationExpiresAt || new Date(subscriber.confirmationExpiresAt).getTime() < Date.now()) return redirectToStorefront("invalid")
+      if (!subscriber?.confirmationExpiresAt || new Date(subscriber.confirmationExpiresAt).getTime() < Date.now()) return newsletterResult(req, "invalid")
       await req.payload.update({ collection: "newsletter-subscribers", id: subscriber.id, data: { status: "subscribed", confirmedAt: new Date().toISOString(), confirmationTokenHash: null } })
-      return redirectToStorefront("confirmed")
+      return newsletterResult(req, "confirmed")
     } },
     { path: "/unsubscribe", method: "get", handler: async (req) => {
       const token = new URL(req.url || baseUrl(7010)).searchParams.get("token") || ""
-      if (!token) return redirectToStorefront("invalid")
+      if (!token) return newsletterResult(req, "invalid")
       const found = await req.payload.find({ collection: "newsletter-subscribers", where: { unsubscribeTokenHash: { equals: hash(token) } }, limit: 1 })
       const subscriber = found.docs[0]
-      if (!subscriber) return redirectToStorefront("invalid")
+      if (!subscriber) return newsletterResult(req, "invalid")
       await req.payload.update({ collection: "newsletter-subscribers", id: subscriber.id, data: { status: "unsubscribed", unsubscribedAt: new Date().toISOString(), confirmationTokenHash: null } })
-      return redirectToStorefront("unsubscribed")
+      return newsletterResult(req, "unsubscribed")
     } },
   ],
 }

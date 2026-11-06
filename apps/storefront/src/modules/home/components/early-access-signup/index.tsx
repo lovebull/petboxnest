@@ -16,6 +16,7 @@ const EarlyAccessSignup = () => {
     if (result === "confirmed") setReturnMessage("Your subscription is confirmed. Welcome to the nest!")
     if (result === "unsubscribed") setReturnMessage("You have been unsubscribed successfully.")
     if (result === "invalid") setReturnMessage("This confirmation link is invalid or has expired.")
+    if (result === "error") setReturnMessage("We couldn't process this request. Please try the link again later or contact support@petboxnest.com.")
   }, [])
 
   useEffect(() => {
@@ -23,7 +24,7 @@ const EarlyAccessSignup = () => {
   }, [state.status])
 
   const message = state.message || returnMessage
-  const isError = state.status === "error" || returnMessage.includes("invalid")
+  const isError = state.status === "error" || returnMessage.includes("invalid") || returnMessage.includes("couldn't process")
 
   return (
     <section id="early-access" className="bg-mint py-16 small:py-20">

@@ -121,11 +121,12 @@ export default function GuestAfterSales({ mode = "returns" }: { mode?: "returns"
           {mode === "tracking" ? "Order tracking" : "Guest order care"}
         </p>
         <h1 className="mt-3 font-display text-4xl font-bold leading-tight text-ink small:text-5xl">
-          {mode === "tracking" ? "Follow your order home." : "Start a return without an account."}
+          {mode === "tracking" ? "Follow your order home." : "Manage your returns and requests."}
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-          Use the order number and email from checkout. We’ll send a one-time
-          code before showing order details.
+          {mode === "tracking"
+            ? "Use the order number and email from checkout. We’ll send a one-time code before showing order details."
+            : "View your request status or start a return using your order number and checkout email."}
         </p>
       </div>
       <div className="mt-6 rounded-[24px] border border-[#E6E8EC] bg-white p-6 small:p-8">

@@ -43,7 +43,7 @@ export default function EmailVerificationEmail({
       <Body style={styles.body}>
         <Container style={styles.container}>
           <Section style={styles.header}>
-            <Text style={styles.brand}>PETBOXNEST</Text>
+            <Text style={styles.brand}>PetBoxNest</Text>
           </Section>
           <Section className="email-verification-content" style={styles.content}>
             <Text style={styles.eyebrow}>ACCOUNT VERIFICATION</Text>

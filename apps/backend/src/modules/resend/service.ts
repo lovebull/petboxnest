@@ -113,7 +113,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
 
     switch (template) {
       case Templates.ORDER_PLACED:
-        return "Your petboxnest order is confirmed"
+        return "Your PetBoxNest order is confirmed"
       case Templates.PASSWORD_RESET:
         return "Reset your PetBoxNest password"
       case Templates.EMAIL_VERIFICATION:
@@ -133,7 +133,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       case Templates.ABANDONED_CART:
         return "Your PetBoxNest cart is waiting"
       default:
-        return "petboxnest notification"
+        return "PetBoxNest notification"
     }
   }
 

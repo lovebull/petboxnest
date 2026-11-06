@@ -33,7 +33,7 @@ export default function ShipmentCreatedEmail({ order, fulfillment }: Props) {
       <Preview>Your PetBoxNest order is on the way</Preview>
       <Body style={styles.body}>
         <Container style={styles.container}>
-          <Section style={styles.header}><Text style={styles.brand}>PETBOXNEST</Text></Section>
+          <Section style={styles.header}><Text style={styles.brand}>PetBoxNest</Text></Section>
           <Section className="shipment-content" style={styles.content}>
             <Text style={styles.eyebrow}>ON THE MOVE</Text>
             <Heading className="shipment-heading" style={styles.heading}>Your order is on the way.</Heading>

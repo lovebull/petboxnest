@@ -42,7 +42,7 @@ export default function PaymentRefundedEmail({ order, payment }: Props) {
       <Preview>Your PetBoxNest refund has been processed</Preview>
       <Body style={styles.body}>
         <Container style={styles.container}>
-          <Section style={styles.header}><Text style={styles.brand}>PETBOXNEST</Text></Section>
+          <Section style={styles.header}><Text style={styles.brand}>PetBoxNest</Text></Section>
           <Section className="refund-content" style={styles.content}>
             <Text style={styles.eyebrow}>REFUND UPDATE</Text>
             <Heading className="refund-heading" style={styles.heading}>Your refund has been processed.</Heading>

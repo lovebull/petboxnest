@@ -22,7 +22,7 @@ export function renderNewsletterConfirmation({ confirmUrl, unsubscribeUrl, expir
   const unsubscribe = escapeHtml(unsubscribeUrl)
 
   const text = [
-    "PETBOXNEST — NEWSLETTER CONFIRMATION",
+    "PetBoxNest — NEWSLETTER CONFIRMATION",
     "Confirm your subscription.",
     "One more step to receive pet-home ideas, new-product announcements and product updates from PetBoxNest.",
     `Confirm subscription: ${confirmUrl}`,

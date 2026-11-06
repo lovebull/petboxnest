@@ -4,6 +4,21 @@ import type { AdminViewServerProps } from "payload"
 
 const updates = [
   {
+    version: "v1.39.1",
+    date: "2026-11-06 16:39:52 CST",
+    title: "🏷️ 统一 PetBoxNest 邮件品牌名称",
+    items: [
+      "🏷️ 订单、支付、发货、售后、账户安全、Newsletter 和管理员通知邮件统一使用规范品牌写法 PetBoxNest。",
+      "✉️ 邮件预览标题、正文抬头、管理员订单标题和默认通知主题同步更新，保持收件箱和邮件内容品牌一致。",
+    ],
+    fixes: [
+      "🐛 修复邮件中 PETBOXNEST、petboxnest 和 PetBoxNest 多种大小写混用，导致品牌展示不一致的问题。",
+      "🐛 修复订单确认邮件预览标题和默认通知主题仍使用旧品牌大小写的问题。",
+      "🐛 修复 Newsletter 确认邮件纯文本抬头使用全大写品牌名称的问题。",
+      "✅ Backend、CMS TypeScript 类型检查通过。",
+    ],
+  },
+  {
     version: "v1.39.0",
     date: "2026-11-06 15:47:16 CST",
     title: "📰 Newsletter 订阅确认流程升级",

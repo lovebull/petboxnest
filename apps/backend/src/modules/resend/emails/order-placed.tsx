@@ -60,11 +60,11 @@ export default function OrderPlacedEmail({
           }
         `}</style>
       </Head>
-      <Preview>Your petboxnest order is confirmed</Preview>
+      <Preview>Your PetBoxNest order is confirmed</Preview>
       <Body style={styles.body}>
         <Container style={styles.container}>
           <Section style={styles.header}>
-            <Text style={styles.brand}>PETBOXNEST</Text>
+            <Text style={styles.brand}>PetBoxNest</Text>
           </Section>
 
           <Section className="order-email-content" style={styles.content}>

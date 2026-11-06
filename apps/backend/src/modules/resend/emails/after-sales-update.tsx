@@ -53,7 +53,7 @@ export default function AfterSalesUpdateEmail({
           }}
         >
           <Text style={{ color: "#4A3DB8", fontWeight: 700 }}>
-            PETBOXNEST ORDER CARE
+            PetBoxNest ORDER CARE
           </Text>
           <Heading style={{ color: "#202433" }}>
             Your request is now: {status}

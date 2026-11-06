@@ -16,7 +16,7 @@ export default function PasswordResetEmail({ reset_url }: PasswordResetEmailProp
       <Preview>Reset your PetBoxNest password</Preview>
       <Body style={styles.body}>
         <Container style={styles.container}>
-          <Section style={styles.header}><Text style={styles.brand}>PETBOXNEST</Text></Section>
+          <Section style={styles.header}><Text style={styles.brand}>PetBoxNest</Text></Section>
           <Section className="password-reset-content" style={styles.content}>
             <Text style={styles.eyebrow}>ACCOUNT SECURITY</Text>
             <Heading className="password-reset-heading" style={styles.heading}>Reset your password.</Heading>

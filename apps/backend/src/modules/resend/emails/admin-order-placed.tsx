@@ -34,10 +34,10 @@ export default function AdminOrderPlacedEmail({ order, admin_url }: Props) {
       <Preview>{`${adminOrderSubject(order)} · ${formatPrice(Number(order.total || 0), order.currency_code || "usd")}`}</Preview>
       <Body style={styles.body}>
         <Container style={styles.container}>
-          <Section style={styles.header}><Text style={styles.brand}>PETBOXNEST OPERATIONS</Text></Section>
+          <Section style={styles.header}><Text style={styles.brand}>PetBoxNest OPERATIONS</Text></Section>
           <Section className="admin-order-content" style={styles.content}>
             <Text style={styles.eyebrow}>NEW ORDER</Text>
-            <Heading className="admin-order-heading" style={styles.heading}>A new order for the petboxnest.</Heading>
+            <Heading className="admin-order-heading" style={styles.heading}>New PetBoxNest order received.</Heading>
             <Text style={styles.copy}>Order #{order.display_id || "—"} has been received. Review the order details and payment status before preparing it for delivery.</Text>
             <Section style={styles.summary}>
               <Text style={styles.label}>ORDER TOTAL</Text>

@@ -33,7 +33,7 @@ export default function AfterSalesCodeEmail({
       <Body style={styles.body}>
         <Container style={styles.card}>
           <Section style={styles.header}>
-            <Text style={styles.brand}>PETBOXNEST</Text>
+            <Text style={styles.brand}>PetBoxNest</Text>
           </Section>
           <Section className="order-code-content" style={styles.content}>
             <Text style={styles.eyebrow}>SECURE ORDER ACCESS</Text>

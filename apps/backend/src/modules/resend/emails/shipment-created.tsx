@@ -1,4 +1,5 @@
 import { Body, Button, Container, Head, Heading, Hr, Html, Link, Preview, Section, Text } from "@react-email/components"
+import { getSafeHttpUrl } from "../safe-http-url"
 
 type Props = {
   order: {
@@ -13,7 +14,9 @@ type Props = {
 }
 
 export default function ShipmentCreatedEmail({ order, fulfillment }: Props) {
-  const labels = (fulfillment.labels || []).filter(label => label.tracking_number?.trim() || label.tracking_url?.trim())
+  const labels = (fulfillment.labels || [])
+    .map(label => ({ ...label, tracking_url: getSafeHttpUrl(label.tracking_url) }))
+    .filter(label => label.tracking_number?.trim() || label.tracking_url)
   const name = order.customer?.first_name || order.shipping_address?.first_name || "there"
   const shippedAt = fulfillment.shipped_at ? new Date(fulfillment.shipped_at) : null
   const shippedDate = shippedAt && !Number.isNaN(shippedAt.getTime())
@@ -48,11 +51,11 @@ export default function ShipmentCreatedEmail({ order, fulfillment }: Props) {
               <Section key={label.id || index} style={styles.tracking}>
                 <Text style={styles.label}>{labels.length > 1 ? `PACKAGE ${index + 1} OF ${labels.length}` : "PACKAGE TRACKING"}</Text>
                 {label.tracking_number?.trim() && <Text style={styles.trackingNumber}>{label.tracking_number.trim()}</Text>}
-                {label.tracking_url?.trim() ? (
+                {label.tracking_url ? (
                   <>
-                    <Button href={label.tracking_url.trim()} style={styles.button}>Track my package</Button>
+                    <Button href={label.tracking_url} style={styles.button}>Track my package</Button>
                     <Text style={styles.backupLink}>
-                      Or open the <Link href={label.tracking_url.trim()} style={styles.link}>tracking link</Link> directly.
+                      Or open the <Link href={label.tracking_url} style={styles.link}>tracking link</Link> directly.
                     </Text>
                   </>
                 ) : (

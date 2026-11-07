@@ -1,4 +1,5 @@
 import { Body, Column, Container, Head, Heading, Hr, Html, Link, Preview, Row, Section, Text } from "@react-email/components"
+  import { getRecordedRefundAmount, getRefundHistorySummary, type RefundHistoryRecord } from "../refund-history"
 
 type Props = {
   order: {
@@ -9,7 +10,7 @@ type Props = {
   }
   payment: {
     currency_code?: string
-    refunds?: Array<{ id?: string; amount?: number | string | null; created_at?: string | Date | null }> | null
+    refunds?: RefundHistoryRecord[] | null
   }
 }
 
@@ -26,7 +27,7 @@ const refundDate = (value?: string | Date | null) => {
 export default function PaymentRefundedEmail({ order, payment }: Props) {
   const name = order.customer?.first_name || order.billing_address?.first_name || "there"
   const refunds = payment.refunds || []
-  const refundedAmount = refunds.reduce((total, refund) => total + Number(refund.amount || 0), 0)
+  const history = getRefundHistorySummary(refunds)
   const currencyCode = payment.currency_code || order.currency_code || "usd"
 
   return (
@@ -39,41 +40,44 @@ export default function PaymentRefundedEmail({ order, payment }: Props) {
           }
         `}</style>
       </Head>
-      <Preview>Your PetBoxNest refund has been processed</Preview>
+      <Preview>{`Refund update for your PetBoxNest order #${order.display_id || "—"}`}</Preview>
       <Body style={styles.body}>
         <Container style={styles.container}>
           <Section style={styles.header}><Text style={styles.brand}>PetBoxNest</Text></Section>
           <Section className="refund-content" style={styles.content}>
             <Text style={styles.eyebrow}>REFUND UPDATE</Text>
-            <Heading className="refund-heading" style={styles.heading}>Your refund has been processed.</Heading>
-            <Text style={styles.copy}>Hi {name}, we processed a refund for order #{order.display_id || "—"}. It will be returned to the original payment method.</Text>
+            <Heading className="refund-heading" style={styles.heading}>An update on your refund.</Heading>
+            <Text style={styles.copy}>Hi {name}, here is an update on the refund records for a payment on order #{order.display_id || "—"}. The summary below includes the records available when this email was prepared.</Text>
             {refunds.length > 0 ? (
               <Section style={styles.amountBox}>
-                <Text style={styles.amountLabel}>TOTAL REFUNDED FOR THIS PAYMENT</Text>
-                <Text style={styles.amount}>{formatPrice(refundedAmount, currencyCode)}</Text>
-                <Text style={styles.amountNote}>Order #{order.display_id || "—"} · {refunds.length} {refunds.length === 1 ? "refund recorded" : "refunds recorded"}</Text>
+                <Text style={styles.amountLabel}>CUMULATIVE REFUNDS FOR THIS PAYMENT</Text>
+                <Text style={styles.amount}>{history.cumulativeAmount === null ? "Amount unavailable" : formatPrice(history.cumulativeAmount, currencyCode)}</Text>
+                <Text style={styles.amountNote}>Order #{order.display_id || "—"} · {history.count} {history.count === 1 ? "refund record" : "refund records"}</Text>
+                <Text style={styles.summaryExplanation}>This is the combined amount of the records listed below, not an additional refund issued with this email. It applies to this payment only, not necessarily every payment on the order.</Text>
+                {history.cumulativeAmount === null && <Text style={styles.amountNote}>One or more recorded amounts are unavailable, so we have not calculated a cumulative total.</Text>}
               </Section>
             ) : (
               <Section style={styles.amountBox}>
                 <Text style={styles.amountLabel}>ORDER #{order.display_id || "—"}</Text>
-                <Text style={styles.refundNote}>The refund amount is not available in this notification. Contact us for the details.</Text>
+                <Text style={styles.refundNote}>No refund records are available in this notification. We cannot confirm an amount from this email. Contact us for the details.</Text>
               </Section>
             )}
             {refunds.length > 0 && (
               <>
-                <Heading as="h2" style={styles.subheading}>Refund details</Heading>
-                <Text style={styles.refundNote}>Each refund below is a separate transaction for this payment.</Text>
+                <Heading as="h2" style={styles.subheading}>Refund history for this payment</Heading>
+                <Text style={styles.refundNote}>These are recorded refunds, not newly issued refunds for you to add to the cumulative amount. This email does not identify which individual refund prompted the update.</Text>
                 {refunds.map((refund, index) => {
                   const date = refundDate(refund.created_at)
+                  const amount = getRecordedRefundAmount(refund.amount)
                   return (
                     <Section key={refund.id || index} style={styles.refundRow}>
                       <Row>
                         <Column style={styles.refundDescription}>
-                          <Text style={styles.refundLabel}>Refund {index + 1}</Text>
-                          <Text style={styles.footer}>{date ? `${date} (Eastern Time)` : "Date not available"}</Text>
+                          <Text style={styles.refundLabel}>Refund record {index + 1}</Text>
+                          <Text style={styles.footer}>{date ? `Recorded ${date} (Eastern Time)` : "Record date unavailable"}</Text>
                         </Column>
                         <Column align="right" style={styles.priceColumn}>
-                          <Text style={styles.refundPrice}>{formatPrice(Number(refund.amount || 0), currencyCode)}</Text>
+                          <Text style={styles.refundPrice}>{amount === null ? "Unavailable" : formatPrice(amount, currencyCode)}</Text>
                         </Column>
                       </Row>
                     </Section>
@@ -107,8 +111,9 @@ const styles = {
   copy: { color: "#596071", fontSize: "16px", lineHeight: "26px", margin: "0 0 20px" },
   amountBox: { backgroundColor: "#F4F6F8", borderRadius: "16px", padding: "20px", margin: "24px 0" },
   amountLabel: { color: "#596071", fontSize: "11px", lineHeight: "18px", fontWeight: "700", letterSpacing: "1px", margin: "0 0 6px" },
-  amount: { color: "#202433", fontSize: "34px", lineHeight: "42px", fontWeight: "700", margin: 0 },
+  amount: { color: "#202433", fontSize: "24px", lineHeight: "32px", fontWeight: "700", margin: 0 },
   amountNote: { color: "#596071", fontSize: "13px", lineHeight: "21px", margin: "8px 0 0" },
+  summaryExplanation: { color: "#202433", fontSize: "13px", lineHeight: "22px", margin: "14px 0 0" },
   subheading: { color: "#202433", fontSize: "18px", lineHeight: "26px", margin: "0 0 8px" },
   refundNote: { color: "#596071", fontSize: "13px", lineHeight: "21px", margin: "0 0 12px" },
   refundRow: { padding: "14px 0", borderBottom: "1px solid #E6E8EC" },

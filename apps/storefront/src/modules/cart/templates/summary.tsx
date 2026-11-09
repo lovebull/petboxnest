@@ -1,12 +1,7 @@
 "use client"
 
 import { Button, Heading } from "@modules/common/components/ui"
-import {
-  ArrowRight,
-  CheckCircleSolid,
-  CreditCard,
-  TruckFast,
-} from "@medusajs/icons"
+import { ArrowRight } from "@medusajs/icons"
 import type React from "react"
 
 import CartTotals from "@modules/common/components/cart-totals"
@@ -14,6 +9,7 @@ import DiscountCode from "@modules/checkout/components/discount-code"
 import GiftCardCode from "@modules/checkout/components/gift-card-code"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
+import TrustIcon from "@modules/cart/components/trust-icon"
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart
@@ -73,13 +69,13 @@ const Summary = ({ cart }: SummaryProps) => {
       </LocalizedClientLink>
 
       <div className="mt-5 grid gap-3 text-sm text-muted">
-        <TrustItem icon={<CreditCard />} text="Secure checkout" />
+        <TrustItem icon={<TrustIcon kind="payment" />} text="Secure checkout" />
         <TrustItem
-          icon={<TruckFast />}
+          icon={<TrustIcon kind="shipping" />}
           text="Shipping calculated at checkout"
         />
         <TrustItem
-          icon={<CheckCircleSolid />}
+          icon={<TrustIcon kind="returns" />}
           text={
             <LocalizedClientLink
               href="/refund-policy"

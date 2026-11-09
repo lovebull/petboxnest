@@ -7,7 +7,6 @@ import {
   maskGiftCardCode,
 } from "@lib/types/loyalty"
 import { convertToLocale } from "@lib/util/money"
-import { Gift } from "@medusajs/icons"
 import type { HttpTypes } from "@medusajs/types"
 import {
   Button,
@@ -16,6 +15,7 @@ import {
   Label,
   Text,
 } from "@modules/common/components/ui"
+import GiftCard from "@modules/common/icons/gift-card"
 import Trash from "@modules/common/icons/trash"
 import { useRouter } from "next/navigation"
 import { FormEvent, useId, useState } from "react"
@@ -95,12 +95,12 @@ const GiftCardCode = ({ cart }: { cart: HttpTypes.StoreCart }) => {
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[14px] bg-mint/60 text-brand">
-            <Gift aria-hidden="true" />
+            <GiftCard size="20" aria-hidden="true" focusable="false" />
           </span>
           <div>
             <Heading className="text-sm font-bold text-ink">Gift card</Heading>
             <Text className="text-xs text-muted">
-              Add a little joy to this order.
+              Apply a gift card to this order.
             </Text>
           </div>
         </div>

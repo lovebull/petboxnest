@@ -20,19 +20,19 @@ const EmptyCartMessage = () => {
           level="h1"
           className="mt-3 font-display text-[38px] font-bold leading-tight xsmall:text-[48px] small:text-[64px]"
         >
-          Your cart is ready for a little comfort.
+          Their next favorite is waiting.
         </Heading>
         <Text className="mt-5 max-w-2xl text-base leading-7 text-white/85 xsmall:text-lg">
-          You don&apos;t have anything in your cart. Let&apos;s change that
-          with practical products for messy paws, cozy naps, and calmer homes.
+          Your cart is empty. Explore practical picks for cleaner corners,
+          cozier naps, and happier homes.
         </Text>
         <div className="mt-8 flex flex-col gap-3 xsmall:flex-row">
           <LocalizedClientLink href="/store" className="pbn-focus inline-flex min-h-12 items-center justify-center gap-2 rounded-[14px] bg-white px-6 text-sm font-bold text-ink transition hover:-translate-y-0.5 hover:bg-cream motion-reduce:transition-none">
-            Explore products
+            Shop all products
             <ArrowRight />
           </LocalizedClientLink>
           <LocalizedClientLink href="/#best-sellers" className="pbn-focus inline-flex min-h-12 items-center justify-center rounded-[14px] border-2 border-white/40 px-6 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:border-white motion-reduce:transition-none">
-            Shop best sellers
+            Explore best sellers
           </LocalizedClientLink>
         </div>
       </div>

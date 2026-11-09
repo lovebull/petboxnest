@@ -38,10 +38,10 @@ const Summary = ({ cart }: SummaryProps) => {
           level="h2"
           className="mt-2 font-display text-3xl font-bold leading-tight text-ink"
         >
-          Checkout nest
+          Almost there
         </Heading>
         <p className="mt-2 text-sm leading-6 text-muted">
-          Totals update as quantities and promotions change.
+          Review your savings and order total before checkout.
         </p>
       </div>
 
@@ -63,7 +63,7 @@ const Summary = ({ cart }: SummaryProps) => {
         className="block"
       >
         <Button className="pbn-primary-button mt-5 min-h-14 w-full gap-2 text-base">
-          Go to checkout
+          Continue to checkout
           <ArrowRight />
         </Button>
       </LocalizedClientLink>
@@ -72,7 +72,7 @@ const Summary = ({ cart }: SummaryProps) => {
         <TrustItem icon={<TrustIcon kind="payment" />} text="Secure checkout" />
         <TrustItem
           icon={<TrustIcon kind="shipping" />}
-          text="Shipping calculated at checkout"
+          text="Shipping and taxes calculated at checkout"
         />
         <TrustItem
           icon={<TrustIcon kind="returns" />}

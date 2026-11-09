@@ -13,12 +13,40 @@ export const metadata: Metadata = createPrivateMetadata(
   "Confirm delivery and payment details for your PetBoxNest order."
 )
 
+const checkoutHeroCopy = {
+  address: {
+    title: "Where should we send it?",
+    description: "Add your contact and delivery details to get started.",
+  },
+  delivery: {
+    title: "Choose your delivery.",
+    description: "Select the delivery option that works best for you.",
+  },
+  payment: {
+    title: "You're one step away.",
+    description: "Review your order and pay securely.",
+  },
+} as const
+
 export default async function Checkout({
   params,
+  searchParams,
 }: {
   params: Promise<{ countryCode: string }>
+  searchParams: Promise<{ step?: string | string[] }>
 }) {
   const { countryCode } = await params
+  const requestedStep = (await searchParams).step
+  const normalizedStep = Array.isArray(requestedStep)
+    ? requestedStep[0]
+    : requestedStep
+  const currentStep =
+    normalizedStep === "delivery"
+      ? "delivery"
+      : normalizedStep === "payment" || normalizedStep === "review"
+      ? "payment"
+      : "address"
+  const heroCopy = checkoutHeroCopy[currentStep]
   const cart = await retrieveCart()
 
   if (!cart?.items?.length) {
@@ -30,7 +58,7 @@ export default async function Checkout({
   return (
     <main className="overflow-x-clip bg-cream pb-16 text-ink small:pb-24">
       <div className="content-container pt-8 xsmall:pt-10 small:pt-14">
-        <section className="relative overflow-hidden rounded-[24px] border border-[#E6E8EC] bg-mint px-5 py-7 xsmall:px-7 small:rounded-[32px] small:px-10 small:py-9">
+        <section className="relative overflow-hidden rounded-[24px] border border-[#E6E8EC] bg-mint px-5 py-4 xsmall:px-7 small:rounded-[32px] small:px-8 small:py-5">
           <div
             className="absolute -right-14 -top-16 h-44 w-44 rounded-full bg-yellow/80"
             aria-hidden="true"
@@ -40,15 +68,14 @@ export default async function Checkout({
             aria-hidden="true"
           />
           <div className="relative max-w-[760px]">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand">
               Secure checkout
             </p>
-            <h1 className="mt-3 text-balance font-display text-[34px] font-bold leading-[1.05] tracking-[-0.04em] xsmall:text-[42px] small:text-[54px]">
-              One last step to a happier nest.
+            <h1 className="mt-1.5 font-display text-[28px] font-bold leading-[1.1] tracking-[-0.04em] xsmall:text-[34px]">
+              {heroCopy.title}
             </h1>
-            <p className="mt-3 max-w-[620px] text-base leading-7 text-muted">
-              Confirm where it is going, choose delivery, and finish securely.
-              We will keep every cost clear along the way.
+            <p className="mt-1.5 max-w-[620px] text-sm leading-5 text-muted">
+              {heroCopy.description}
             </p>
             <CheckoutProgress />
           </div>

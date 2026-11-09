@@ -187,7 +187,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({
       <div className="text-sm">
         <form action={(a) => addPromotionCode(a)} className="w-full mb-5">
           <Label className="my-0 flex items-center justify-between gap-x-3">
-            <span className="font-bold text-ink">Have a promotion code?</span>
+            <span className="font-bold text-ink">Have a promo code?</span>
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"

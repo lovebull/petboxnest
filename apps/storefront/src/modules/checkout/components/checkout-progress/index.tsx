@@ -19,7 +19,7 @@ const CheckoutProgress = () => {
   )
 
   return (
-    <nav aria-label="Checkout progress" className="mt-7">
+    <nav aria-label="Checkout progress" className="mt-4">
       <ol className="grid grid-cols-3 gap-2">
         {checkoutSteps.map((step, index) => {
           const isCurrent = index === currentIndex
@@ -34,7 +34,7 @@ const CheckoutProgress = () => {
                 aria-hidden="true"
               />
               <div
-                className={`mt-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] xsmall:text-xs ${
+                className={`mt-1.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] xsmall:text-xs ${
                   isCurrent || isComplete ? "text-ink" : "text-muted"
                 }`}
                 aria-current={isCurrent ? "step" : undefined}

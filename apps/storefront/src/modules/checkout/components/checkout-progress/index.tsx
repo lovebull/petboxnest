@@ -7,12 +7,12 @@ const checkoutSteps = [
   { id: "address", label: "Address" },
   { id: "delivery", label: "Delivery" },
   { id: "payment", label: "Payment" },
-  { id: "review", label: "Review" },
 ] as const
 
 const CheckoutProgress = () => {
   const searchParams = useSearchParams()
-  const currentStep = searchParams.get("step") || "address"
+  const requestedStep = searchParams.get("step") || "address"
+  const currentStep = requestedStep === "review" ? "payment" : requestedStep
   const currentIndex = Math.max(
     checkoutSteps.findIndex((step) => step.id === currentStep),
     0
@@ -20,7 +20,7 @@ const CheckoutProgress = () => {
 
   return (
     <nav aria-label="Checkout progress" className="mt-7">
-      <ol className="grid grid-cols-4 gap-2">
+      <ol className="grid grid-cols-3 gap-2">
         {checkoutSteps.map((step, index) => {
           const isCurrent = index === currentIndex
           const isComplete = index < currentIndex

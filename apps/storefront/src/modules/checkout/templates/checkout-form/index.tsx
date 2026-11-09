@@ -4,7 +4,6 @@ import { listStoreCreditAccountsForCheckout } from "@lib/data/store-credit"
 import { HttpTypes } from "@medusajs/types"
 import Addresses from "@modules/checkout/components/addresses"
 import Payment from "@modules/checkout/components/payment"
-import Review from "@modules/checkout/components/review"
 import Shipping from "@modules/checkout/components/shipping"
 import StoreCredit from "@modules/checkout/components/store-credit"
 import CheckoutResourceErrorState from "@modules/checkout/components/checkout-resource-error"
@@ -129,8 +128,6 @@ export default async function CheckoutForm({
           error={paymentMethods.ok ? undefined : paymentMethods.error}
         />
       )}
-
-      <Review cart={cart} />
     </div>
   )
 }

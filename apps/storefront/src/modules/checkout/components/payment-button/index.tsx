@@ -12,21 +12,26 @@ import ErrorMessage from "../error-message"
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
+  disabled?: boolean
   "data-testid": string
 }
 
 const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
+  disabled = false,
   "data-testid": dataTestId,
 }) => {
   const notReady =
+    disabled ||
     !cart ||
     !cart.shipping_address ||
     !cart.billing_address ||
     !cart.email ||
     (cart.shipping_methods?.length ?? 0) < 1
 
-  const paymentSession = cart.payment_collection?.payment_sessions?.[0]
+  const paymentSession = cart.payment_collection?.payment_sessions?.find(
+    (session) => session.status === "pending"
+  )
   const giftCards = getGiftCards(cart)
   const creditLineAmounts = getCreditLineAmounts(cart)
   const paidByCredit =
@@ -157,7 +162,7 @@ const StripePaymentButton = ({
   return (
     <>
       <Button
-        disabled={disabled || notReady}
+        disabled={disabled || notReady || submitting}
         className="min-h-12 w-full rounded-[14px] !bg-brand px-6 text-base font-bold !text-white hover:!bg-brand-dark"
         onClick={handlePayment}
         size="large"
@@ -197,7 +202,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   return (
     <>
       <Button
-        disabled={notReady}
+        disabled={notReady || submitting}
         className="min-h-12 w-full rounded-[14px] !bg-brand px-6 text-base font-bold !text-white hover:!bg-brand-dark"
         isLoading={submitting}
         onClick={handlePayment}

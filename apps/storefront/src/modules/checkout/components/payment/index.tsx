@@ -30,6 +30,8 @@ import { HttpTypes } from "@medusajs/types"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { getCreditLineAmounts, getGiftCards } from "@lib/types/loyalty"
+import PaymentButton from "../payment-button"
+import CheckoutTerms from "../checkout-terms"
 
 const paypalBackendUrl =
   process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL?.replace(/\/$/, "") ?? ""
@@ -59,7 +61,8 @@ const Payment = ({
   const router = useRouter()
   const pathname = usePathname()
 
-  const isOpen = searchParams.get("step") === "payment"
+  // Existing bookmarks and payment links may still use the old final step.
+  const isOpen = ["payment", "review"].includes(searchParams.get("step") || "")
   const paypalRuntimeConfigured = Boolean(
     paypalBackendUrl && paypalPublishableKey
   )
@@ -87,12 +90,11 @@ const Payment = ({
   }
 
   const setPaymentMethod = async (method: string) => {
+    if (isLoading) return
     setError(null)
     setSelectedPaymentMethod(method)
-
-    if (!isStripeLike(method) && !isPayPalProviderId(method)) {
-      return
-    }
+    setPaymentComplete(false)
+    setIsLoading(true)
 
     if (isPayPalProviderId(method)) {
       setPaypalSessionLoading(true)
@@ -105,6 +107,7 @@ const Payment = ({
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     } finally {
+      setIsLoading(false)
       if (isPayPalProviderId(method)) {
         setPaypalSessionLoading(false)
       }
@@ -168,6 +171,16 @@ const Payment = ({
   const paidByStoreCredit =
     cart.total === 0 && creditLineAmounts.storeCredit > 0
   const paidWithoutProvider = paidByGiftcard || paidByStoreCredit
+  const previousStepsCompleted = Boolean(
+    cart.shipping_address?.address_1 &&
+      cart.billing_address &&
+      cart.email &&
+      (cart.shipping_methods?.length ?? 0) > 0
+  )
+  const selectedSessionReady = Boolean(
+    selectedPaymentMethod &&
+      activeSession?.provider_id === selectedPaymentMethod
+  )
 
   const paymentReady =
     (activeSession && (cart?.shipping_methods?.length ?? 0) !== 0) ||
@@ -190,35 +203,11 @@ const Payment = ({
   }
 
   const handleSubmit = async () => {
+    if (!selectedPaymentMethod || isLoading) return
+    setError(null)
     setIsLoading(true)
     try {
-      if (paidWithoutProvider) {
-        return router.push(
-          pathname + "?" + createQueryString("step", "review"),
-          { scroll: false }
-        )
-      }
-
-      const shouldInputPaymentDetails =
-        isStripeLike(selectedPaymentMethod) && !activeSession
-
-      const checkActiveSession =
-        activeSession?.provider_id === selectedPaymentMethod
-
-      if (!checkActiveSession) {
-        await initiatePaymentSession(cart, {
-          provider_id: selectedPaymentMethod,
-        })
-      }
-
-      if (!shouldInputPaymentDetails) {
-        return router.push(
-          pathname + "?" + createQueryString("step", "review"),
-          {
-            scroll: false,
-          }
-        )
-      }
+      await initiatePaymentSession(cart, { provider_id: selectedPaymentMethod })
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     } finally {
@@ -264,7 +253,7 @@ const Payment = ({
           <span>
             Payment
             <span className="mt-1 block font-sans text-sm font-normal text-muted">
-              Choose an available secure payment method.
+              Choose your payment method and place your order.
             </span>
           </span>
         </Heading>
@@ -315,6 +304,7 @@ const Payment = ({
               <RadioGroup
                 value={selectedPaymentMethod}
                 onChange={(value: string) => setPaymentMethod(value)}
+                disabled={isLoading}
               >
                 {filteredPaymentMethods.map((paymentMethod) => (
                   <div key={paymentMethod.id}>
@@ -336,21 +326,25 @@ const Payment = ({
                   </div>
                 ))}
               </RadioGroup>
-              {isPayPalProviderId(selectedPaymentMethod) && (
-                <div className="mt-4 rounded-[16px] border border-[#E6E8EC] bg-cream/40 p-4">
-                  <PayPalPaymentSection
-                    cartId={cart.id}
-                    selectedProviderId={selectedPaymentMethod}
-                    baseUrl={paypalBackendUrl}
-                    publishableApiKey={paypalPublishableKey}
-                    sessionLoading={paypalSessionLoading}
-                    onSuccess={async (cartId) => {
-                      await placeOrder(cartId)
-                    }}
-                    onError={setError}
-                  />
-                </div>
-              )}
+              {isPayPalProviderId(selectedPaymentMethod) &&
+                previousStepsCompleted && (
+                  <div className="mt-4 rounded-[16px] border border-[#E6E8EC] bg-cream/40 p-4">
+                    <CheckoutTerms />
+                    <PayPalPaymentSection
+                      cartId={cart.id}
+                      selectedProviderId={selectedPaymentMethod}
+                      baseUrl={paypalBackendUrl}
+                      publishableApiKey={paypalPublishableKey}
+                      sessionLoading={
+                        paypalSessionLoading || !selectedSessionReady
+                      }
+                      onSuccess={async (cartId) => {
+                        await placeOrder(cartId)
+                      }}
+                      onError={setError}
+                    />
+                  </div>
+                )}
             </>
           )}
 
@@ -362,8 +356,8 @@ const Payment = ({
                 role="status"
                 className="rounded-[16px] border border-danger/25 bg-[#FFF0EE] p-4 text-sm leading-6 text-ink"
               >
-                The configured payment method is temporarily unavailable.
-                Please choose another method or try again shortly.
+                The configured payment method is temporarily unavailable. Please
+                choose another method or try again shortly.
               </div>
             )}
 
@@ -386,22 +380,46 @@ const Payment = ({
             data-testid="payment-method-error-message"
           />
 
-          {!isPayPalProviderId(selectedPaymentMethod) && (
-            <Button
-              size="large"
-              className="mt-6 min-h-12 w-full rounded-[14px] !bg-brand px-6 text-base font-bold !text-white hover:!bg-brand-dark xsmall:w-auto"
-              onClick={handleSubmit}
-              isLoading={isLoading}
-              disabled={
-                (isStripeLike(selectedPaymentMethod) && !paymentComplete) ||
-                (!selectedPaymentMethod && !paidWithoutProvider)
-              }
-              data-testid="submit-payment-button"
-            >
-              {!activeSession && isStripeLike(selectedPaymentMethod)
-                ? "Enter payment details"
-                : "Continue to review"}
-            </Button>
+          {!previousStepsCompleted && (
+            <p role="status" className="mt-4 text-sm text-muted">
+              Complete your contact details, billing address and delivery method
+              before placing your order.
+            </p>
+          )}
+
+          {(paidWithoutProvider ||
+            !isPayPalProviderId(selectedPaymentMethod)) && (
+            <>
+              <CheckoutTerms />
+              {paidWithoutProvider || selectedSessionReady ? (
+                <PaymentButton
+                  cart={cart}
+                  disabled={
+                    isLoading ||
+                    !previousStepsCompleted ||
+                    (!paidWithoutProvider &&
+                      isStripeLike(selectedPaymentMethod) &&
+                      !paymentComplete)
+                  }
+                  data-testid="submit-order-button"
+                />
+              ) : (
+                <Button
+                  size="large"
+                  className="mt-6 min-h-12 w-full rounded-[14px] !bg-brand px-6 text-base font-bold !text-white hover:!bg-brand-dark xsmall:w-auto"
+                  onClick={handleSubmit}
+                  isLoading={isLoading}
+                  disabled={
+                    isLoading ||
+                    !previousStepsCompleted ||
+                    !selectedPaymentMethod
+                  }
+                  data-testid="submit-payment-button"
+                >
+                  {isLoading ? "Preparing payment…" : "Set up payment"}
+                </Button>
+              )}
+            </>
           )}
         </div>
 
@@ -433,7 +451,7 @@ const Payment = ({
                       <CreditCard />
                     )}
                   </Container>
-                  <Text>Another step will appear</Text>
+                  <Text>Confirm your payment to place your order.</Text>
                 </div>
               </div>
             </div>

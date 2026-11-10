@@ -24,16 +24,16 @@ const values = [
 const BrandValues = () => (
   <section className="bg-cream py-16 small:py-24">
     <div className="pbn-container">
-      <div className="grid gap-10 medium:grid-cols-[0.85fr_1.15fr] medium:items-end">
+      <div className="grid gap-8 medium:items-end">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
             Why PetBoxNest
           </p>
-          <h2 className="mt-3 font-display text-[34px] font-bold leading-tight tracking-[-0.035em] text-ink small:text-[48px]">
+          <h2 className="mt-3 font-display text-[34px] font-bold leading-tight tracking-[-0.035em] text-ink small:whitespace-nowrap small:text-[clamp(30px,3vw,40px)]">
             Pet products shouldn&apos;t make your home harder to live in.
           </h2>
         </div>
-        <p className="max-w-[620px] text-lg leading-8 text-muted medium:justify-self-end">
+        <p className="max-w-[620px] justify-self-start text-left text-lg leading-8 text-muted">
           We look for the useful details first—less fuss, real comfort, and a
           design that works beyond the pet aisle.
         </p>

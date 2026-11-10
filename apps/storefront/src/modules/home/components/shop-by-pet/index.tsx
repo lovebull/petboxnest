@@ -22,11 +22,11 @@ const cards = [
 const ShopByPet = () => (
   <section id="shop-by-pet" className="bg-white py-16 small:py-24">
     <div className="pbn-container">
-      <div className="max-w-[700px]">
+      <div className="max-w-[700px] small:max-w-none">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
           Shop by pet
         </p>
-        <h2 className="mt-3 font-display text-[34px] font-bold leading-tight tracking-[-0.035em] text-ink small:text-[48px]">
+        <h2 className="mt-3 font-display text-[34px] font-bold leading-tight tracking-[-0.035em] text-ink small:whitespace-nowrap small:text-[clamp(32px,3.1vw,42px)]">
           Find a better corner of the house—for both of you.
         </h2>
       </div>

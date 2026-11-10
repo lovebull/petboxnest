@@ -22,31 +22,31 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({
       data-testid="account-page"
     >
       <div className="pbn-container py-8 xsmall:py-10 small:py-14">
-        <section className="relative overflow-hidden rounded-[28px] bg-brand px-5 py-8 text-white shadow-[0_16px_40px_rgba(32,36,51,0.12)] xsmall:px-7 small:rounded-[32px] small:px-10 small:py-12">
+        <section className="relative overflow-hidden rounded-[28px] bg-brand px-5 py-6 text-white shadow-[0_16px_40px_rgba(32,36,51,0.12)] xsmall:px-7 small:rounded-[32px] small:px-10 small:py-8">
           <div className="relative z-10 max-w-3xl">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-yellow">
               PetBoxNest account
             </p>
-            <h1 className="mt-3 font-display text-[34px] font-bold leading-[1.05] xsmall:text-[42px] small:text-[54px]">
+            <h1 className="mt-2 font-display text-[32px] font-bold leading-[1.08] xsmall:text-[38px] small:text-[44px]">
               {customer
                 ? `Welcome back, ${firstName}.`
                 : "Welcome back to your pet home base."}
             </h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-white/85 xsmall:text-lg">
+            <p className="mt-3 max-w-2xl text-base leading-6 text-white/85">
               {customer
                 ? "Manage orders, saved addresses, and profile details from one calmer corner of the house."
                 : "Sign in to manage orders, addresses, and the little details that make repeat shopping easier."}
             </p>
           </div>
-          <div className="relative z-10 mt-6 flex flex-wrap gap-3 text-sm font-bold">
-            <span className="rounded-full bg-white/15 px-4 py-2">
+          <div className="relative z-10 mt-4 flex flex-wrap gap-2 text-sm font-bold">
+            <span className="rounded-full bg-white/15 px-3 py-1.5">
               Secure account access
             </span>
-            <span className="rounded-full bg-white/15 px-4 py-2">
+            <span className="rounded-full bg-white/15 px-3 py-1.5">
               Faster checkout
             </span>
             {customer && (
-              <span className="rounded-full bg-white/15 px-4 py-2">
+              <span className="rounded-full bg-white/15 px-3 py-1.5">
                 {addressCount} saved{" "}
                 {addressCount === 1 ? "address" : "addresses"}
               </span>

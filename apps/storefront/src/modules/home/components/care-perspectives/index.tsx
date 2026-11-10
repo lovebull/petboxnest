@@ -56,13 +56,13 @@ const CarePerspectives = () => {
       />
 
       <div className="pbn-container">
-        <header className="mx-auto max-w-[800px] text-center">
+        <header className="mx-auto max-w-[800px] text-center small:max-w-none">
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
             Veterinary-informed perspectives
           </p>
           <h2
             id="care-perspectives-heading"
-            className="mt-3 font-display text-[34px] font-bold leading-tight tracking-[-0.035em] small:text-[48px]"
+            className="mt-3 font-display text-[34px] font-bold leading-tight tracking-[-0.035em] small:whitespace-nowrap small:text-[clamp(30px,3vw,40px)]"
           >
             Better routines begin with a cleaner, calmer setup.
           </h2>

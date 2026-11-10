@@ -34,13 +34,13 @@ const PetPerspectives = () => {
       className="overflow-hidden bg-white py-16 text-ink small:py-24"
     >
       <div className="pbn-container">
-        <header className="mx-auto max-w-[760px] text-center">
+        <header className="mx-auto max-w-[760px] text-center small:max-w-[900px]">
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
             The pet perspective
           </p>
           <h2
             id="pet-perspectives-heading"
-            className="mt-3 font-display text-[34px] font-bold leading-tight tracking-[-0.035em] small:text-[48px]"
+            className="mt-3 font-display text-[34px] font-bold leading-tight tracking-[-0.035em] small:whitespace-nowrap small:text-[48px]"
           >
             Two housemates. One shared standard.
           </h2>

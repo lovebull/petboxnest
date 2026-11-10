@@ -29,10 +29,10 @@ const EarlyAccessSignup = () => {
   return (
     <section id="early-access" className="bg-mint py-16 small:py-20">
       <div className="pbn-container">
-        <div className="mx-auto max-w-[680px] text-center">
+        <div className="mx-auto max-w-[680px] text-center small:max-w-[900px]">
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">Stay in the loop</p>
-          <h2 className="mt-3 font-display text-[34px] font-bold leading-tight tracking-[-0.035em] text-ink small:text-[46px]">Fresh finds for their favorite corner.</h2>
-          <p className="mt-4 text-base leading-7 text-muted">Get first looks at useful new arrivals and thoughtful ideas for living better with pets.</p>
+          <h2 className="mt-3 font-display text-[34px] font-bold leading-tight tracking-[-0.035em] text-ink small:whitespace-nowrap small:text-[clamp(34px,3.4vw,44px)]">Fresh finds for their favorite corner.</h2>
+          <p className="mx-auto mt-4 max-w-[680px] text-base leading-7 text-muted">Get first looks at useful new arrivals and thoughtful ideas for living better with pets.</p>
           <form ref={formRef} action={action} className="mx-auto mt-8 max-w-[520px] text-left">
             <div className="relative">
               <label htmlFor="early-access-email" className="sr-only">Email address</label>

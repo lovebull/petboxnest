@@ -7,6 +7,7 @@ import {
   ChevronDown,
   CreditCard,
   QuestionMarkCircle,
+  ShoppingBag,
   TruckFast,
 } from "@medusajs/icons"
 
@@ -55,8 +56,8 @@ const faqGroups = [
         answer:
           "Contact us promptly. We can update an address only before fulfillment begins.",
         detailLink: {
-          href: "/refund-policy",
-          label: "Read the Returns & Refunds Policy.",
+          href: "/shipping-policy",
+          label: "Read the Shipping Policy.",
         },
       },
     ],
@@ -86,6 +87,33 @@ const faqGroups = [
         },
       },
       {
+        question: "How long will delivery take?",
+        answer:
+          "After dispatch, standard delivery is estimated to take 7–15 business days. Customs clearance, holidays, weather, or carrier delays may extend this estimate.",
+        detailLink: {
+          href: "/shipping-policy",
+          label: "Read the Shipping Policy.",
+        },
+      },
+      {
+        question: "Where will my order ship from?",
+        answer:
+          "Orders ship from Vietnam or China, depending on inventory availability and logistics arrangements. Customers cannot select the shipping origin.",
+        detailLink: {
+          href: "/shipping-policy",
+          label: "Read the Shipping Policy.",
+        },
+      },
+      {
+        question: "Which carrier will deliver my order?",
+        answer:
+          "We work with UPS, FedEx, and DHL. The carrier is selected based on the shipping origin, destination, and logistics availability, so customers cannot select a specific carrier.",
+        detailLink: {
+          href: "/shipping-policy",
+          label: "Read the Shipping Policy.",
+        },
+      },
+      {
         question: "Do you offer free shipping?",
         answer:
           "Standard shipping is free on qualifying U.S. orders of $60 or more. The checkout page shows the current shipping options and final cost.",
@@ -108,23 +136,23 @@ const faqGroups = [
         answer:
           "Check the delivery area, household members, neighbors, and carrier notices, then allow up to 48 hours. If it is still missing, contact us with your order number and tracking details.",
         detailLink: {
-          href: "/refund-policy",
-          label: "Read the Returns & Refunds Policy.",
+          href: "/shipping-policy",
+          label: "Read the Shipping Policy.",
         },
       },
       {
-        question: "What if my package is missing or an item is damaged?",
+        question: "What if an item arrives damaged, incorrect, or incomplete?",
         answer:
-          "Contact PetBoxNest within seven calendar days of delivery with your order number, a description, and photos when applicable. We will review confirmed missing, incorrect, or damaged items and provide the appropriate resolution.",
+          "Contact PetBoxNest within seven calendar days of delivery with your order number, a description, and clear photos when applicable. Keep the product and original packaging while we review the issue and arrange the appropriate resolution.",
         detailLink: {
           href: "/refund-policy",
           label: "Read the Returns & Refunds Policy.",
         },
       },
       {
-        question: "Other shipping issues",
+        question: "Why is my shipment delayed?",
         answer:
-          "Weather, carrier disruptions, and other events may affect delivery times. Contact customer care if your shipment needs attention.",
+          "Customs clearance, weather, holidays, carrier disruptions, and other events outside our control may extend delivery times. Check the latest tracking update or contact customer care if your shipment needs attention.",
         detailLink: {
           href: "/shipping-policy",
           label: "Read the Shipping Policy.",
@@ -133,9 +161,9 @@ const faqGroups = [
     ],
   },
   {
-    id: "returns-and-products",
-    title: "Returns and products",
-    icon: ArrowPath,
+    id: "products",
+    title: "Products",
+    icon: ShoppingBag,
     accent: "bg-mint",
     items: [
       {
@@ -147,6 +175,24 @@ const faqGroups = [
           label: "Discover our story.",
         },
       },
+      {
+        question: "How do I know whether a product is available?",
+        answer:
+          "Current purchasing options are shown on each product page. Availability can change, and an unavailable option cannot be selected for purchase.",
+      },
+      {
+        question: "Where can I find product details and care information?",
+        answer:
+          "Check the product page for available descriptions, dimensions, materials, setup, or care guidance. Contact customer care before ordering if you need a detail that is not listed.",
+      },
+    ],
+  },
+  {
+    id: "returns-refunds-and-warranty",
+    title: "Returns, refunds and warranty",
+    icon: ArrowPath,
+    accent: "bg-coral",
+    items: [
       {
         question: "What is your return window?",
         answer:
@@ -208,12 +254,13 @@ export default function FaqPage() {
               <QuestionMarkCircle aria-hidden="true" />
               Help
             </p>
-            <h1 className="mt-6 max-w-[820px] text-balance font-display text-[44px] font-bold leading-[1.02] tracking-[-0.05em] xsmall:text-[56px] small:text-[72px] medium:text-[80px]">
+            <h1 className="mt-6 max-w-[820px] text-balance font-display text-[40px] font-bold leading-[1.05] tracking-[-0.045em] xsmall:text-[50px] small:text-[60px] medium:text-[64px]">
               Frequently asked questions
             </h1>
             <p className="mt-6 max-w-[680px] text-lg leading-8 text-muted small:text-xl small:leading-9">
-              Start here for quick answers about shopping with PetBoxNest. If
-              you still need help, our customer care team is ready.
+              Find clear answers about orders, shipping, returns, warranties,
+              and product support. Still need help? Our customer care team is
+              here.
             </p>
 
             <nav

@@ -83,6 +83,20 @@ export default async function ArticlePage(props: Props) {
   const articleDate =
     article.published_at || article.createdAt || article.updatedAt
   const date = formatArticleDate(articleDate)
+  const updatedDate = formatArticleDate(article.updatedAt)
+  const publishedTimestamp = articleDate
+    ? new Date(articleDate).getTime()
+    : Number.NaN
+  const updatedTimestamp = article.updatedAt
+    ? new Date(article.updatedAt).getTime()
+    : Number.NaN
+  const showUpdatedDate = Boolean(
+    Number.isFinite(publishedTimestamp) &&
+      Number.isFinite(updatedTimestamp) &&
+      updatedDate &&
+      updatedDate !== date &&
+      updatedTimestamp > publishedTimestamp
+  )
   const baseUrl = getBaseURL().replace(/\/$/, "")
   const articleUrl = `${baseUrl}/${
     params.countryCode
@@ -204,17 +218,10 @@ export default async function ArticlePage(props: Props) {
                     {article.author || "PetBoxNest Editorial Team"}
                   </span>
                 </p>
-                {date && (
-                  <p>
-                    First published: <time dateTime={articleDate}>{date}</time>
-                  </p>
-                )}
-                {article.updatedAt && (
+                {showUpdatedDate && article.updatedAt && (
                   <p>
                     Last updated:{" "}
-                    <time dateTime={article.updatedAt}>
-                      {formatArticleDate(article.updatedAt)}
-                    </time>
+                    <time dateTime={article.updatedAt}>{updatedDate}</time>
                   </p>
                 )}
               </div>
